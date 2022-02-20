@@ -14,3 +14,8 @@ export const phoneValidator = (phone: string) => {
     return false;
   }
 };
+
+export default {
+  phoneUtil,
+  phoneValidator,
+};

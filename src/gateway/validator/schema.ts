@@ -1,4 +1,4 @@
-const schema = {
+export const schema = {
   user: {
     type: "object",
     properties: {
@@ -10,10 +10,6 @@ const schema = {
   },
   name: {
     type: "string",
-    peroperties: {
-      minLength: 3,
-      name: { type: "string" },
-    },
   },
 };
 

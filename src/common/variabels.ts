@@ -1,5 +1,5 @@
-import validator from "../plugins/validator";
-import schema from "../plugins/schema";
+import validator from "../gateway/validator/validator";
+import schema from "../gateway/validator/schema";
 
 export const locals = {
   application: {
@@ -14,4 +14,15 @@ export const globals = {
   },
   validator,
   schema,
+};
+
+declare global {
+  const service: typeof globals.service;
+  const validator: typeof globals.validator;
+  const schema: typeof globals.schema;
+}
+
+export default {
+  locals,
+  globals,
 };

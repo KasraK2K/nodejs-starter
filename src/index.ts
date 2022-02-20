@@ -3,6 +3,7 @@ import express from "express";
 import { Express, Request, Response } from "express";
 import _ from "lodash";
 const { locals, globals } = require("./common/variabels");
+import router from "./gateway/router";
 
 class Application {
   public app: Express;
@@ -30,10 +31,7 @@ class Application {
   }
 
   private routes() {
-    // this.app.use("/", indexRouter);
-    this.app.get("/", (req: Request, res: Response) => {
-      res.send({ message: "hello world" });
-    });
+    this.app.use("/", router);
   }
 
   private information() {
