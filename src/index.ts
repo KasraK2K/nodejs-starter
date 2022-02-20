@@ -1,6 +1,8 @@
 import os from "os";
 import express from "express";
 import { Express, Request, Response } from "express";
+import _ from "lodash";
+const { locals, globals } = require("./common/variabels");
 
 class Application {
   public app: Express;
@@ -10,12 +12,21 @@ class Application {
     const { port } = options;
     this.app = express();
     this.port = Number(process.env.PORT) || port;
+
+    this.middlewares();
+    this.routes();
+    this.config();
   }
 
   private middlewares() {
     this.app.use(express.json());
-    this.app.use(express.urlencoded());
+    this.app.use(express.urlencoded({ extended: false }));
     this.app.disable("x-powered-by");
+  }
+
+  private config() {
+    this.app.locals = locals;
+    _.assign(global, globals);
   }
 
   private routes() {
@@ -65,9 +76,6 @@ class Application {
   }
 
   public init() {
-    this.middlewares();
-    this.routes();
-
     this.app.listen(this.port, () => this.information());
   }
 }
