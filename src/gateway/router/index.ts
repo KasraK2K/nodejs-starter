@@ -1,8 +1,26 @@
-import express, { Request, Response } from "express";
+//=======================================================
+//
+//  #####     #####   ##   ##  ######  #####  #####
+//  ##  ##   ##   ##  ##   ##    ##    ##     ##  ##
+//  #####    ##   ##  ##   ##    ##    #####  #####
+//  ##  ##   ##   ##  ##   ##    ##    ##     ##  ##
+//  ##   ##   #####    #####     ##    #####  ##   ##
+//
+//=======================================================
+
+import express from "express";
 const router = express.Router();
 
-router.get("/", (req: Request, res: Response) => {
-  res.json({ message: "hello world" });
-});
+// ──────────────────────────────────────────────────────────────────────
+//   :::::: M I D D L E W A R E : :  :   :    :     :        :          :
+// ──────────────────────────────────────────────────────────────────────
+import requestMiddleware from "../middleware/RequestMiddleware";
+
+// ──────────────────────────────────────────────────────────────────────
+//   :::::: C O N T R O L L E R : :  :   :    :     :        :          :
+// ──────────────────────────────────────────────────────────────────────
+import homeController from "../controller/HomeController";
+
+router.get("/", requestMiddleware.isPost, homeController.index);
 
 export default router;
