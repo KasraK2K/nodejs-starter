@@ -1,9 +1,11 @@
+import "dotenv/config";
 import os from "os";
 import express from "express";
 import { Express, Request, Response } from "express";
 import _ from "lodash";
 const { locals, globals } = require("./common/variabels");
 import router from "./gateway/router";
+import tokenInterceptor from "./gateway/interceptor/TokenInterceptor";
 
 class Application {
   public app: Express;
@@ -31,6 +33,7 @@ class Application {
   }
 
   private routes() {
+    this.app.use("*", tokenInterceptor.verify);
     this.app.use("/", router);
   }
 

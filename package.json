@@ -21,6 +21,7 @@
     "ajv": "^8.10.0",
     "ajv-formats": "^2.1.1",
     "cross-env": "^7.0.3",
+    "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "google-libphonenumber": "^3.2.27",
     "jsonwebtoken": "^8.5.1",
