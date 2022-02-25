@@ -21,6 +21,6 @@ import requestMiddleware from "../middleware/RequestMiddleware";
 // ──────────────────────────────────────────────────────────────────────
 import homeController from "../controller/HomeController";
 
-router.get("/", requestMiddleware.isPost, homeController.index);
+router.post("/", requestMiddleware.isPost, homeController.index);
 
 export default router;
