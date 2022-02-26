@@ -8,7 +8,7 @@ class TokenInterceptor extends Interceptor {
     if (token && token.startsWith("Bearer ")) {
       token = token.slice(7, token.length);
       jwt.verify(token, process.env.JWT_SECRET!, (err, decoded) => {
-        if (err) res.status(401).json({ error: "Token invalid" });
+        if (err) return res.status(401).json({ error: "Token invalid" });
         else next();
       });
     } else res.status(400).json({ error: "Token missing" });

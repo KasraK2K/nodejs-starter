@@ -1,11 +1,13 @@
+import "./boot/bootstrap";
 import express from "express";
-import { Express, Request, Response } from "express";
+import { Express } from "express";
 import _ from "lodash";
 const { locals, globals } = require("./common/variabels");
 import router from "./gateway/router";
+import requestMiddleware from "./gateway/middleware/RequestMiddleware";
 import tokenInterceptor from "./gateway/interceptor/TokenInterceptor";
-import dotenv from "dotenv";
 import { getUserInformation } from "./common/functions/information";
+import { mongoConnection } from "./boot/database";
 
 class Application {
   public app: Express;
@@ -18,16 +20,11 @@ class Application {
 
     this.config();
     this.middlewares();
+    this.database();
     this.routes();
   }
 
   private config() {
-    dotenv.config({
-      path:
-        process.env.NODE_ENV === "production"
-          ? ".env.production"
-          : ".env.development",
-    });
     this.app.locals = locals;
     _.assign(global, globals);
   }
@@ -36,10 +33,18 @@ class Application {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
     this.app.disable("x-powered-by");
+    this.app.use(requestMiddleware.isPost);
+    this.app.use(tokenInterceptor.verify);
+  }
+
+  private database() {
+    mongoConnection
+      .asPromise()
+      .then(() => console.log("Database connected"))
+      .catch((error) => console.error(error.message));
   }
 
   private routes() {
-    this.app.use("*", tokenInterceptor.verify);
     this.app.use("/", router);
   }
 
