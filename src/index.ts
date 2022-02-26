@@ -1,6 +1,5 @@
 import "./boot/bootstrap";
-import express from "express";
-import { Express } from "express";
+import express, { Express } from "express";
 import _ from "lodash";
 const { locals, globals } = require("./common/variabels");
 import router from "./gateway/router";
