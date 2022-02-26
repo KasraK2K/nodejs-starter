@@ -7,7 +7,6 @@ import router from "./gateway/router";
 import requestMiddleware from "./gateway/middleware/RequestMiddleware";
 import tokenInterceptor from "./gateway/interceptor/TokenInterceptor";
 import { getUserInformation } from "./common/functions/information";
-import { mongoConnection } from "./boot/database";
 
 class Application {
   public app: Express;
@@ -20,7 +19,6 @@ class Application {
 
     this.config();
     this.middlewares();
-    this.database();
     this.routes();
   }
 
@@ -35,13 +33,6 @@ class Application {
     this.app.disable("x-powered-by");
     this.app.use(requestMiddleware.isPost);
     this.app.use(tokenInterceptor.verify);
-  }
-
-  private database() {
-    mongoConnection
-      .asPromise()
-      .then(() => console.log("Database connected"))
-      .catch((error) => console.error(error.message));
   }
 
   private routes() {
