@@ -17,14 +17,14 @@ describe("Controller", () => {
   // ──────────────────────────────────────────────────────────────
   //   :::::: D E F I N E : :  :   :    :     :        :          :
   // ──────────────────────────────────────────────────────────────
-  it("Should be defined", () => {
+  it("Controller should be defined", () => {
     expect(controller).toBeDefined();
   });
 
   // ──────────────────────────────────────────────────────────────
   //   :::::: L O G G E R : :  :   :    :     :        :          :
   // ──────────────────────────────────────────────────────────────
-  it("Logger", () => {
+  it("Controller.logger() should log", () => {
     const logSpy = jest.spyOn(console, "log");
 
     controller.logger();
