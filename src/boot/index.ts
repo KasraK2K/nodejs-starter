@@ -8,7 +8,8 @@
 //
 //===========================================================================================================
 
-import { connection } from "./mongoose";
 import mongoClient from "./mongodb";
+// import { connection } from "./mongoose";
 
-export { connection, mongoClient };
+export { mongoClient };
+// export { connection };

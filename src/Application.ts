@@ -30,8 +30,10 @@ class Application {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
     this.app.disable("x-powered-by");
-    this.app.use(requestMiddleware.isPost);
-    this.app.use(tokenInterceptor.verify);
+    if (process.env.NODE_ENV === "production") {
+      this.app.use(requestMiddleware.isPost);
+      this.app.use(tokenInterceptor.verify);
+    }
   }
 
   private routes() {

@@ -31,7 +31,13 @@ export const globals = {
   },
   validator,
   schema,
-  mongoClient,
+  mongo: {
+    mongoClient,
+    database: mongoClient.db(process.env.MONGODB_DATABSE_NAME),
+    collection: mongoClient
+      .db(process.env.MONGODB_DATABSE_NAME)
+      .collection(process.env.MONGODB_DEFAULT_COLLECTION!),
+  },
 };
 
 // ──────────────────────────────────────────────────────────────────────────────────────────────────
@@ -41,7 +47,11 @@ declare global {
   const service: typeof globals.service;
   const validator: typeof globals.validator;
   const schema: typeof globals.schema;
-  const mongoClient: typeof globals.mongoClient;
+  const mongo: {
+    mongoClient: typeof globals.mongo.mongoClient;
+    database: typeof globals.mongo.database;
+    collection: typeof globals.mongo.collection;
+  };
 }
 
 export default {
