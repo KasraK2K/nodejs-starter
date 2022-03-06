@@ -6,8 +6,9 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node build/index.js",
     "start:dev": "cross-env NODE_ENV=development ts-node run.ts",
-    "build:dev": "cross-env NODE_ENV=development webpack -- --color",
-    "build": "cross-env NODE_ENV=production webpack -- --color",
+    "prebuild": "rimraf build",
+    "build:dev": "yarn prebuild && cross-env NODE_ENV=development webpack -- --color",
+    "build": "yarn prebuild && cross-env NODE_ENV=production webpack -- --color",
     "test": "jest"
   },
   "keywords": [
@@ -29,6 +30,7 @@
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
+    "mongodb": "^4.4.1",
     "mongoose": "^6.2.3",
     "os": "^0.1.2"
   },

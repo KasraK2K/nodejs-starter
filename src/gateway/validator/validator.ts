@@ -1,6 +1,6 @@
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
-const ajv = new Ajv();
+const ajv = new Ajv({ allErrors: true });
 addFormats(ajv);
 
 export const validator = (schema: Record<string, any>, data: any) => {

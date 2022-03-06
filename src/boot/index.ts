@@ -9,5 +9,6 @@
 //===========================================================================================================
 
 import { connection } from "./mongoose";
+import mongoClient from "./mongodb";
 
-export { connection };
+export { connection, mongoClient };
