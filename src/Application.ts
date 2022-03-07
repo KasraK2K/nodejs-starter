@@ -1,4 +1,5 @@
 import "./boot/bootstrap";
+import cors from "cors";
 import express, { Express } from "express";
 import _ from "lodash";
 const { locals, globals } = require("./common/variabels");
@@ -30,6 +31,13 @@ class Application {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
     this.app.disable("x-powered-by");
+    this.app.use(
+      cors({
+        optionsSuccessStatus: 200,
+        methods: process.env.CORS_ALLOW_METHODS?.split(","),
+        origin: process.env.CORS_ALLOW_ORIGIN?.split(","),
+      })
+    );
     if (process.env.NODE_ENV === "production") {
       this.app.use(requestMiddleware.isPost);
       this.app.use(tokenInterceptor.verify);
