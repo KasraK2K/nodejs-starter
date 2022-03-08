@@ -4,8 +4,8 @@ import express, { Express } from "express";
 import _ from "lodash";
 const { locals, globals } = require("./common/variabels");
 import router from "./gateway/router";
-import requestMiddleware from "./gateway/middleware/RequestMiddleware";
-import tokenInterceptor from "./gateway/interceptor/TokenInterceptor";
+import requestMiddleware from "./gateway/http/v1/middleware/RequestMiddleware";
+import tokenInterceptor from "./gateway/http/v1/interceptor/TokenInterceptor";
 import { getUserInformation } from "./common/functions/information";
 
 class Application {

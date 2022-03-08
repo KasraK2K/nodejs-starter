@@ -11,7 +11,7 @@
 import express from "express";
 const router = express.Router();
 
-import homeController from "../controller/HomeController";
+import homeController from "../http/v1/controller/HomeController";
 
 router.post("/", homeController.index);
 
