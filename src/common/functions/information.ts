@@ -49,10 +49,3 @@ export const getUserInformation = (port: Number) => {
   }
   console.info(`\nServer running on http://localhost:${port}`);
 };
-
-export const infoGen = (data: Record<string, any>) => {
-  return {
-    version: process.env.APP_Version,
-    data,
-  };
-};

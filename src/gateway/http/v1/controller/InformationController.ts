@@ -3,9 +3,13 @@ import { Request, Response, NextFunction } from "express";
 
 class InformationController extends Controller {
   public info(req: Request, res: Response, next: NextFunction) {
-    // mongo.collection.insertOne({ name: "test" });
-
-    return res.json(infoGen({ message: "coms from information controller" }));
+    return res.json(
+      super.resGen({
+        req,
+        success: true,
+        data: { message: "coms from information controller" },
+      })
+    );
   }
 }
 
