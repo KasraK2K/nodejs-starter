@@ -30,6 +30,7 @@ class Application {
   private middlewares() {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
+    // helmet comes here
     this.app.disable("x-powered-by");
     this.app.use(
       cors({
