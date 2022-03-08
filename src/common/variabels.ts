@@ -10,7 +10,7 @@
 
 import validator from "../gateway/validator/validator";
 import schema from "../gateway/validator/schema";
-import { mongoClient } from "../boot";
+// import { mongoClient } from "../boot";
 
 // ────────────────────────────────────────────────────────────────────────────────
 //   :::::: L O C A L   V A R I A B L E S : :  :   :    :     :        :          :
@@ -31,13 +31,13 @@ export const globals = {
   },
   validator,
   schema,
-  mongo: {
-    mongoClient,
-    database: mongoClient.db(process.env.MONGODB_DATABSE_NAME),
-    collection: mongoClient
-      .db(process.env.MONGODB_DATABSE_NAME)
-      .collection(process.env.MONGODB_DEFAULT_COLLECTION!),
-  },
+  // mongo: {
+  //   mongoClient,
+  //   database: mongoClient.db(process.env.MONGODB_DATABSE_NAME),
+  //   collection: mongoClient
+  //     .db(process.env.MONGODB_DATABSE_NAME)
+  //     .collection(process.env.MONGODB_DEFAULT_COLLECTION!),
+  // },
 };
 
 // ──────────────────────────────────────────────────────────────────────────────────────────────────
@@ -47,11 +47,11 @@ declare global {
   const service: typeof globals.service;
   const validator: typeof globals.validator;
   const schema: typeof globals.schema;
-  const mongo: {
-    mongoClient: typeof globals.mongo.mongoClient;
-    database: typeof globals.mongo.database;
-    collection: typeof globals.mongo.collection;
-  };
+  // const mongo: {
+  //   mongoClient: typeof globals.mongo.mongoClient;
+  //   database: typeof globals.mongo.database;
+  //   collection: typeof globals.mongo.collection;
+  // };
 }
 
 export default {
