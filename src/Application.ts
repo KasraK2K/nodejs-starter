@@ -1,6 +1,7 @@
 import "./boot/bootstrap";
 import cors from "cors";
 import express, { Express } from "express";
+import helmet from "helmet";
 import _ from "lodash";
 const { locals, globals } = require("./common/variabels");
 import router from "./gateway/router";
@@ -30,7 +31,7 @@ class Application {
   private middlewares() {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
-    // helmet comes here
+    this.app.use(helmet());
     this.app.disable("x-powered-by");
     this.app.use(
       cors({
