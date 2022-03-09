@@ -12,7 +12,7 @@ import config from "config";
 import { IConfig } from "../../config/config.interface";
 import validator from "../gateway/validator/validator";
 import schema from "../gateway/validator/schema";
-// import { mongoClient } from "../boot";
+import { mongoClient } from "../boot";
 
 const configs: IConfig = config.util.toObject();
 
@@ -35,13 +35,13 @@ export const globals = {
   },
   validator,
   schema,
-  // mongo: {
-  //   mongoClient,
-  //   database: mongoClient.db(configs.database.mongodb.name),
-  //   collection: mongoClient
-  //     .db(configs.database.mongodb.name)
-  //     .collection(configs.database.mongodb.default_collection),
-  // },
+  mongo: {
+    mongoClient,
+    database: mongoClient.db(configs.database.mongodb.name),
+    collection: mongoClient
+      .db(configs.database.mongodb.name)
+      .collection(configs.database.mongodb.default_collection),
+  },
 };
 
 // ──────────────────────────────────────────────────────────────────────────────────────────────────
@@ -51,11 +51,11 @@ declare global {
   const service: typeof globals.service;
   const validator: typeof globals.validator;
   const schema: typeof globals.schema;
-  // const mongo: {
-  //   mongoClient: typeof globals.mongo.mongoClient;
-  //   database: typeof globals.mongo.database;
-  //   collection: typeof globals.mongo.collection;
-  // };
+  const mongo: {
+    mongoClient: typeof globals.mongo.mongoClient;
+    database: typeof globals.mongo.database;
+    collection: typeof globals.mongo.collection;
+  };
 }
 
 export default {

@@ -7,7 +7,7 @@ database:
   mongodb:
     name: "node-starter"
     default_collection: "default"
-    uri: "mongodb://localhost:27017/node-starter"
+    uri: "mongodb://0.0.0.0:27017/node-starter"
 
 cors:
   allow_origin: "*"
