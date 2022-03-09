@@ -1,3 +1,4 @@
+import { getError } from "./../../../../common/functions/errors";
 import {
   IResGen,
   IResGenOptions,
@@ -42,7 +43,7 @@ class Controller {
       env: process.env.NODE_ENV,
       mode,
       success,
-      error,
+      error: getError(error),
     };
   }
 }

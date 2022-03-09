@@ -7,7 +7,7 @@ class InformationController extends Controller {
       super.resGen({
         req,
         success: true,
-        data: { message: "coms from information controller" },
+        data: { items: [] },
       })
     );
   }

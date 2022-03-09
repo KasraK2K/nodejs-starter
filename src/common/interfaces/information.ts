@@ -9,7 +9,7 @@ export interface IResGenOptions {
 export interface IErrGenOptions {
   req: Request;
   success: boolean;
-  error: string;
+  error: number;
 }
 
 export type IResGen = IResGenOptions | IErrGenOptions;
