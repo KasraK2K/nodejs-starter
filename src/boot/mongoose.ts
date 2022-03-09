@@ -9,8 +9,12 @@
 //=============================================================================
 
 import mongoose from "mongoose";
+import config from "config";
+import { IMongodbConfig } from "../../config/config.interface";
 
-export const connection = mongoose.createConnection(process.env.MONGODB_URI!);
+const mongodbConfig: IMongodbConfig = config.get("database.mongodb");
+
+export const connection = mongoose.createConnection(mongodbConfig.uri);
 
 //============================================================================
 // Now you can easily connect to the database from any point in your Node.js

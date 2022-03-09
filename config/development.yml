@@ -1,0 +1,14 @@
+mode: development
+
+application:
+  print_info: true
+
+database:
+  mongodb:
+    name: "node-starter"
+    default_collection: "default"
+    uri: "mongodb://localhost:27017/node-starter"
+
+cors:
+  allow_origin: "*"
+  allow_method: ["POST"]

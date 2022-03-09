@@ -3,11 +3,15 @@ import cors from "cors";
 import express, { Express } from "express";
 import helmet from "helmet";
 import _ from "lodash";
+import config from "config";
+import { ICorsConfig } from "./../config/config.interface";
 const { locals, globals } = require("./common/variabels");
 import router from "./gateway/router";
 import requestMiddleware from "./gateway/http/v1/middleware/RequestMiddleware";
 import tokenInterceptor from "./gateway/http/v1/interceptor/TokenInterceptor";
 import { getUserInformation } from "./common/functions/information";
+
+const corsConfig: ICorsConfig = config.get("cors");
 
 class Application {
   public app: Express;
@@ -36,8 +40,8 @@ class Application {
     this.app.use(
       cors({
         optionsSuccessStatus: 200,
-        methods: process.env.CORS_ALLOW_METHODS?.split(","),
-        origin: process.env.CORS_ALLOW_ORIGIN?.split(","),
+        methods: corsConfig.allow_methods,
+        origin: corsConfig.allow_origin,
       })
     );
     if (process.env.NODE_ENV === "production") {

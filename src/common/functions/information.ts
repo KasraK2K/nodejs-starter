@@ -9,9 +9,13 @@
 //=======================================================================================================================================================
 
 import os from "os";
+import config from "config";
+import { IApplicationConfig } from "../../../config/config.interface";
+
+const applicationConfig: IApplicationConfig = config.get("application");
 
 export const getUserInformation = (port: Number) => {
-  if (JSON.parse(process.env.SYS_INFO || "false")) {
+  if (applicationConfig.print_info) {
     console.group("Server Information:");
     console.table([
       {

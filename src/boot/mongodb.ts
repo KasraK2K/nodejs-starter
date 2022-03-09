@@ -9,8 +9,12 @@
 //======================================================================
 
 import { MongoClient } from "mongodb";
+import config from "config";
+import { IMongodbConfig } from "../../config/config.interface";
 
-const mongoClient = new MongoClient(process.env.MONGODB_URI!);
+const mongodbConfig: IMongodbConfig = config.get("database.mongodb");
+
+const mongoClient = new MongoClient(mongodbConfig.uri);
 
 mongoClient.connect((err) => {
   if (err) {

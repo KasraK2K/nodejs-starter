@@ -8,9 +8,13 @@
 //
 //==========================================================================
 
+import config from "config";
+import { IConfig } from "../../config/config.interface";
 import validator from "../gateway/validator/validator";
 import schema from "../gateway/validator/schema";
 // import { mongoClient } from "../boot";
+
+const configs: IConfig = config.util.toObject();
 
 // ────────────────────────────────────────────────────────────────────────────────
 //   :::::: L O C A L   V A R I A B L E S : :  :   :    :     :        :          :
@@ -33,10 +37,10 @@ export const globals = {
   schema,
   // mongo: {
   //   mongoClient,
-  //   database: mongoClient.db(process.env.MONGODB_DATABSE_NAME),
+  //   database: mongoClient.db(configs.database.mongodb.name),
   //   collection: mongoClient
-  //     .db(process.env.MONGODB_DATABSE_NAME)
-  //     .collection(process.env.MONGODB_DEFAULT_COLLECTION!),
+  //     .db(configs.database.mongodb.name)
+  //     .collection(configs.database.mongodb.default_collection),
   // },
 };
 
