@@ -7,13 +7,14 @@ import config from "config";
 import { IApplicationConfig } from "../../../../../config/config.interface";
 
 const applicationConfig: IApplicationConfig = config.get("application");
+const mode: string = config.get("mode");
 
 class Controller {
   public logger() {
     console.log("Log from Controller");
   }
 
-  protected resGen(options: IResGen) {
+  public resGen(options: IResGen) {
     return options.success
       ? Controller.responseGenerator(options as IResGenOptions)
       : Controller.errorGenerator(options as IErrGenOptions);
@@ -24,8 +25,9 @@ class Controller {
     return {
       api_version: applicationConfig.api_version,
       front_version: applicationConfig.front_version,
-      endpoint: req.url,
+      endpoint: req.originalUrl,
       env: process.env.NODE_ENV,
+      mode,
       success,
       data,
     };
@@ -36,8 +38,9 @@ class Controller {
     return {
       api_version: applicationConfig.api_version,
       front_version: applicationConfig.front_version,
-      endpoint: req.url,
+      endpoint: req.originalUrl,
       env: process.env.NODE_ENV,
+      mode,
       success,
       error,
     };
