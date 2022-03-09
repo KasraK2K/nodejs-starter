@@ -6,7 +6,7 @@ class InformationController extends Controller {
     return res.json(
       super.resGen({
         req,
-        success: true,
+        result: true,
         data: { items: [] },
       })
     );

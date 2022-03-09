@@ -13,6 +13,7 @@ import { IConfig } from "../../config/config.interface";
 import validator from "../gateway/validator/validator";
 import schema from "../gateway/validator/schema";
 import { mongoClient } from "../boot";
+import { logger } from "../common/functions/logger";
 
 const configs: IConfig = config.util.toObject();
 
@@ -42,6 +43,7 @@ export const globals = {
       .db(configs.database.mongodb.name)
       .collection(configs.database.mongodb.default_collection),
   },
+  logger,
 };
 
 // ──────────────────────────────────────────────────────────────────────────────────────────────────
@@ -56,6 +58,7 @@ declare global {
     database: typeof globals.mongo.database;
     collection: typeof globals.mongo.collection;
   };
+  const logger: typeof globals.logger;
 }
 
 export default {

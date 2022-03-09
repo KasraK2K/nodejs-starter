@@ -5,20 +5,39 @@ import userRepository from "../repository/UserRepository";
 
 class UserLogic extends Logic {
   async create(req: Request): Promise<IResGen> {
-    const { name, email, password } = req.body;
-    const { valid, errors } = validator(schema.user.create, req.body);
+    return new Promise(async (resolve, reject) => {
+      const { name, email, password } = req.body;
+      const { valid, errors } = validator(schema.user.create, req.body);
 
-    // ────────────────────────────────────────── CHECK VALIDATION ─────
-    if (!valid) return { req, success: false, error: 3002, error_data: errors };
+      // ────────────────────────────────────────── CHECK VALIDATION ─────
+      if (errors && errors.length) {
+        reject({
+          req,
+          result: false,
+          error_code: 3002,
+          error_user_messages: errors,
+        });
+        return;
+      }
 
-    // // ───────────────────────────────── CHECK IS EMAIL REGISTERED ─────
-    const userExist = await userRepository.findByEmail(email);
-    if (userExist) return { req, success: false, error: 3003 };
+      // ───────────────────────────────── CHECK IS EMAIL REGISTERED ─────
+      const userExist = await userRepository.findByEmail(email);
+      if (userExist) {
+        reject({
+          req,
+          result: false,
+          error_code: 3003,
+          error_user_messages: errors,
+        });
+        return;
+      }
 
-    // ─────────────────────────────────────────────── CREATE USER ─────
-    const hash = await super.hashGen(password);
-    const user = await userRepository.create(name, email, hash);
-    return { req, success: true, data: user };
+      // ─────────────────────────────────────────────── CREATE USER ─────
+      const hash = await super.hashGen(password);
+      const user = await userRepository.create(name, email, hash);
+
+      resolve({ req, result: true, data: user });
+    });
   }
 }
 

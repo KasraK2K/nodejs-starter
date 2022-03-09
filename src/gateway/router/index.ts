@@ -18,7 +18,11 @@ router.use("/v1", v1);
 
 router.use("*", (req, res) => {
   const controller = new Controller();
-  const result = controller.resGen({ req, success: false, error: 3001 });
+  const result = controller.resGen({
+    req,
+    result: false,
+    error_code: 3001,
+  });
   res.status(404).json(result);
 });
 

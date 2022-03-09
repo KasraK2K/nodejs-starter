@@ -16,35 +16,37 @@ class Controller {
   }
 
   public resGen(options: IResGen) {
-    return options.success
+    return options.result
       ? Controller.responseGenerator(options as IResGenOptions)
       : Controller.errorGenerator(options as IErrGenOptions);
   }
 
   private static responseGenerator(options: IResGenOptions) {
-    const { req, success, data } = options;
+    const { req, result, data } = options;
     return {
       api_version: applicationConfig.api_version,
       front_version: applicationConfig.front_version,
       endpoint: req.originalUrl,
       env: process.env.NODE_ENV,
       mode,
-      success,
+      result,
       data,
     };
   }
 
   private static errorGenerator(options: IErrGenOptions) {
-    const { req, success, error, error_data } = options;
+    const { req, result, error_code, error_user_messages } = options;
+    const error = getError(error_code);
     return {
       api_version: applicationConfig.api_version,
       front_version: applicationConfig.front_version,
       endpoint: req.originalUrl,
       env: process.env.NODE_ENV,
       mode,
-      success,
-      error: getError(error),
-      error_data,
+      result,
+      error_code: error.code,
+      error_message: error.message,
+      error_user_messages,
     };
   }
 }
