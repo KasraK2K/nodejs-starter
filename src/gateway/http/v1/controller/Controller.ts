@@ -35,7 +35,7 @@ class Controller {
   }
 
   private static errorGenerator(options: IErrGenOptions) {
-    const { req, success, error } = options;
+    const { req, success, error, error_data } = options;
     return {
       api_version: applicationConfig.api_version,
       front_version: applicationConfig.front_version,
@@ -44,6 +44,7 @@ class Controller {
       mode,
       success,
       error: getError(error),
+      error_data,
     };
   }
 }

@@ -1,7 +1,7 @@
 const map = new Map([
   [3001, "Not Found"],
-  [3002, "This is first error"],
-  [3003, "This is second error"],
+  [3002, "Validation error"],
+  [3003, "This email is already registered"],
 ]);
 
 export const getError = (code: number) => {
