@@ -9,7 +9,9 @@
     "prebuild": "rimraf build",
     "build:dev": "yarn prebuild && cross-env NODE_ENV=development webpack -- --color",
     "build": "yarn prebuild && cross-env NODE_ENV=production webpack -- --color",
-    "test": "jest"
+    "test": "jest",
+    "pm2": "pm2 start ecosystem.config.js --env production",
+    "pm2:dev": "pm2 start ecosystem.config.js --env development"
   },
   "keywords": [
     "nodejs",
