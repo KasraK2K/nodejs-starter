@@ -11,9 +11,9 @@
 // NOTE: Example: logger("{red}Hello World{reset}", { type: "error" });
 
 import fs from "fs";
+import { LoggerEnum } from "../enums/logger.enum";
 
-export const logger = (text: any, options = { type: "info" }) => {
-  const { type } = options;
+export const logger = (text: any, type = LoggerEnum.INFO) => {
   const now = new Date();
   const date =
     now.getFullYear() +
@@ -49,13 +49,11 @@ export const logger = (text: any, options = { type: "info" }) => {
 
   console.log("-" + text);
 
-  if (["info", "error", "debug"].includes(type)) {
-    fs.appendFile(
-      path + type + ".log",
-      `${date} ${time} ${text} \n`,
-      function (err) {}
-    );
-  }
+  fs.appendFile(
+    path + type + ".log",
+    `${date} ${time} ${text} \n`,
+    function (err) {}
+  );
 
   fs.appendFile(
     path + "all.log",

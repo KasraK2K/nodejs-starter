@@ -6,16 +6,22 @@ class UserController extends Controller {
   public async create(req: Request, res: Response, next: NextFunction) {
     await userLogic
       .create(req)
-      .then((response) => res.json(super.resGen(response)))
+      .then((response) =>
+        super.resGen({
+          req,
+          res,
+          result: true,
+          data: response.data,
+        })
+      )
       .catch((err) =>
-        res.json(
-          super.resGen({
-            req,
-            result: false,
-            error_code: err.error_code,
-            error_user_messages: err.error_user_messages,
-          })
-        )
+        super.resGen({
+          req,
+          res,
+          result: false,
+          error_code: err.error_code,
+          error_user_messages: err.error_user_messages,
+        })
       );
   }
 }

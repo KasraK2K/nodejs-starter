@@ -44,10 +44,11 @@ class Application {
         origin: corsConfig.allow_origin,
       })
     );
-    if (process.env.NODE_ENV === "production") {
-      this.app.use(requestMiddleware.isPost);
-      this.app.use(tokenInterceptor.verify);
-    }
+    // if (process.env.NODE_ENV === "production") {
+    this.app.use(requestMiddleware.isPost);
+    this.app.use(requestMiddleware.auth);
+    // this.app.use(tokenInterceptor.verify);
+    // }
   }
 
   private routes() {

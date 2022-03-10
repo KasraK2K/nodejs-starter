@@ -17,13 +17,13 @@ const router = express.Router();
 router.use("/v1", v1);
 
 router.use("*", (req, res) => {
-  const controller = new Controller();
-  const result = controller.resGen({
+  return new Controller().resGen({
     req,
+    res,
+    status: 404,
     result: false,
     error_code: 3001,
   });
-  res.status(404).json(result);
 });
 
 export default router;

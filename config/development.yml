@@ -1,8 +1,5 @@
 mode: development
 
-application:
-  print_info: false
-
 database:
   mongodb:
     name: "node-starter"

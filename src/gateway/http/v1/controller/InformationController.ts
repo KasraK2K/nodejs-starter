@@ -3,13 +3,12 @@ import { Request, Response, NextFunction } from "express";
 
 class InformationController extends Controller {
   public info(req: Request, res: Response, next: NextFunction) {
-    return res.json(
-      super.resGen({
-        req,
-        result: true,
-        data: { items: [] },
-      })
-    );
+    return super.resGen({
+      req,
+      res,
+      result: true,
+      data: { items: [] },
+    });
   }
 }
 

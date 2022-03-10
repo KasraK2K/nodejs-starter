@@ -1,10 +1,10 @@
 import Logic from "./Logic";
 import { Request } from "express";
-import { IResGen } from "@/common/interfaces/information";
 import userRepository from "../repository/UserRepository";
+import { saltGen, hashGen } from "../../../common/functions/bcrypt";
 
 class UserLogic extends Logic {
-  async create(req: Request): Promise<IResGen> {
+  async create(req: Request): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const { name, email, password } = req.body;
       const { valid, errors } = validator(schema.user.create, req.body);
@@ -29,10 +29,10 @@ class UserLogic extends Logic {
       }
 
       // ─────────────────────────────────────────────── CREATE USER ─────
-      const hash = await super.hashGen(password);
+      const hash = await hashGen(password);
       const user = await userRepository.create(name, email, hash);
 
-      resolve({ req, result: true, data: user });
+      resolve({ result: true, data: user });
     });
   }
 }

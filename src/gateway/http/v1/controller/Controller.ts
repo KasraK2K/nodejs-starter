@@ -16,9 +16,14 @@ class Controller {
   }
 
   public resGen(options: IResGen) {
-    return options.result
-      ? Controller.responseGenerator(options as IResGenOptions)
-      : Controller.errorGenerator(options as IErrGenOptions);
+    const { res, status } = options;
+    return res
+      .status(status || 200)
+      .json(
+        options.result
+          ? Controller.responseGenerator(options as IResGenOptions)
+          : Controller.errorGenerator(options as IErrGenOptions)
+      );
   }
 
   private static responseGenerator(options: IResGenOptions) {
