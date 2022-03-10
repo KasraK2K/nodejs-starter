@@ -5,7 +5,7 @@ import {
   IErrGenOptions,
 } from "@/common/interfaces/information";
 import config from "config";
-import { IApplicationConfig } from "../../../../../config/config.interface";
+import { IApplicationConfig } from "@/../config/config.interface";
 
 const applicationConfig: IApplicationConfig = config.get("application");
 const mode: string = config.get("mode");
