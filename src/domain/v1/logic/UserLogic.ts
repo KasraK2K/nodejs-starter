@@ -10,10 +10,8 @@ class UserLogic extends Logic {
       const { valid, errors } = validator(schema.user.create, req.body);
 
       // ────────────────────────────────────────── CHECK VALIDATION ─────
-      if (errors && errors.length) {
+      if (!valid) {
         reject({
-          req,
-          result: false,
           error_code: 3002,
           error_user_messages: errors,
         });
@@ -24,8 +22,6 @@ class UserLogic extends Logic {
       const userExist = await userRepository.findByEmail(email);
       if (userExist) {
         reject({
-          req,
-          result: false,
           error_code: 3003,
           error_user_messages: errors,
         });
