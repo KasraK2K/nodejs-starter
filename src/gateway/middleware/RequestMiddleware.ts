@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import Controller from "../controller/Controller";
 import _ from "lodash";
-import { LoggerEnum } from "../../../../common/enums/logger.enum";
+import { LoggerEnum } from "../../common/enums/logger.enum";
 
 class RequestMiddleware extends Middleware {
   public isPost(req: Request, res: Response, next: NextFunction) {

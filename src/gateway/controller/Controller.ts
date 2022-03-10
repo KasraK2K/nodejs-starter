@@ -1,4 +1,4 @@
-import { getError } from "./../../../../common/functions/errors";
+import { getError } from "../../common/functions/errors";
 import {
   IResGen,
   IResGenOptions,

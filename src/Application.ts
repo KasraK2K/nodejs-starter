@@ -7,8 +7,8 @@ import config from "config";
 import { ICorsConfig } from "./../config/config.interface";
 const { locals, globals } = require("./common/variabels");
 import router from "./gateway/router";
-import requestMiddleware from "./gateway/http/v1/middleware/RequestMiddleware";
-import tokenInterceptor from "./gateway/http/v1/interceptor/TokenInterceptor";
+import requestMiddleware from "./gateway/middleware/RequestMiddleware";
+import tokenInterceptor from "./gateway/interceptor/TokenInterceptor";
 import { getUserInformation } from "./common/functions/information";
 
 const corsConfig: ICorsConfig = config.get("cors");

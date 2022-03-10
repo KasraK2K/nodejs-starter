@@ -1,7 +1,7 @@
 import Logic from "./Logic";
 import { Request } from "express";
 import userRepository from "../repository/UserRepository";
-import { saltGen, hashGen } from "../../../common/functions/bcrypt";
+import { saltGen, hashGen } from "../../common/functions/bcrypt";
 
 class UserLogic extends Logic {
   async create(req: Request): Promise<any> {
