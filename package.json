@@ -44,7 +44,6 @@
     "@babel/core": "^7.17.5",
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-typescript": "^7.16.7",
-    "@tsconfig/node16": "^1.0.2",
     "@types/bcryptjs": "^2.4.2",
     "@types/config": "^0.0.41",
     "@types/cors": "^2.8.12",
