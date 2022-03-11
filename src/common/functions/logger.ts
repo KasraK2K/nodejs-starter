@@ -23,7 +23,7 @@ export const logger = (text: any, type = LoggerEnum.INFO) => {
     ("0" + now.getDate()).slice(-2);
 
   let path =
-    `/var/api/mng-api/logs/` + process.env.NODE_ENV == "production"
+    `/var/embargo-logs/mng-api/` + process.env.NODE_ENV == "production"
       ? `prod/${date}/`
       : `dev/${date}/`;
 
