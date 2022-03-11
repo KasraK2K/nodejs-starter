@@ -7,17 +7,29 @@ import { LoggerEnum } from "../../common/enums/logger.enum";
 
 class RequestMiddleware extends Middleware {
   public isPost(req: Request, res: Response, next: NextFunction) {
+    const process_id = (
+      +new Date() + Math.floor(Math.random() * (999 - 100) + 100)
+    ).toString(16);
+    _.assign(res.locals, { params: { process_id } });
+    Object.assign(global, { process_id });
+    // FIXME declear process_id in global
+
+    logger(`{blue}${req.originalUrl}{reset}`, LoggerEnum.REQUEST);
+
     if (req.method !== "POST") {
+      logger("{red}method is not POST{reset}", LoggerEnum.ERROR);
       return res.status(405).json({ message: "Method not allowed" });
     }
     next();
   }
 
   public auth(req: Request, res: Response, next: NextFunction) {
+    console.log("process_id", res.locals.params);
     const apiKeys = process.env.API_KEYS?.split(",") || [];
-    const ignoreToken = ["user/login", "user/logout"];
+    const ignoreToken = ["user/login", "user/logout", "shake-hand"];
     const endpoint = req.originalUrl;
     const params = req.body;
+    res.locals.params = params;
     const checkToken = !ignoreToken.some((ignoreTkn) =>
       endpoint.includes(ignoreTkn)
     );
@@ -29,6 +41,7 @@ class RequestMiddleware extends Middleware {
       return new Controller().resGen({
         req,
         res,
+        status: 401,
         result: false,
         error_code: 3004,
       });
@@ -43,17 +56,17 @@ class RequestMiddleware extends Middleware {
         return new Controller().resGen({
           req,
           res,
+          status: 401,
           result: false,
           error_code: 3004,
         });
       } else {
         portal_user_id = jwtPayload?.data?.user_id || 0;
-        params.portal_user_id = portal_user_id;
-        res.locals.params = params;
+        res.locals.params.portal_user_id = portal_user_id;
+        _.assign(res.locals, { params });
         next();
       }
     } else {
-      res.locals.params = params;
       next();
     }
   }

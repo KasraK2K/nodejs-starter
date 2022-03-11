@@ -22,10 +22,7 @@ export const logger = (text: any, type = LoggerEnum.INFO) => {
     "-" +
     ("0" + now.getDate()).slice(-2);
 
-  let path =
-    `/var/embargo-logs/mng-api/` + process.env.NODE_ENV == "production"
-      ? `prod/${date}/`
-      : `dev/${date}/`;
+  let path = `/var/embargo-logs/mng-api/${date}/`;
 
   if (!fs.existsSync(path)) fs.mkdirSync(path);
 
@@ -35,7 +32,8 @@ export const logger = (text: any, type = LoggerEnum.INFO) => {
     ("0" + now.getMinutes()).slice(-2) +
     ":" +
     ("0" + now.getSeconds()).slice(-2) +
-    ":";
+    " " +
+    (global as any).process_id;
 
   if (typeof text === "object" || Array.isArray(text)) {
     text = JSON.stringify(text, null, 2);
@@ -56,9 +54,10 @@ export const logger = (text: any, type = LoggerEnum.INFO) => {
     function (err) {}
   );
 
-  fs.appendFile(
-    path + "all.log",
-    `${date} ${time} ${text} \n`,
-    function (err) {}
-  );
+  ![LoggerEnum.REQUEST].includes(type) &&
+    fs.appendFile(
+      path + "all.log",
+      `${date} ${time} ${text} \n`,
+      function (err) {}
+    );
 };

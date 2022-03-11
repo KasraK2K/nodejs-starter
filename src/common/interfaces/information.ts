@@ -11,7 +11,7 @@ export interface IResGenOptions {
 export interface IErrGenOptions {
   req: Request;
   res: Response;
-  status?: number;
+  status: number;
   result: boolean;
   error_code: number;
   error_user_messages?: string[];

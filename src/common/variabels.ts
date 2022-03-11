@@ -59,6 +59,7 @@ declare global {
     collection: typeof globals.mongo.collection;
   };
   const logger: typeof globals.logger;
+  const process_id: string;
 }
 
 export default {

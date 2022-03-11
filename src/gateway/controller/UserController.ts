@@ -18,9 +18,10 @@ class UserController extends Controller {
         super.resGen({
           req,
           res,
+          status: 500,
           result: false,
           error_code: err.error_code,
-          error_user_messages: err.error_user_messages,
+          error_user_messages: [err.message],
         })
       );
   }

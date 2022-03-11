@@ -6,6 +6,8 @@ import {
 } from "../../common/interfaces/information";
 import config from "config";
 import { IApplicationConfig } from "../../../config/config.interface";
+import { LoggerEnum } from "../../common/enums/logger.enum";
+import _ from "lodash";
 
 const applicationConfig: IApplicationConfig = config.get("application");
 const mode: string = config.get("mode");
@@ -16,7 +18,15 @@ class Controller {
   }
 
   public resGen(options: IResGen) {
-    const { res, status } = options;
+    const { req, res, status, result } = options;
+    logger(
+      `{green}${JSON.stringify(
+        _.omit(res.locals.params, ["process_id"]),
+        null,
+        2
+      )}{reset}`,
+      LoggerEnum.REQUEST
+    );
     return res
       .status(status || 200)
       .json(
@@ -28,7 +38,7 @@ class Controller {
 
   private static responseGenerator(options: IResGenOptions) {
     const { req, result, data } = options;
-    return {
+    const response = {
       api_version: applicationConfig.api_version,
       front_version: applicationConfig.front_version,
       endpoint: req.originalUrl,
@@ -37,12 +47,14 @@ class Controller {
       result,
       data,
     };
+    logger(response, LoggerEnum.REQUEST);
+    return response;
   }
 
   private static errorGenerator(options: IErrGenOptions) {
     const { req, result, error_code, error_user_messages } = options;
     const error = getError(error_code);
-    return {
+    const response = {
       api_version: applicationConfig.api_version,
       front_version: applicationConfig.front_version,
       endpoint: req.originalUrl,
@@ -53,6 +65,8 @@ class Controller {
       error_message: error.message,
       error_user_messages,
     };
+    logger(response, LoggerEnum.REQUEST);
+    return response;
   }
 }
 
