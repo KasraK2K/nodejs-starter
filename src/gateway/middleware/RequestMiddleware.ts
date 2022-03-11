@@ -12,7 +12,6 @@ class RequestMiddleware extends Middleware {
     ).toString(16);
     _.assign(res.locals, { params: { process_id } });
     Object.assign(global, { process_id });
-    // FIXME declear process_id in global
 
     logger(`{blue}${req.originalUrl}{reset}`, LoggerEnum.REQUEST);
 

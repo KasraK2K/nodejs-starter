@@ -4,3 +4,4 @@ application:
   api_version: "1.0.0"
   front_version: "1.0.0"
   print_info: false
+  logPath: "/var/embargo-logs/mng-api/"

@@ -12,6 +12,10 @@
 
 import fs from "fs";
 import { LoggerEnum } from "../enums/logger.enum";
+import config from "config";
+import { IApplicationConfig } from "../../../config/config.interface";
+
+const applicationConfig: IApplicationConfig = config.get("application");
 
 export const logger = (text: any, type = LoggerEnum.INFO) => {
   const now = new Date();
@@ -22,7 +26,7 @@ export const logger = (text: any, type = LoggerEnum.INFO) => {
     "-" +
     ("0" + now.getDate()).slice(-2);
 
-  let path = `/var/embargo-logs/mng-api/${date}/`;
+  let path = `${applicationConfig.logPath}${date}/`;
 
   if (!fs.existsSync(path)) fs.mkdirSync(path);
 
@@ -33,7 +37,7 @@ export const logger = (text: any, type = LoggerEnum.INFO) => {
     ":" +
     ("0" + now.getSeconds()).slice(-2) +
     " " +
-    (global as any).process_id;
+    process_id;
 
   if (typeof text === "object" || Array.isArray(text)) {
     text = JSON.stringify(text, null, 2);

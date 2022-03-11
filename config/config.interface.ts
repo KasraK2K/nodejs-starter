@@ -9,6 +9,7 @@ export interface IApplicationConfig {
   print_info: boolean;
   api_version: string;
   front_version: string;
+  logPath: string;
 }
 
 export interface IDatabaseConfig {

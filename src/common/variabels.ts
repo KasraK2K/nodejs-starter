@@ -13,7 +13,7 @@ import { IConfig } from "../../config/config.interface";
 import validator from "../gateway/validator/validator";
 import schema from "../gateway/validator/schema";
 import { mongoClient } from "../boot";
-import { logger } from "../common/functions/logger";
+import { logger } from "./functions/logger";
 
 const configs: IConfig = config.util.toObject();
 
