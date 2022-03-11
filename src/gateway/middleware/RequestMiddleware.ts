@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 import Controller from "../controller/Controller";
 import _ from "lodash";
 import { LoggerEnum } from "../../common/enums/logger.enum";
-import { inject } from "inversify";
 
 class RequestMiddleware extends Middleware {
   constructor(private controller: Controller) {

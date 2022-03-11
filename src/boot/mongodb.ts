@@ -10,7 +10,7 @@
 
 import { MongoClient } from "mongodb";
 import config from "config";
-import { IMongodbConfig } from "@/../config/config.interface";
+import { IMongodbConfig } from "../../config/config.interface";
 
 const mongodbConfig: IMongodbConfig = config.get("database.mongodb");
 

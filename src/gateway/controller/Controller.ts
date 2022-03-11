@@ -5,8 +5,7 @@ import {
   IErrGenOptions,
 } from "@/common/interfaces/information";
 import config from "config";
-import { IApplicationConfig } from "@/../config/config.interface";
-import { injectable } from "inversify";
+import { IApplicationConfig } from "../../../config/config.interface";
 
 const applicationConfig: IApplicationConfig = config.get("application");
 const mode: string = config.get("mode");

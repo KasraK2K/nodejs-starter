@@ -9,7 +9,7 @@
 //==========================================================================
 
 import config from "config";
-import { IConfig } from "@/../config/config.interface";
+import { IConfig } from "../../config/config.interface";
 import validator from "../gateway/validator/validator";
 import schema from "../gateway/validator/schema";
 import { mongoClient } from "../boot";

@@ -10,7 +10,7 @@
 
 import os from "os";
 import config from "config";
-import { IApplicationConfig } from "@/../config/config.interface";
+import { IApplicationConfig } from "../../../config/config.interface";
 
 const applicationConfig: IApplicationConfig = config.get("application");
 

@@ -1,6 +1,6 @@
 import Controller from "./Controller";
 import config from "config";
-import { IApplicationConfig } from "@/../config/config.interface";
+import { IApplicationConfig } from "../../../config/config.interface";
 import { Request, Response } from "express";
 import { Request as RequestMock } from "jest-express/lib/request";
 import { Response as ResponseMock } from "jest-express/lib/response";
