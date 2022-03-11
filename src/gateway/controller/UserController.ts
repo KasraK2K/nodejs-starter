@@ -1,10 +1,15 @@
 import Controller from "./Controller";
 import { Request, Response, NextFunction } from "express";
-import userLogic from "../../domain/logic/UserLogic";
+import UserLogic from "../../domain/logic/UserLogic";
+import UserRepository from "../../domain/repository/UserRepository";
 
 class UserController extends Controller {
+  constructor(private userLogic: UserLogic) {
+    super();
+  }
+
   public async create(req: Request, res: Response, next: NextFunction) {
-    await userLogic
+    await this.userLogic
       .create(req)
       .then((response) =>
         super.resGen({
@@ -26,4 +31,4 @@ class UserController extends Controller {
   }
 }
 
-export default new UserController();
+export default new UserController(new UserLogic(new UserRepository()));

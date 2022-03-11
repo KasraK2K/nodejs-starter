@@ -1,9 +1,13 @@
 import Logic from "./Logic";
 import { Request } from "express";
-import userRepository from "../repository/UserRepository";
+import UserRepository from "../repository/UserRepository";
 import { saltGen, hashGen } from "../../common/functions/bcrypt";
 
 class UserLogic extends Logic {
+  constructor(private userRepository: UserRepository) {
+    super();
+  }
+
   async create(req: Request): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const { name, email, password } = req.body;
@@ -19,7 +23,7 @@ class UserLogic extends Logic {
       }
 
       // ───────────────────────────────── CHECK IS EMAIL REGISTERED ─────
-      const userExist = await userRepository.findByEmail(email);
+      const userExist = await this.userRepository.findByEmail(email);
       if (userExist) {
         reject({
           error_code: 3003,
@@ -30,11 +34,11 @@ class UserLogic extends Logic {
 
       // ─────────────────────────────────────────────── CREATE USER ─────
       const hash = await hashGen(password);
-      const user = await userRepository.create(name, email, hash);
+      const user = await this.userRepository.create(name, email, hash);
 
       resolve({ result: true, data: user });
     });
   }
 }
 
-export default new UserLogic();
+export default UserLogic;
