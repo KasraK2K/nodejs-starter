@@ -13,6 +13,7 @@ module.exports = {
   apps: [
     {
       name: "www-api",
+      log_date_format: "YYYY-MM-DD HH:mm Z",
       script: "src/index.ts",
       watch: true,
       env_production: {
