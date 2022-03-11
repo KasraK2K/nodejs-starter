@@ -21,15 +21,13 @@ export const logger = (text: any, type = LoggerEnum.INFO) => {
     ("0" + (now.getMonth() + 1)).slice(-2) +
     "-" +
     ("0" + now.getDate()).slice(-2);
-  const env = process.env.NODE_ENV;
 
   let path =
-    `/var/api/mng-api/logs/` +
-    (env == "dev" ? `dev/${date}/` : `prod/${date}/`);
+    `/var/api/mng-api/logs/` + process.env.NODE_ENV == "production"
+      ? `prod/${date}/`
+      : `dev/${date}/`;
 
-  if (process.env.IS_ON_SERVER && JSON.parse(process.env.IS_ON_SERVER)) {
-    if (!fs.existsSync(path)) fs.mkdirSync(path);
-  }
+  if (!fs.existsSync(path)) fs.mkdirSync(path);
 
   let time =
     ("0" + now.getHours()).slice(-2) +
@@ -52,17 +50,15 @@ export const logger = (text: any, type = LoggerEnum.INFO) => {
 
   console.log("-" + text);
 
-  if (process.env.IS_ON_SERVER && JSON.parse(process.env.IS_ON_SERVER)) {
-    fs.appendFile(
-      path + type + ".log",
-      `${date} ${time} ${text} \n`,
-      function (err) {}
-    );
+  fs.appendFile(
+    path + type + ".log",
+    `${date} ${time} ${text} \n`,
+    function (err) {}
+  );
 
-    fs.appendFile(
-      path + "all.log",
-      `${date} ${time} ${text} \n`,
-      function (err) {}
-    );
-  }
+  fs.appendFile(
+    path + "all.log",
+    `${date} ${time} ${text} \n`,
+    function (err) {}
+  );
 };
