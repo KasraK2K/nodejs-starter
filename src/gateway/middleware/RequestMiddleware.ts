@@ -4,10 +4,12 @@ import jwt from "jsonwebtoken";
 import Controller from "../controller/Controller";
 import _ from "lodash";
 import { LoggerEnum } from "../../common/enums/logger.enum";
+import { inject } from "inversify";
 
 class RequestMiddleware extends Middleware {
   constructor(private controller: Controller) {
     super();
+    this.controller = controller;
   }
 
   public isPost(req: Request, res: Response, next: NextFunction) {
@@ -52,12 +54,14 @@ class RequestMiddleware extends Middleware {
         });
       } else {
         portal_user_id = jwtPayload?.data?.user_id || 0;
-        params.venue_ids = jwtPayload?.data?.venue_ids || "";
         params.portal_user_id = portal_user_id;
         res.locals.params = params;
         next();
       }
-    } else next();
+    } else {
+      res.locals.params = params;
+      next();
+    }
   }
 
   private static getJwtPayload(req: Request) {

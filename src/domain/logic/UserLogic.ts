@@ -6,6 +6,7 @@ import { saltGen, hashGen } from "../../common/functions/bcrypt";
 class UserLogic extends Logic {
   constructor(private userRepository: UserRepository) {
     super();
+    this.userRepository = userRepository;
   }
 
   async create(req: Request): Promise<any> {

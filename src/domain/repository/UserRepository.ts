@@ -1,5 +1,7 @@
+import { injectable } from "inversify";
 import Repository from "./Repository";
 
+@injectable()
 class UserRepository extends Repository {
   private collection = "users";
 

@@ -6,6 +6,7 @@ import UserRepository from "../../domain/repository/UserRepository";
 class UserController extends Controller {
   constructor(private userLogic: UserLogic) {
     super();
+    this.userLogic = userLogic;
   }
 
   public async create(req: Request, res: Response, next: NextFunction) {
