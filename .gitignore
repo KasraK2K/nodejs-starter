@@ -1,7 +1,8 @@
 node_modules/
 build/
 target/
+coverage/
 
 package-lock.json
+yarn-error.log
 yarn.lock
-coverage
