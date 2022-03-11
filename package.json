@@ -33,12 +33,14 @@
     "express": "^4.17.3",
     "google-libphonenumber": "^3.2.27",
     "helmet": "^5.0.2",
+    "inversify": "^6.0.1",
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
     "mongodb": "^4.4.1",
     "mongoose": "^6.2.3",
-    "os": "^0.1.2"
+    "os": "^0.1.2",
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
     "@babel/core": "^7.17.5",
@@ -53,6 +55,7 @@
     "@types/jsonwebtoken": "^8.5.8",
     "@types/lodash": "^4.14.178",
     "@types/node": "^17.0.18",
+    "@types/nodemon": "^1.19.1",
     "babel-jest": "^27.5.1",
     "jest": "^27.5.1",
     "jest-express": "^1.12.0",

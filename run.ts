@@ -1,4 +1,4 @@
-const nodemon = require("nodemon");
+import nodemon from "nodemon";
 
 nodemon({ script: "src/index.ts" })
   .on("start", console.clear)

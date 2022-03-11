@@ -5,10 +5,9 @@ import helmet from "helmet";
 import _ from "lodash";
 import config from "config";
 import { ICorsConfig } from "./../config/config.interface";
-const { locals, globals } = require("./common/variabels");
+import { locals, globals } from "./common/variabels";
 import router from "./gateway/router";
 import requestMiddleware from "./gateway/middleware/RequestMiddleware";
-import tokenInterceptor from "./gateway/interceptor/TokenInterceptor";
 import { getUserInformation } from "./common/functions/information";
 
 const corsConfig: ICorsConfig = config.get("cors");
