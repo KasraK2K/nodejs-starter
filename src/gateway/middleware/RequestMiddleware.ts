@@ -6,11 +6,6 @@ import _ from "lodash";
 import { LoggerEnum } from "../../common/enums/logger.enum";
 
 class RequestMiddleware extends Middleware {
-  constructor(private controller: Controller) {
-    super();
-    this.controller = controller;
-  }
-
   public isPost(req: Request, res: Response, next: NextFunction) {
     if (req.method !== "POST") {
       return res.status(405).json({ message: "Method not allowed" });
@@ -31,7 +26,7 @@ class RequestMiddleware extends Middleware {
     // ───────────────────────────────── IF PARAMS HAS NOT API KEY ─────
     if (!params.api_key || !apiKeys.includes(params.api_key)) {
       logger("{red}api_key is not verify{reset}", LoggerEnum.ERROR);
-      return this.controller.resGen({
+      return new Controller().resGen({
         req,
         res,
         result: false,
@@ -45,7 +40,7 @@ class RequestMiddleware extends Middleware {
       // ─────────────────────── IF JESON WEB TOKEN VARIFY HAS ERROR ─────
       if (!jwtPayload.result) {
         logger("{red}token is not verify{reset}", LoggerEnum.ERROR);
-        return this.controller.resGen({
+        return new Controller().resGen({
           req,
           res,
           result: false,
@@ -85,4 +80,4 @@ class RequestMiddleware extends Middleware {
   }
 }
 
-export default new RequestMiddleware(new Controller());
+export default new RequestMiddleware();

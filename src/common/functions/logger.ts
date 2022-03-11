@@ -26,7 +26,10 @@ export const logger = (text: any, type = LoggerEnum.INFO) => {
   let path =
     `/var/api/mng-api/logs/` +
     (env == "dev" ? `dev/${date}/` : `prod/${date}/`);
-  if (!fs.existsSync(path)) fs.mkdirSync(path);
+
+  if (process.env.IS_ON_SERVER && JSON.parse(process.env.IS_ON_SERVER)) {
+    if (!fs.existsSync(path)) fs.mkdirSync(path);
+  }
 
   let time =
     ("0" + now.getHours()).slice(-2) +
@@ -49,15 +52,17 @@ export const logger = (text: any, type = LoggerEnum.INFO) => {
 
   console.log("-" + text);
 
-  fs.appendFile(
-    path + type + ".log",
-    `${date} ${time} ${text} \n`,
-    function (err) {}
-  );
+  if (process.env.IS_ON_SERVER && JSON.parse(process.env.IS_ON_SERVER)) {
+    fs.appendFile(
+      path + type + ".log",
+      `${date} ${time} ${text} \n`,
+      function (err) {}
+    );
 
-  fs.appendFile(
-    path + "all.log",
-    `${date} ${time} ${text} \n`,
-    function (err) {}
-  );
+    fs.appendFile(
+      path + "all.log",
+      `${date} ${time} ${text} \n`,
+      function (err) {}
+    );
+  }
 };

@@ -26,4 +26,4 @@ class UserRepository extends Repository {
   }
 }
 
-export default UserRepository;
+export default new UserRepository();

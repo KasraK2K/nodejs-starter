@@ -18,11 +18,13 @@ module.exports = {
       env_production: {
         NODE_ENV: "production",
         JWT_SECRET: "secret",
+        IS_ON_SERVER: true,
         PORT: "6000",
       },
       env_development: {
         NODE_ENV: "development",
         JWT_SECRET: "secret",
+        IS_ON_SERVER: true,
         PORT: "6000",
       },
     },
