@@ -9,7 +9,8 @@ import { locals, globals } from "./common/variabels";
 import router from "./gateway/router";
 import requestMiddleware from "./gateway/middleware/RequestMiddleware";
 import { getUserInformation } from "./common/functions/information";
-import { useTreblle } from "treblle";
+// import { useTreblle } from "treblle";
+const { useTreblle } = require("treblle");
 
 const corsConfig: ICorsConfig = config.get("cors");
 
