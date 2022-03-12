@@ -17,7 +17,13 @@ class RequestMiddleware extends Middleware {
 
     if (req.method !== "POST") {
       logger("{red}method is not POST{reset}", LoggerEnum.ERROR);
-      return res.status(405).json({ message: "Method not allowed" });
+      return new Controller().resGen({
+        req,
+        res,
+        result: false,
+        status: 405,
+        error_code: 3005,
+      });
     }
     next();
   }
