@@ -11,7 +11,7 @@ const sampleJob = new CronJob(
   },
   null,
   true,
-  "Asia/Tehran"
+  "Europe/London"
 );
 sampleJob.start();
 
