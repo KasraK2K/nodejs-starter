@@ -8,7 +8,7 @@
 //
 //==============================================================================
 
-/** NOTE for developers:
+/** NOTE for developers to more easily understand the code:
  * in cron jobs, we use the following syntax:
  * simple syntax: * * * * ? *
  * complex syntax: 0 0/5 14,18,3-39,52 ? JAN,MAR,SEP MON-FRI 2002-2011
