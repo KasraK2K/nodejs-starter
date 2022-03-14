@@ -6,11 +6,20 @@ database:
     default_collection: "default"
     uri: "mongodb://0.0.0.0:27017/node-starter"
   postgres:
-    user: "postgres"
-    host: "104.236.243.125"
-    database: "Embargo"
-    password: "developmentaccess"
-    port: 5432
+    main:
+      user: "postgres"
+      host: "104.236.243.125"
+      database: "Embargo"
+      password: "developmentaccess"
+      port: 5432
+    cloud:
+      user: "doadmin"
+      host: "db-postgresql-lon1-79473-do-user-1331563-0.b.db.ondigitalocean.com"
+      database: "mng_dev"
+      password: "qeh6gl9o3194swd9"
+      port: 25060
+      ssl:
+        rejectUnauthorized: false
 
 cors:
   allow_origin: "*"

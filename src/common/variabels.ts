@@ -12,8 +12,10 @@ import config from "config";
 import { IConfig } from "../../config/config.interface";
 import validator from "../gateway/validator/validator";
 import schema from "../gateway/validator/schema";
-import { mongoClient, pool } from "../boot";
+import { mongoClient, pool_main, pool_cloud } from "../boot";
 import { logger } from "./functions/logger";
+import { objectValidator } from "../gateway/validator/objectValidator";
+import objectSchema from "../gateway/validator/objectSchema";
 
 const configs: IConfig = config.util.toObject();
 
@@ -36,6 +38,8 @@ export const globals = {
   },
   validator,
   schema,
+  objectValidator,
+  objectSchema,
   mongo: {
     mongoClient,
     database: mongoClient.db(configs.database.mongodb.name),
@@ -43,7 +47,10 @@ export const globals = {
       .db(configs.database.mongodb.name)
       .collection(configs.database.mongodb.default_collection),
   },
-  pool,
+  pg: {
+    pool_main,
+    pool_cloud,
+  },
   logger,
 };
 
@@ -54,12 +61,17 @@ declare global {
   const service: typeof globals.service;
   const validator: typeof globals.validator;
   const schema: typeof globals.schema;
+  const objectValidator: typeof globals.objectValidator;
+  const objectSchema: typeof globals.objectSchema;
   const mongo: {
     mongoClient: typeof globals.mongo.mongoClient;
     database: typeof globals.mongo.database;
     collection: typeof globals.mongo.collection;
   };
-  const pool: typeof globals.pool;
+  const pg: {
+    pool_main: typeof globals.pg.pool_main;
+    pool_cloud: typeof globals.pg.pool_cloud;
+  };
   const logger: typeof globals.logger;
   const process_id: string;
 }

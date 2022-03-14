@@ -29,11 +29,23 @@ export interface IMongodbConfig {
 
 // ─── POSTGRESQL ─────────────────────────────────────────────────────────────────
 export interface IPostgresConfig {
-  user: string;
-  host: string;
-  database: string;
-  password: string;
-  port: 5432;
+  main: {
+    user: string;
+    host: string;
+    database: string;
+    password: string;
+    port: 5432;
+  };
+  cloud: {
+    user: string;
+    host: string;
+    database: string;
+    password: string;
+    port: number;
+    ssl: {
+      rejectUnauthorized: boolean;
+    };
+  };
 }
 
 // ───────────────────────────────────────────────────────────────────── CORS ─────
