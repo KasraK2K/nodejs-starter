@@ -9,3 +9,9 @@ database:
 cors:
   allow_origin: "*"
   allow_method: ["POST"]
+
+rate_limiter:
+  windowMs: 60000
+  max: 100
+  standardHeaders: true
+  legacyHeaders: false

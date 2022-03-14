@@ -27,3 +27,10 @@ export interface ICorsConfig {
   allow_origin: string;
   allow_methods: string;
 }
+
+export interface IRateLimiter {
+  windowMs: number;
+  max: number;
+  standardHeaders: boolean;
+  legacyHeaders: boolean;
+}
