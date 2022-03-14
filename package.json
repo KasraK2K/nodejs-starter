@@ -40,8 +40,7 @@
     "mongodb": "^4.4.1",
     "mongoose": "^6.2.3",
     "os": "^0.1.2",
-    "reflect-metadata": "^0.1.13",
-    "treblle": "^1.0.2"
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
     "@babel/core": "^7.17.5",

@@ -10,8 +10,6 @@ import router from "./gateway/router";
 import rateLimiterMiddleware from "./gateway/middleware/RateLimiterMiddleware";
 import requestMiddleware from "./gateway/middleware/RequestMiddleware";
 import { getUserInformation } from "./common/functions/information";
-// import { useTreblle } from "treblle";
-const { useTreblle } = require("treblle");
 
 const corsConfig: ICorsConfig = config.get("cors");
 
@@ -22,10 +20,6 @@ class Application {
   constructor(options: { port: Number }) {
     const { port } = options;
     this.app = express();
-    useTreblle(this.app, {
-      apiKey: process.env.TREBLLE_API_KEY,
-      projectId: process.env.TREBLLE_PROJECT_ID,
-    });
     this.port = Number(process.env.PORT) || port;
 
     this.config();
