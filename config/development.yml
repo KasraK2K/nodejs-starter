@@ -5,6 +5,12 @@ database:
     name: "node-starter"
     default_collection: "default"
     uri: "mongodb://0.0.0.0:27017/node-starter"
+  postgres:
+    user: "postgres"
+    host: "104.236.243.125"
+    database: "Embargo"
+    password: "developmentaccess"
+    port: 5432
 
 cors:
   allow_origin: "*"

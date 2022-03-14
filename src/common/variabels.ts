@@ -12,7 +12,7 @@ import config from "config";
 import { IConfig } from "../../config/config.interface";
 import validator from "../gateway/validator/validator";
 import schema from "../gateway/validator/schema";
-import { mongoClient } from "../boot";
+import { mongoClient, pool } from "../boot";
 import { logger } from "./functions/logger";
 
 const configs: IConfig = config.util.toObject();
@@ -43,6 +43,7 @@ export const globals = {
       .db(configs.database.mongodb.name)
       .collection(configs.database.mongodb.default_collection),
   },
+  pool,
   logger,
 };
 
@@ -58,6 +59,7 @@ declare global {
     database: typeof globals.mongo.database;
     collection: typeof globals.mongo.collection;
   };
+  const pool: typeof globals.pool;
   const logger: typeof globals.logger;
   const process_id: string;
 }

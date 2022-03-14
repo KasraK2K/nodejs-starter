@@ -9,7 +9,9 @@
 //===========================================================================================================
 
 import mongoClient from "./mongodb";
+import pool from "./postgresql";
 // import { connection } from "./mongoose";
 
 export { mongoClient };
+export { pool };
 // export { connection };
