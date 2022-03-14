@@ -28,7 +28,7 @@ export const logger = (text: any, type = LoggerEnum.INFO) => {
 
   let path = `${applicationConfig.logPath}${date}/`;
 
-  if (!fs.existsSync(path)) fs.mkdirSync(path);
+  applicationConfig.is_on_server && !fs.existsSync(path) && fs.mkdirSync(path);
 
   let time =
     ("0" + now.getHours()).slice(-2) +
@@ -50,18 +50,20 @@ export const logger = (text: any, type = LoggerEnum.INFO) => {
     .replace(/{red}/g, "\x1b[31m")
     .replace(/{reset}/g, "\x1b[0m");
 
-  console.log("-" + text);
+  if (applicationConfig.is_on_server) {
+    console.log("-" + text);
 
-  fs.appendFile(
-    path + type + ".log",
-    `${date} ${time} ${text} \n`,
-    function (err) {}
-  );
-
-  ![LoggerEnum.REQUEST].includes(type) &&
     fs.appendFile(
-      path + "all.log",
+      path + type + ".log",
       `${date} ${time} ${text} \n`,
       function (err) {}
     );
+
+    ![LoggerEnum.REQUEST].includes(type) &&
+      fs.appendFile(
+        path + "all.log",
+        `${date} ${time} ${text} \n`,
+        function (err) {}
+      );
+  }
 };

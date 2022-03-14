@@ -6,18 +6,22 @@ import _ from "lodash";
 import { LoggerEnum } from "../../common/enums/logger.enum";
 
 class RequestMiddleware extends Middleware {
+  constructor(private controller: Controller) {
+    super();
+  }
+
   public isPost(req: Request, res: Response, next: NextFunction) {
     const process_id = (
       +new Date() + Math.floor(Math.random() * (999 - 100) + 100)
     ).toString(16);
     _.assign(res.locals, { params: { process_id } });
-    Object.assign(global, { process_id });
+    _.assign(global, { process_id });
 
     logger(`{blue}${req.originalUrl}{reset}`, LoggerEnum.REQUEST);
 
     if (req.method !== "POST") {
       logger("{red}method is not POST{reset}", LoggerEnum.ERROR);
-      return new Controller().resGen({
+      return this.controller.resGen({
         req,
         res,
         result: false,
@@ -29,7 +33,6 @@ class RequestMiddleware extends Middleware {
   }
 
   public auth(req: Request, res: Response, next: NextFunction) {
-    console.log("process_id", res.locals.params);
     const apiKeys = process.env.API_KEYS?.split(",") || [];
     const ignoreToken = ["user/login", "user/logout", "shake-hand"];
     const endpoint = req.originalUrl;
@@ -43,7 +46,7 @@ class RequestMiddleware extends Middleware {
     // ───────────────────────────────── IF PARAMS HAS NOT API KEY ─────
     if (!params.api_key || !apiKeys.includes(params.api_key)) {
       logger("{red}api_key is not verify{reset}", LoggerEnum.ERROR);
-      return new Controller().resGen({
+      return this.controller.resGen({
         req,
         res,
         status: 401,
@@ -58,7 +61,7 @@ class RequestMiddleware extends Middleware {
       // ─────────────────────── IF JESON WEB TOKEN VARIFY HAS ERROR ─────
       if (!jwtPayload.result) {
         logger("{red}token is not verify{reset}", LoggerEnum.ERROR);
-        return new Controller().resGen({
+        return this.controller.resGen({
           req,
           res,
           status: 401,
@@ -98,4 +101,4 @@ class RequestMiddleware extends Middleware {
   }
 }
 
-export default new RequestMiddleware();
+export default new RequestMiddleware(new Controller());

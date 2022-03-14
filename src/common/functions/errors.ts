@@ -4,6 +4,7 @@ const map = new Map([
   [3003, "This email is already registered"],
   [3004, "Unauthenticated"],
   [3005, "Method not allowed"],
+  [3006, "Too Many Requests"],
 ]);
 
 export const getError = (code: number) => {

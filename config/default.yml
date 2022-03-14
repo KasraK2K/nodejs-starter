@@ -5,3 +5,4 @@ application:
   front_version: "1.0.0"
   print_info: false
   logPath: "/var/embargo-logs/mng-api/"
+  is_on_server: false # true if running on server

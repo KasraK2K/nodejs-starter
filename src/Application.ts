@@ -7,6 +7,7 @@ import config from "config";
 import { ICorsConfig } from "./../config/config.interface";
 import { locals, globals } from "./common/variabels";
 import router from "./gateway/router";
+import rateLimiterMiddleware from "./gateway/middleware/RateLimiterMiddleware";
 import requestMiddleware from "./gateway/middleware/RequestMiddleware";
 import { getUserInformation } from "./common/functions/information";
 // import { useTreblle } from "treblle";
@@ -49,6 +50,7 @@ class Application {
         origin: corsConfig.allow_origin,
       })
     );
+    this.app.use(rateLimiterMiddleware.check());
     this.app.use(requestMiddleware.isPost);
     this.app.use(requestMiddleware.auth);
   }

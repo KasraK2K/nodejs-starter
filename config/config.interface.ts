@@ -10,6 +10,7 @@ export interface IApplicationConfig {
   api_version: string;
   front_version: string;
   logPath: string;
+  is_on_server: boolean;
 }
 
 export interface IDatabaseConfig {
