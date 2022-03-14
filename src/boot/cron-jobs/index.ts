@@ -128,8 +128,10 @@
  * |---------------------------------------------------------------------------------------------------------------------|
  * | 0 11 11 11 11 ?            | Fire every November 11th at 11:11 a.m.                                                 |
  * |---------------------------------------------------------------------------------------------------------------------|
- * | ANCHOR read more: https://www.netiq.com/documentation/cloud-manager-2-5/ncm-reference/data/bexyssf.html                    |
- * |---------------------------------------------------------------------------------------------------------------------|
+ * 
+ * SECTION read more:
+ * https://www.netiq.com/documentation/cloud-manager-2-5/ncm-reference/data/bexyssf.html
+ * https://momentjs.com/timezone/
  */
 
 import "./sampleJob";
