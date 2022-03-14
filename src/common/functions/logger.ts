@@ -18,6 +18,7 @@ import { IApplicationConfig } from "../../../config/config.interface";
 const applicationConfig: IApplicationConfig = config.get("application");
 
 export const logger = (text: any, type = LoggerEnum.INFO) => {
+  const isServer: boolean = JSON.parse(process.env.IS_ON_SERVER || "false");
   const now = new Date();
   const date =
     now.getFullYear() +
@@ -28,7 +29,7 @@ export const logger = (text: any, type = LoggerEnum.INFO) => {
 
   let path = `${applicationConfig.logPath}${date}/`;
 
-  applicationConfig.is_on_server && !fs.existsSync(path) && fs.mkdirSync(path);
+  isServer && !fs.existsSync(path) && fs.mkdirSync(path);
 
   let time =
     ("0" + now.getHours()).slice(-2) +
@@ -50,7 +51,7 @@ export const logger = (text: any, type = LoggerEnum.INFO) => {
     .replace(/{red}/g, "\x1b[31m")
     .replace(/{reset}/g, "\x1b[0m");
 
-  if (applicationConfig.is_on_server) {
+  if (isServer) {
     console.log("-" + text);
 
     fs.appendFile(

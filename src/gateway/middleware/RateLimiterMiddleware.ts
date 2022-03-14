@@ -3,7 +3,7 @@ import rateLimit from "express-rate-limit";
 import Controller from "../controller/Controller";
 import { Request, Response } from "express";
 import config from "config";
-import { IRateLimiter } from "@/config/config.interface";
+import { IRateLimiter } from "../../../config/config.interface";
 
 const reateLimiterConfig: IRateLimiter = config.get("rate_limiter");
 

@@ -8,6 +8,7 @@ if (process.env.NODE_ENV === "development") {
       console.log({
         sample_jwt,
         api_keys,
+        isServer: JSON.parse(process.env.IS_ON_SERVER || "false"),
       });
     })
     .catch((err) => console.log(`boot information error: ${err.message}`));
