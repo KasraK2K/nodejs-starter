@@ -8,15 +8,15 @@ class Repository {
       let list: Record<string, any>[] = [];
       let query = `select ${fields} from ${table} ${where} ${order} ${group} ${limit}`;
       await Repository.executeQuery({ query, source })
-        .then((qres: any) => {
-          qres?.qres?.rows?.forEach((row: Record<string, any>) => list.push(row));
+        .then((qres) => {
+          qres.qres.rows.forEach((row: Record<string, any>) => list.push(row));
           resolve(list);
         })
-        .catch((err) => reject({ error_message: "error reading table" }));
+        .catch((err) => reject(err));
     });
   }
 
-  private static sanitizeArgs(args: IReadTable) {
+  private static sanitizeArgs(args: IReadTable): IReadTable {
     args.fields = args.fields || "*";
     args.where = args.where && args.where.length ? ` where ${args.where} ` : "";
     args.table = args.table || "";
@@ -26,7 +26,7 @@ class Repository {
     return args;
   }
 
-  private static executeQuery(args: { query: string; source: Pool }) {
+  private static executeQuery(args: { query: string; source: Pool }): Promise<any> {
     const { source, query = "" } = args;
     return new Promise(async (resolve, reject) => {
       source

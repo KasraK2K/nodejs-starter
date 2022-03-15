@@ -14,7 +14,7 @@ class AuthController extends Controller {
           status: err.code,
           result: false,
           error_code: 14176,
-          error_user_messages: [err.message],
+          error_user_messages: err.errors ?? [err.message],
         })
       );
   }

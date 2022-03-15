@@ -6,11 +6,11 @@ class UserLogic extends Logic {
     return new Promise(async (resolve, reject) => {
       const value = objectValidator(params, objectSchema.login);
 
-      if ("errors" in value) reject({ result: false, error_code: 3242, error_user_messages: value.errors });
+      if ("errors" in value) reject({ errors: value.errors });
       else
         await userRepository
           .listUser(value.email)
-          .then((response) => resolve({ result: true, data: response }))
+          .then((response) => resolve(response))
           .catch((err) => reject(err));
     });
   }

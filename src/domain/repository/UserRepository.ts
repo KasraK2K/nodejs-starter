@@ -7,11 +7,10 @@ class UserRepository extends Repository {
   async listUser(args: Record<string, any>): Promise<Record<string, any>[]> {
     return new Promise(async (resolve, reject) => {
       const whereStr = "";
-      const readTableData = { table: " mng_users ", where: whereStr };
-      _.assign(readTableData, args);
+      const readTableData = _.assign({ table: " mng_users ", where: whereStr }, args);
       await super
         .readTable(readTableData, pg.pool_cloud)
-        .then((response: Record<string, any>[]) => resolve(response))
+        .then((response) => resolve(response))
         .catch((err) => reject(err));
     });
   }

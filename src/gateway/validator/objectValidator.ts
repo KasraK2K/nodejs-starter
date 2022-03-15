@@ -1,10 +1,7 @@
 import moment from "moment";
 
-export const objectValidator = (
-  obj: Record<string, any>,
-  skeme: Record<string, any>
-) => {
-  const value: Record<string, any> = {};
+export const objectValidator = (obj: Record<string, any>, skeme: Record<string, any>) => {
+  const value: { errors?: string[] } & Record<string, any> = {};
   const errorValues: string[] = [];
 
   Object.keys(skeme).forEach((key) => {
@@ -14,7 +11,7 @@ export const objectValidator = (
 
     // ───────────────────────────────────── ASSIGN DEFAULT VALUES ─────
     if ("default" in skm) defaultValue = skm.default;
-    else {
+    else
       switch (type) {
         case "int":
           defaultValue = 0;
@@ -36,77 +33,62 @@ export const objectValidator = (
           defaultValue = [];
           break;
       }
-    }
+    // ─────────────────────────────────────────────────────────────────
 
     if (!(key in obj)) {
-      if (skm.force_type)
-        errorValues.push(
-          `validation error ${key}; the value of (${key}) has not been provided`
-        );
+      if (skm.force_type) errorValues.push(`validation error ${key}; the value of (${key}) has not been provided`);
       else value[key] = defaultValue;
     } else {
       let v = obj[key];
 
       // ────────────────────────────────────── EXPLICIT TYPE CHANGE ─────
-      if (type === "int") {
-        v = parseInt(v) || defaultValue;
-      } else if (type === "string") {
-        if (typeof v == "number") v = v.toString();
-        else if (typeof v !== "string") v = defaultValue;
-      } else if (type === "boolean") {
-        if (typeof v !== "boolean") v = defaultValue;
-      } else if (type === "float") {
-        v = parseFloat(v) || defaultValue;
-      } else if (type === "array") {
-        if (!Array.isArray(v)) {
-          if (skm.force_type)
-            errorValues.push(
-              `validation error ${key}; (${key}) should be an array (value:${v})`
-            );
+      switch (type) {
+        case "int":
+          v = parseInt(v) || defaultValue;
+          break;
 
-          v = defaultValue;
-        }
+        case "string":
+          if (typeof v == "number") v = v.toString();
+          else if (typeof v !== "string") v = defaultValue;
+          break;
+
+        case "boolean":
+          if (typeof v !== "boolean") v = defaultValue;
+          break;
+
+        case "float":
+          v = parseFloat(v) || defaultValue;
+          break;
+
+        case "array":
+          if (!Array.isArray(v)) {
+            if (skm.force_type) errorValues.push(`validation error ${key}; (${key}) should be an array (value:${v})`);
+            v = defaultValue;
+          }
+          break;
       }
+      // ─────────────────────────────────────────────────────────────────
 
       // ──────────────────────────────────────────────── CONDITIONS ─────
-      if ("min_length" in skm && type === "string") {
-        if (v.length < skm.min_length) {
-          errorValues.push(
-            `validation error ${key}; min length of (${key}) should be ${skm.min_length} (value:${v})`
-          );
-        }
-      }
+      if ("min_length" in skm && type === "string" && v.length < skm.min_length)
+        errorValues.push(`validation error ${key}; min length of (${key}) should be ${skm.min_length} (value:${v})`);
 
-      if ("min_length" in skm && type === "array") {
-        if (v.length < skm.min_length) {
-          errorValues.push(
-            `validation error ${key}; min items of (${key}) should be ${skm.min_length}`
-          );
-        }
-      }
+      if ("min_length" in skm && type === "array" && v.length < skm.min_length)
+        errorValues.push(`validation error ${key}; min items of (${key}) should be ${skm.min_length}`);
 
-      if ("cut_at_max" in skm && type === "string") {
-        v = v.substring(0, skm.cut_at_max);
-      }
+      if ("cut_at_max" in skm && type === "string") v = v.substring(0, skm.cut_at_max);
 
-      if ("min_value" in skm && (type === "float" || type === "int")) {
-        if (v < skm.min_value) {
-          errorValues.push(
-            `validation error ${key}; min value of (${key}) should be ${skm.min_value} (value:${v})`
-          );
-        }
-      }
+      if ("min_value" in skm && (type === "float" || type === "int") && v < skm.min_value)
+        errorValues.push(`validation error ${key}; min value of (${key}) should be ${skm.min_value} (value:${v})`);
 
       if ("is_date" in skm && type === "string") {
         const isValid = moment(v, "YYYY-MM-DD", true).isValid();
         if (!isValid) {
-          if (skm.force_type)
-            errorValues.push(
-              `validation error ${key}; ${key} is not a valid date (value:${v}) `
-            );
+          if (skm.force_type) errorValues.push(`validation error ${key}; ${key} is not a valid date (value:${v}) `);
           else v = "2000-01-01";
         }
       }
+      // ─────────────────────────────────────────────────────────────────
 
       value[key] = v;
     }
