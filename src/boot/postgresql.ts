@@ -11,6 +11,8 @@ const pool_main = new pg.Pool({
   database: pgConfig.main.database,
   password: pgConfig.main.password,
   port: pgConfig.main.port,
+  idleTimeoutMillis: pgConfig.main.idleTimeoutMillis,
+  connectionTimeoutMillis: pgConfig.main.connectionTimeoutMillis,
 });
 
 pool_main
@@ -28,6 +30,8 @@ const pool_cloud = new pg.Pool({
   database: pgConfig.cloud.database,
   password: pgConfig.cloud.password,
   port: pgConfig.cloud.port,
+  idleTimeoutMillis: pgConfig.cloud.idleTimeoutMillis,
+  connectionTimeoutMillis: pgConfig.cloud.connectionTimeoutMillis,
   ssl: {
     rejectUnauthorized: pgConfig.cloud.ssl.rejectUnauthorized,
     ca: process.env.CACERT,

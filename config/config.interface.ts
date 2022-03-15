@@ -34,7 +34,9 @@ export interface IPostgresConfig {
     host: string;
     database: string;
     password: string;
-    port: 5432;
+    port: number;
+    idleTimeoutMillis: number;
+    connectionTimeoutMillis: number;
   };
   cloud: {
     user: string;
@@ -42,6 +44,8 @@ export interface IPostgresConfig {
     database: string;
     password: string;
     port: number;
+    idleTimeoutMillis: number;
+    connectionTimeoutMillis: number;
     ssl: {
       rejectUnauthorized: boolean;
     };
