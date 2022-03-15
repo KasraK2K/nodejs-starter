@@ -12,7 +12,7 @@ import config from "config";
 import { IConfig } from "../../config/config.interface";
 import validator from "../gateway/validator/validator";
 import schema from "../gateway/validator/schema";
-import { mongoClient, pool_main, pool_cloud } from "../boot";
+import { mongoClient, postgresPool } from "../boot";
 import { logger } from "./functions/logger";
 import { objectValidator } from "../gateway/validator/objectValidator";
 import objectSchema from "../gateway/validator/objectSchema";
@@ -43,14 +43,9 @@ export const globals = {
   mongo: {
     mongoClient,
     database: mongoClient.db(configs.database.mongodb.name),
-    collection: mongoClient
-      .db(configs.database.mongodb.name)
-      .collection(configs.database.mongodb.default_collection),
+    collection: mongoClient.db(configs.database.mongodb.name).collection(configs.database.mongodb.default_collection),
   },
-  pg: {
-    pool_main,
-    pool_cloud,
-  },
+  pg: { ...postgresPool },
   logger,
 };
 
