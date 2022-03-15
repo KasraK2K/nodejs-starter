@@ -14,7 +14,11 @@ class RequestMiddleware extends Middleware {
 
     logger(`{blue}${req.originalUrl}{reset}`, LoggerEnum.REQUEST);
 
-    if (req.method !== "POST") {
+    const ignoreCheckMethod: string[] = ["swagger"];
+    const endpoint = req.originalUrl;
+    const checkToken = !ignoreCheckMethod.some((ignoreTkn) => endpoint.includes(ignoreTkn));
+
+    if (req.method !== "POST" && checkToken) {
       logger("{red}method is not POST{reset}", LoggerEnum.ERROR);
       return controller.resGen({
         req,
@@ -30,15 +34,19 @@ class RequestMiddleware extends Middleware {
   public auth(req: Request, res: Response, next: NextFunction) {
     const controller = new Controller();
     const apiKeys = process.env.API_KEYS?.split(",") || [];
-    const ignoreToken = ["login", "logout", "shake-hand"];
+    const ignoreApikeys: string[] = ["swagger"];
+    const ignoreToken: string[] = ["login", "logout", "shake-hand", "swagger"];
     const endpoint = req.originalUrl;
     const params = req.body;
     res.locals.params = params;
+
+    const checkApiKey = !ignoreApikeys.some((ignoreApiKey) => endpoint.includes(ignoreApiKey));
     const checkToken = !ignoreToken.some((ignoreTkn) => endpoint.includes(ignoreTkn));
+
     let portal_user_id = 0;
 
     // ───────────────────────────────── IF PARAMS HAS NOT API KEY ─────
-    if (!params.api_key || !apiKeys.includes(params.api_key)) {
+    if (checkApiKey && (!params.api_key || !apiKeys.includes(params.api_key))) {
       logger("{red}api_key is not verify{reset}", LoggerEnum.ERROR);
       return controller.resGen({
         req,

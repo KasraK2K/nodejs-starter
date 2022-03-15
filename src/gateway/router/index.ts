@@ -14,6 +14,15 @@ import homeController from "../controller/HomeController";
 import authController from "../controller/AuthController";
 import informationController from "../controller/InformationController";
 import userController from "../controller/UserController";
+import swaggerUi from "swagger-ui-express";
+import swaggerDocument from "../../../swagger";
+
+const swaggerOptions = {
+  explorer: true,
+  swaggerOptions: {
+    validatorUrl: null,
+  },
+};
 
 const router = express.Router();
 
@@ -25,6 +34,9 @@ router.post("/user/create", userController.create);
 
 // ─── AUTHORIZATION ──────────────────────────────────────────────────────────────
 router.post("/login", authController.login);
+
+// ─── SWAGGER ────────────────────────────────────────────────────────────────────
+router.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerOptions));
 
 // ─── 404 ────────────────────────────────────────────────────────────────────────
 router.use("*", (req, res) => {

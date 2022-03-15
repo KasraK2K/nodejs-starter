@@ -20,12 +20,7 @@ const applicationConfig: IApplicationConfig = config.get("application");
 export const logger = (text: any, type = LoggerEnum.INFO) => {
   const isServer: boolean = JSON.parse(process.env.IS_ON_SERVER || "false");
   const now = new Date();
-  const date =
-    now.getFullYear() +
-    "-" +
-    ("0" + (now.getMonth() + 1)).slice(-2) +
-    "-" +
-    ("0" + now.getDate()).slice(-2);
+  const date = now.getFullYear() + "-" + ("0" + (now.getMonth() + 1)).slice(-2) + "-" + ("0" + now.getDate()).slice(-2);
 
   let path = `${applicationConfig.logPath}${date}/`;
 
@@ -51,20 +46,12 @@ export const logger = (text: any, type = LoggerEnum.INFO) => {
     .replace(/{red}/g, "\x1b[31m")
     .replace(/{reset}/g, "\x1b[0m");
 
-  if (isServer) {
-    console.log("-" + text);
+  console.log("-" + text);
 
-    fs.appendFile(
-      path + type + ".log",
-      `${date} ${time} ${text} \n`,
-      function (err) {}
-    );
+  if (isServer) {
+    fs.appendFile(path + type + ".log", `${date} ${time} ${text} \n`, function (err) {});
 
     ![LoggerEnum.REQUEST].includes(type) &&
-      fs.appendFile(
-        path + "all.log",
-        `${date} ${time} ${text} \n`,
-        function (err) {}
-      );
+      fs.appendFile(path + "all.log", `${date} ${time} ${text} \n`, function (err) {});
   }
 };
