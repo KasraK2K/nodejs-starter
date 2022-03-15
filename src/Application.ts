@@ -2,6 +2,7 @@ import "./boot/bootstrap";
 import cors from "cors";
 import express, { Express } from "express";
 import helmet from "helmet";
+import compression from "compression";
 import _ from "lodash";
 import config from "config";
 import { ICorsConfig } from "./../config/config.interface";
@@ -36,6 +37,7 @@ class Application {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
     this.app.use(helmet());
+    this.app.use(compression());
     this.app.disable("x-powered-by");
     this.app.use(
       cors({

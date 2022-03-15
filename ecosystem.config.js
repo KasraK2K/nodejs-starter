@@ -17,6 +17,8 @@ module.exports = {
       script: "src/index.ts",
       autorestart: true,
       watch: true,
+      instances: "max",
+      exec_mode: "cluster",
 
       // default variables
       env: {
