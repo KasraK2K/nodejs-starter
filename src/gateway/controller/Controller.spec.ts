@@ -49,6 +49,8 @@ describe("Controller", () => {
   //   :::::: R E S G E N : :  :   :    :     :        :          :
   // ──────────────────────────────────────────────────────────────
   describe("Controller.resGen()", () => {
+    global.logger = jest.fn();
+
     it("Controller.resGen() should use responseGenerator", () => {
       const result = controller.resGen({
         req,
