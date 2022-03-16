@@ -1,7 +1,7 @@
 import { LoggerEnum } from "../../common/enums/logger.enum";
 import Repository from "./Repository";
 
-class UserRepository extends Repository {
+class MngUserRepository extends Repository {
   private collection = "users";
 
   listUser(args: Record<string, any>): Promise<Record<string, any>[]> {
@@ -24,4 +24,4 @@ class UserRepository extends Repository {
   }
 }
 
-export default new UserRepository();
+export default new MngUserRepository();

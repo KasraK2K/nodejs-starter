@@ -1,5 +1,5 @@
 import Logic from "./Logic";
-import userRepository from "../repository/UserRepository";
+import mngUserRepository from "../repository/MngUserRepository";
 import bcrypt from "bcryptjs";
 import { LoggerEnum } from "../../common/enums/logger.enum";
 import jwt from "jsonwebtoken";
@@ -12,7 +12,7 @@ class UserLogic extends Logic {
 
       let userList: Record<string, any>[] = [];
 
-      await userRepository
+      await mngUserRepository
         .listUser({ email: value.email })
         .then((response) => {
           userList = response;

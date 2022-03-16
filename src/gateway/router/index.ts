@@ -13,7 +13,7 @@ import Controller from "../controller/Controller";
 import homeController from "../controller/HomeController";
 import authController from "../controller/AuthController";
 import informationController from "../controller/InformationController";
-import userController from "../controller/UserController";
+import mngUserController from "../controller/MngUserController";
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "../../../swagger";
 
@@ -30,7 +30,7 @@ router.post("/", homeController.index);
 router.post("/shake-hand", informationController.info);
 
 // ─── USER ───────────────────────────────────────────────────────────────────────
-router.post("/user/create", userController.create);
+router.post("/user/create", mngUserController.create);
 
 // ─── AUTHORIZATION ──────────────────────────────────────────────────────────────
 router.post("/login", authController.login);
