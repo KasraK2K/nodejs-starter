@@ -1,18 +1,24 @@
 import { IReadTable } from "../../common/interfaces/repository";
 import { Pool, PoolClient } from "pg";
+import { LoggerEnum } from "../../common/enums/logger.enum";
 
 class Repository {
-  readTable(args: IReadTable, source: Pool = pg.pool_main): Promise<any> {
-    const { fields, where, table, order, limit, group } = Repository.sanitizeArgs(args);
-    return new Promise((resolve, reject) => {
+  async readTable(args: IReadTable, source: Pool = pg.pool_main): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      const { fields, where, table, order, limit, group } = Repository.sanitizeArgs(args);
       const list: Record<string, any>[] = [];
       const query = `select ${fields} from ${table} ${where} ${order} ${group} ${limit}`;
-      Repository.executeQuery({ query, source })
+
+      await Repository.executeQuery({ query, source })
         .then((qres) => {
-          qres.qres.rows.forEach((row: Record<string, any>) => list.push(row));
+          qres?.qres?.rows?.forEach((row: Record<string, any>) => list.push(row));
           resolve(list);
         })
-        .catch((err) => reject(err));
+        .catch((err) => {
+          logger(`{red} error readTable {reset}`);
+          logger(err.stack, LoggerEnum.ERROR);
+          reject(err);
+        });
     });
   }
 
@@ -27,18 +33,30 @@ class Repository {
   }
 
   private static executeQuery(args: { query: string; source: Pool }): Promise<any> {
-    const { source, query = "" } = args;
-    return new Promise((resolve, reject) => {
-      source
+    return new Promise(async (resolve, reject) => {
+      const { source, query = "" } = args;
+      await source
         .connect()
         .then((client: PoolClient) => {
           client
             .query(query)
-            .then((qres) => resolve(qres))
-            .catch((err) => reject(err))
-            .finally(() => client.release());
+            .then((qres) => {
+              resolve(qres);
+            })
+            .catch((err) => {
+              logger(`{red} error executeQuery {reset}`);
+              logger(err.stack, LoggerEnum.ERROR);
+              reject(err);
+            })
+            .finally(() => {
+              client.release();
+            });
         })
-        .catch((err) => reject(err));
+        .catch((err) => {
+          logger(`{red} error executeQuery {reset}`);
+          logger(err.stack, LoggerEnum.ERROR);
+          reject(err);
+        });
     });
   }
 }

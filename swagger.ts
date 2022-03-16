@@ -24,9 +24,26 @@ export default {
     "/shake-hand": {
       post: {
         summary: "Returns information about the server",
+        consumes: ["application/json"],
+        produces: ["application/json"],
         description: "This api no need to validate with method and token but need api_key",
-        parameters: [{ $ref: "#/parameters/api_key" }],
-        schema: { $ref: "#/schemas/shake-hand" },
+        parameters: [
+          {
+            in: "body",
+            name: "api_key",
+            description: "api key to authenticate request",
+            required: true,
+            schema: { type: "string", example: "api_key_1" },
+          },
+        ],
+        schema: {
+          type: "object",
+          in: "body",
+          required: ["api_key"],
+          properties: {
+            api_key: { type: "string", example: "api_key_1" },
+          },
+        },
         responses: {
           200: { description: "Success", schema: { type: "object" } },
           401: { description: "Unauthorized", schema: { type: "object" } },

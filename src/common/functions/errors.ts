@@ -1,4 +1,5 @@
 const map = new Map([
+  [3000, "Something went wrong"],
   [3001, "Not Found"],
   [3002, "Validation error"],
   [3003, "This email is already registered"],
