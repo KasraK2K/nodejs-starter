@@ -23,7 +23,7 @@ module.exports = {
   plugins: [
     new WebpackShellPluginNext({
       onAfterDone: {
-        scripts: ["clear", "echo 'Build complete!'"],
+        scripts: ["echo 'Build complete!'"],
       },
     }),
   ],

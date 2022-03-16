@@ -14,6 +14,10 @@ import { getUserInformation } from "./common/functions/information";
 
 const corsConfig: ICorsConfig = config.get("cors");
 
+/**
+ * @class Application
+ * @description Application class
+ */
 class Application {
   public app: Express;
   private port: Number;
