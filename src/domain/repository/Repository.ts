@@ -11,7 +11,9 @@ class Repository {
 
       await Repository.executeQuery({ query, source })
         .then((qres) => {
-          qres?.qres?.rows?.forEach((row: Record<string, any>) => list.push(row));
+          qres?.rows?.forEach((row: Record<string, any>) => {
+            list.push(row);
+          });
           resolve(list);
         })
         .catch((err) => {
@@ -35,6 +37,7 @@ class Repository {
   private static executeQuery(args: { query: string; source: Pool }): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const { source, query = "" } = args;
+
       await source
         .connect()
         .then((client: PoolClient) => {
