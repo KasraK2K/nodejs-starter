@@ -7,7 +7,7 @@ class TokenInterceptor extends Interceptor {
     let token = req.headers["authorization"];
     if (token && token.startsWith("Bearer ")) {
       token = token.slice(7, token.length);
-      jwt.verify(token, process.env.JWT_SECRET!, (err, decoded) => {
+      jwt.verify(token, process.env.JWT_SECRET ?? "", (err) => {
         if (err) return res.status(401).json({ error: "Token invalid" });
         else next();
       });

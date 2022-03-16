@@ -85,7 +85,7 @@ class RequestMiddleware extends Middleware {
     const token = req.headers.authorization ? req.headers.authorization.slice(7) : "";
     const returnValue: Record<string, any> = {};
 
-    jwt.verify(token, process.env.JWT_SECRET!, (err, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET ?? "", (err, decoded) => {
       if (err) returnValue.result = false;
       else {
         returnValue.result = true;

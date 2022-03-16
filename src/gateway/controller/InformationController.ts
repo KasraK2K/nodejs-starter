@@ -1,9 +1,8 @@
 import Controller from "./Controller";
-import { Request, Response, NextFunction } from "express";
-import { LoggerEnum } from "../../common/enums/logger.enum";
+import { Request, Response } from "express";
 
 class InformationController extends Controller {
-  public info(req: Request, res: Response, next: NextFunction) {
+  public info(req: Request, res: Response) {
     return super.resGen({
       req,
       res,

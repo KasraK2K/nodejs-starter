@@ -1,9 +1,9 @@
 import Controller from "./Controller";
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import authLogic from "../../domain/logic/AuthLogic";
 
 class AuthController extends Controller {
-  public async login(req: Request, res: Response, next: NextFunction) {
+  public async login(req: Request, res: Response) {
     authLogic
       .login(res.locals.params)
       .then((response) => super.resGen({ req, res, result: true, data: response }))

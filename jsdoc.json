@@ -9,11 +9,7 @@
     "exclude": ["node_modules", "build", "dist", "docs", "coverage"]
   },
   "sourceType": "module",
-  "plugins": [
-    "plugins/markdown",
-    "jsdoc-mermaid",
-    "node_modules/better-docs/category"
-  ],
+  "plugins": ["plugins/markdown", "jsdoc-mermaid", "node_modules/better-docs/category"],
   "opts": {
     "encoding": "utf8",
     "destination": "docs/",

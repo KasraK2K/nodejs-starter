@@ -3,12 +3,12 @@ import userRepository from "../repository/UserRepository";
 
 class UserLogic extends Logic {
   async login(params: Record<string, any>): Promise<any> {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const value = objectValidator(params, objectSchema.login);
 
       if ("errors" in value) reject({ errors: value.errors });
       else
-        await userRepository
+        userRepository
           .listUser(value.email)
           .then((response) => resolve(response))
           .catch((err) => reject(err));

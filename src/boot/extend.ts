@@ -8,12 +8,12 @@
 //
 //====================================================================================================================
 
-declare namespace Express {
-  export interface Request {
-    // add custom property like key: string
-  }
+// declare namespace Express {
+//   export interface Request {
+//     // add custom property like key: string
+//   }
 
-  export interface Response {
-    // add custom property like key: string
-  }
-}
+//   export interface Response {
+//     // add custom property like key: string
+//   }
+// }

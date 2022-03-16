@@ -1,8 +1,8 @@
 import Controller from "./Controller";
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 
 class HomeController extends Controller {
-  public index(req: Request, res: Response, next: NextFunction) {
+  public index(req: Request, res: Response) {
     super.logger();
 
     // mongo.collection.insertOne({ name: "test" });

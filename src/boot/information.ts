@@ -1,7 +1,7 @@
 if (process.env.NODE_ENV === "development") {
   import("jsonwebtoken")
     .then(({ default: jwt }) => {
-      const sample_jwt = jwt.sign({ user_id: 123 }, process.env.JWT_SECRET!, {
+      const sample_jwt = jwt.sign({ user_id: 123 }, process.env.JWT_SECRET ?? "", {
         expiresIn: "365d",
       });
       const api_keys = process.env.API_KEYS?.split(",");

@@ -11,28 +11,7 @@ export const objectValidator = (obj: Record<string, any>, skeme: Record<string, 
 
     // ───────────────────────────────────── ASSIGN DEFAULT VALUES ─────
     if ("default" in skm) defaultValue = skm.default;
-    else
-      switch (type) {
-        case "int":
-          defaultValue = 0;
-          break;
-
-        case "string":
-          defaultValue = "";
-          break;
-
-        case "boolean":
-          defaultValue = true;
-          break;
-
-        case "float":
-          defaultValue = 0.0;
-          break;
-
-        case "array":
-          defaultValue = [];
-          break;
-      }
+    else defaultValue = valueByType(type);
     // ─────────────────────────────────────────────────────────────────
 
     if (!(key in obj)) {
@@ -42,30 +21,10 @@ export const objectValidator = (obj: Record<string, any>, skeme: Record<string, 
       let v = obj[key];
 
       // ────────────────────────────────────── EXPLICIT TYPE CHANGE ─────
-      switch (type) {
-        case "int":
-          v = parseInt(v) || defaultValue;
-          break;
-
-        case "string":
-          if (typeof v == "number") v = v.toString();
-          else if (typeof v !== "string") v = defaultValue;
-          break;
-
-        case "boolean":
-          if (typeof v !== "boolean") v = defaultValue;
-          break;
-
-        case "float":
-          v = parseFloat(v) || defaultValue;
-          break;
-
-        case "array":
-          if (!Array.isArray(v)) {
-            if (skm.force_type) errorValues.push(`validation error ${key}; (${key}) should be an array (value:${v})`);
-            v = defaultValue;
-          }
-          break;
+      if (type !== "array") v = explicitTypeChange(type, defaultValue, v);
+      else if (!Array.isArray(v)) {
+        if (skm.force_type) errorValues.push(`validation error ${key}; (${key}) should be an array (value:${v})`);
+        v = defaultValue;
       }
       // ─────────────────────────────────────────────────────────────────
 
@@ -97,6 +56,44 @@ export const objectValidator = (obj: Record<string, any>, skeme: Record<string, 
   if (errorValues.length > 0) value.errors = errorValues;
 
   return value;
+};
+
+const valueByType = (type: any) => {
+  switch (type) {
+    case "int":
+      return 0;
+
+    case "string":
+      return "";
+
+    case "boolean":
+      return true;
+
+    case "float":
+      return 0.0;
+
+    case "array":
+      return [];
+  }
+};
+
+const explicitTypeChange = (type: any, defaultValue: any, value: any) => {
+  switch (type) {
+    case "int":
+      return parseInt(value) || defaultValue;
+
+    case "string":
+      if (typeof value == "number") value = value.toString();
+      else if (typeof value !== "string") value = defaultValue;
+      return value;
+
+    case "boolean":
+      if (typeof value !== "boolean") value = defaultValue;
+      return value;
+
+    case "float":
+      return parseFloat(value) || defaultValue;
+  }
 };
 
 //exports.addErrors = addErrors;

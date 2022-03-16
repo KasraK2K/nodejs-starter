@@ -8,7 +8,5 @@ const map = new Map([
 ]);
 
 export const getError = (code: number) => {
-  return map.has(code)
-    ? { code, message: map.get(code) }
-    : { code, message: "Error code not found" };
+  return map.has(code) ? { code, message: map.get(code) } : { code, message: "Error code not found" };
 };

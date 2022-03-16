@@ -4,10 +4,10 @@ import { Pool, PoolClient } from "pg";
 class Repository {
   readTable(args: IReadTable, source: Pool = pg.pool_main): Promise<any> {
     const { fields, where, table, order, limit, group } = Repository.sanitizeArgs(args);
-    return new Promise(async function (resolve, reject) {
-      let list: Record<string, any>[] = [];
-      let query = `select ${fields} from ${table} ${where} ${order} ${group} ${limit}`;
-      await Repository.executeQuery({ query, source })
+    return new Promise((resolve, reject) => {
+      const list: Record<string, any>[] = [];
+      const query = `select ${fields} from ${table} ${where} ${order} ${group} ${limit}`;
+      Repository.executeQuery({ query, source })
         .then((qres) => {
           qres.qres.rows.forEach((row: Record<string, any>) => list.push(row));
           resolve(list);
@@ -28,7 +28,7 @@ class Repository {
 
   private static executeQuery(args: { query: string; source: Pool }): Promise<any> {
     const { source, query = "" } = args;
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       source
         .connect()
         .then((client: PoolClient) => {

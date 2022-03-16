@@ -20,9 +20,9 @@ const corsConfig: ICorsConfig = config.get("cors");
  */
 class Application {
   public app: Express;
-  private port: Number;
+  private port: number;
 
-  constructor(options: { port: Number }) {
+  constructor(options: { port: number }) {
     const { port } = options;
     this.app = express();
     this.port = Number(process.env.PORT) || port;

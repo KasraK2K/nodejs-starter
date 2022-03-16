@@ -1,9 +1,5 @@
 import { getError } from "../../common/functions/errors";
-import {
-  IResGen,
-  IResGenOptions,
-  IErrGenOptions,
-} from "../../common/interfaces/information";
+import { IResGen, IResGenOptions, IErrGenOptions } from "../../common/interfaces/information";
 import config from "config";
 import { IApplicationConfig } from "../../../config/config.interface";
 import { LoggerEnum } from "../../common/enums/logger.enum";
@@ -18,15 +14,8 @@ class Controller {
   }
 
   public resGen(options: IResGen) {
-    const { req, res, status, result } = options;
-    logger(
-      `{green}${JSON.stringify(
-        _.omit(res.locals.params, ["process_id"]),
-        null,
-        2
-      )}{reset}`,
-      LoggerEnum.REQUEST
-    );
+    const { res, status } = options;
+    logger(`{green}${JSON.stringify(_.omit(res.locals.params, ["process_id"]), null, 2)}{reset}`, LoggerEnum.REQUEST);
     return res
       .status(status || 200)
       .json(
