@@ -11,7 +11,12 @@ export default {
         content: {
           "application/json": {
             schema: {
-              $ref: "#/schemas/apiKey",
+              type: "object",
+              in: "body",
+              required: ["api_key"],
+              properties: {
+                api_key: { type: "string", example: "api_key_1" },
+              },
             },
           },
         },

@@ -24,16 +24,36 @@ class MngUserRepository extends Repository {
     });
   }
 
-  async upsert(data: Record<string, any>, schema: Record<string, any>) {
+  async upsert(data: Record<string, any>) {
     return await new Promise(async (resolve, reject) => {
-      const query = super.getUpsertQuery(data, schema);
+      /* REVIEW In this case we created query by hand */
+      //const query = super.getUpsertQuery(data, schema);
+
+      const { user_id: id, email, password, hashPassword, name, access } = data;
+
+      let query = "";
+      if (Number(id) === 0) {
+        query = `
+          INSERT INTO mng_users
+          (email, password, name, access )
+          VALUES ('${email}', '${hashPassword}', '${name}' , '${access}' )
+          RETURNING id
+        `;
+      } else {
+        const editPassword = password.length ? ` , password = '${hashPassword}' ` : "";
+        query = `
+          Update mng_users
+          SET name = '${name}', email = '${email}', access = '${access}' ${editPassword}
+          WHERE id = ${id}
+        `;
+      }
 
       await super
-        .executeQuery({ source: pg.pool_cloud, query })
+        .executeQuery({ query, source: pg.pool_cloud })
         .then((qres) => {
           const returnData: Record<string, any> = {};
-          if ((data.id || 0) == 0) {
-            const lastID = qres.qres.rows[0].table_id;
+          if (!data.id || String(data.id) === "0") {
+            const lastID = qres.rows[0].id;
             returnData.saved_id = lastID;
           } else {
             returnData.saved_id = data.id;

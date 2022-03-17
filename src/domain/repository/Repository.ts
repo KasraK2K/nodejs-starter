@@ -26,6 +26,29 @@ class Repository {
   }
 
   protected getUpsertQuery(data: Record<string, any>, schema: Record<string, any>): string {
+    /*
+    data : {
+      id: 1,
+      name: 'kasra',
+      family_name: 'karami',
+      address: {
+        line1: "38 Raven"
+        postcode: "sw62gn"
+      }
+    }
+
+    schema = {
+      table_name: `"Users"`,
+      checking_data_field: 'user_id',
+      table_id: 'id',
+      returning: 'id',
+      fields:{
+        name (database field):{ field:'name' } (data field), 
+        surname:{ field:'family_name'} ,
+        address: {field:'address', is_json:true}
+      }
+    }
+    */
     const checking_data_field = schema.checking_field || "id";
     const table_id = schema.table_id || "id";
     const table_name = schema.table_name || "";
@@ -36,28 +59,26 @@ class Repository {
     let query = "";
 
     _.keys(fields).forEach((key) => {
-      const field = fields[key];
-      let val = data[field.field] || "0";
+      const fieldObject = fields[key]; // { field:'name' }
+      let val = data[fieldObject.field] || "0";
 
-      if (field.is_json) val = ` '${JSON.stringify(val)}' `;
-      else if (field.is_array) val = ` '{${val}}' `;
+      if (fieldObject.is_json) val = ` '${JSON.stringify(val)}' `;
+      else if (fieldObject.is_array) val = ` '{${val}}' `;
       else val = ` '${val}' `;
 
-      keys.push(` "${key}" `);
-      values.push(val);
-      updates.push(` "${key}" = ${val} `);
+      keys.push(` "${key}" `); // ['name', 'surname', 'address']
+      values.push(val); // ['kasra','karami']
+      updates.push(` "${key}" = '${val}' `); // [` name = 'kasra' `, ` surname = 'karami' `]
     });
 
-    if (data[checking_data_field] == 0) {
-      query = `INSERT INTO ${table_name} (${keys.join(",")}) VALUES (${values.join(",")})`;
+    if (Number(data[checking_data_field]) === 0) {
+      query = `INSERT INTO ${table_name} (${keys.join(" , ")}) VALUES (${values.join(" , ")})`;
       if (schema.returning) query += ` RETURNING ${schema.returning}`;
     } else {
       query = `UPDATE ${table_name} SET ${updates.join(",")} WHERE "${table_id}" = ${data[checking_data_field]}`;
     }
     return query;
   }
-
-  // private static async upsert() {}
 
   private static sanitizeArgs(args: IReadTable): IReadTable {
     args.fields = args.fields || "*";
