@@ -60,7 +60,7 @@ class Application {
     this.app.use(
       cors({
         optionsSuccessStatus: 200,
-        methods: corsConfig.allow_methods,
+        methods: corsConfig.allow_method,
         origin: corsConfig.allow_origin,
       })
     );

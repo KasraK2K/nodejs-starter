@@ -11,6 +11,7 @@ export interface IApplicationConfig {
   print_info: boolean;
   api_version: string;
   front_version: string;
+  portal_version: string;
   logPath: string;
 }
 
@@ -55,7 +56,7 @@ export interface IPostgresConfig {
 // ───────────────────────────────────────────────────────────────────── CORS ─────
 export interface ICorsConfig {
   allow_origin: string;
-  allow_methods: string;
+  allow_method: string;
 }
 
 // ───────────────────────────────────────────────────────────── RATE LIMITER ─────

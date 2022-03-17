@@ -30,6 +30,7 @@ class Controller {
     const response = {
       api_version: applicationConfig.api_version,
       front_version: applicationConfig.front_version,
+      portal_vertion: applicationConfig.portal_version,
       endpoint: req.originalUrl,
       env: process.env.NODE_ENV,
       mode,
@@ -46,6 +47,7 @@ class Controller {
     const response = {
       api_version: applicationConfig.api_version,
       front_version: applicationConfig.front_version,
+      portal_vertion: applicationConfig.portal_version,
       endpoint: req.originalUrl,
       env: process.env.NODE_ENV,
       mode,

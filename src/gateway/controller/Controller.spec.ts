@@ -65,6 +65,7 @@ describe("Controller", () => {
       expect(result.body).toEqual({
         api_version: applicationConfig.api_version,
         front_version: applicationConfig.front_version,
+        portal_vertion: applicationConfig.portal_version,
         endpoint: mockEndpoint,
         env: process.env.NODE_ENV,
         mode: mode,
@@ -89,6 +90,7 @@ describe("Controller", () => {
       expect(result.body).toEqual({
         api_version: applicationConfig.api_version,
         front_version: applicationConfig.front_version,
+        portal_vertion: applicationConfig.portal_version,
         endpoint: mockEndpoint,
         env: process.env.NODE_ENV,
         mode: mode,
