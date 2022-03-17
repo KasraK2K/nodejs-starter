@@ -1,6 +1,5 @@
 import Logic from "./Logic";
 import mngUserRepository from "../repository/MngUserRepository";
-import bcrypt from "bcryptjs";
 import { LoggerEnum } from "../../common/enums/logger.enum";
 import jwt from "jsonwebtoken";
 import { compareHash } from "../../common/functions/bcrypt";

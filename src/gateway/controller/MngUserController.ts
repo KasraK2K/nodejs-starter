@@ -27,7 +27,7 @@ class MngUserController extends Controller {
         super.resGen({
           req,
           res,
-          status: 200,
+          status: err.code ?? 401,
           result: err.result,
           error_code: err.error_code ?? 3000,
           error_user_messages: err.errors ?? [],
