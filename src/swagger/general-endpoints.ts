@@ -15,7 +15,7 @@ export default {
               in: "body",
               required: ["api_key"],
               properties: {
-                api_key: { type: "string", example: "api_key_1" },
+                api_key: { type: "string", example: { $ref: "#/variables/api_key" } },
               },
             },
           },

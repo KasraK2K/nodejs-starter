@@ -24,4 +24,9 @@ export default {
   paths: {
     "/shake-hand": general["/shake-hand"],
   },
+
+  variables: {
+    api_key:
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzb3VyY2UiOiJtbmciLCJpYXQiOjE2NDM0MDM5NjV9.TDXx-pdtzEqMxaXRGXtk6MZkmgOILvQpYplzvCCwP3k",
+  },
 };
