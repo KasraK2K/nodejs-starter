@@ -18,7 +18,7 @@ class MngUserRepository extends Repository {
         })
         .catch((err) => {
           logger(`{red} error listUser {reset}`);
-          logger(err.stack, LoggerEnum.ERROR);
+          logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
           reject(err);
         });
     });
@@ -29,7 +29,7 @@ class MngUserRepository extends Repository {
       /* REVIEW In this case we created query by hand */
       //const query = super.getUpsertQuery(data, schema);
 
-      const { user_id: id, email, password, hashPassword, name, access } = data;
+      const { id, email, password, hashPassword, name, access } = data;
 
       let query = "";
       if (Number(id) === 0) {
@@ -53,6 +53,7 @@ class MngUserRepository extends Repository {
         .then((qres) => {
           const returnData: Record<string, any> = {};
           if (!data.id || String(data.id) === "0") {
+            console.log("qres", qres);
             const lastID = qres.rows[0].id;
             returnData.saved_id = lastID;
           } else {

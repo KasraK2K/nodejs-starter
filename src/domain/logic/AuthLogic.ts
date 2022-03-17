@@ -19,7 +19,7 @@ class UserLogic extends Logic {
         })
         .catch((err) => {
           logger(`{red} error login {reset}`);
-          logger(err.stack, LoggerEnum.ERROR);
+          logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
           reject({ result: false, err });
         });
 

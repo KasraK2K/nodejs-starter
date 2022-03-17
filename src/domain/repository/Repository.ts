@@ -19,7 +19,7 @@ class Repository {
         })
         .catch((err) => {
           logger(`{red} error readTable {reset}`);
-          logger(err.stack, LoggerEnum.ERROR);
+          logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
           reject(err);
         });
     });
@@ -104,7 +104,8 @@ class Repository {
             })
             .catch((err) => {
               logger(`{red} error executeQuery {reset}`);
-              logger(err.stack, LoggerEnum.ERROR);
+              logger(`{red} ${query} {reset}`);
+              logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
               reject(err);
             })
             .finally(() => {
@@ -113,7 +114,7 @@ class Repository {
         })
         .catch((err) => {
           logger(`{red} error executeQuery {reset}`);
-          logger(err.stack, LoggerEnum.ERROR);
+          logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
           reject(err);
         });
     });

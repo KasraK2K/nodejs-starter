@@ -10,6 +10,8 @@ class MngUserLogic extends Logic {
 
       const value = objectValidator(args.data ?? {}, objectSchema.manager.upsert);
 
+      console.log("value:", value);
+
       if ("errors" in value) {
         return reject({ result: false, error_code: 3002, errors: value.errors });
       } else {
