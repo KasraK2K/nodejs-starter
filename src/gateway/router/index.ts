@@ -15,7 +15,7 @@ import authController from "../controller/AuthController";
 import informationController from "../controller/InformationController";
 import mngUserController from "../controller/MngUserController";
 import swaggerUi from "swagger-ui-express";
-import swaggerDocument from "../../../swagger";
+import swaggerDocument from "../../swagger";
 
 const swaggerOptions = {
   explorer: true,
@@ -30,7 +30,7 @@ router.post("/", homeController.index);
 router.post("/shake-hand", informationController.info);
 
 // ─── USER ───────────────────────────────────────────────────────────────────────
-router.post("/user/create", mngUserController.create);
+router.post("/mng-users/ae", mngUserController.upsert);
 
 // ─── AUTHORIZATION ──────────────────────────────────────────────────────────────
 router.post("/login", authController.login);

@@ -1,15 +1,16 @@
 import { IReadTable } from "../../common/interfaces/repository";
 import { Pool, PoolClient } from "pg";
 import { LoggerEnum } from "../../common/enums/logger.enum";
+import _ from "lodash";
 
 class Repository {
-  async readTable(args: IReadTable, source: Pool = pg.pool_main): Promise<any> {
+  protected async readTable(args: IReadTable, source: Pool = pg.pool_main): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const { fields, where, table, order, limit, group } = Repository.sanitizeArgs(args);
       const list: Record<string, any>[] = [];
       const query = `select ${fields} from ${table} ${where} ${order} ${group} ${limit}`;
 
-      await Repository.executeQuery({ query, source })
+      await this.executeQuery({ query, source })
         .then((qres) => {
           qres?.rows?.forEach((row: Record<string, any>) => {
             list.push(row);
@@ -24,6 +25,40 @@ class Repository {
     });
   }
 
+  protected getUpsertQuery(data: Record<string, any>, schema: Record<string, any>): string {
+    const checking_data_field = schema.checking_field || "id";
+    const table_id = schema.table_id || "id";
+    const table_name = schema.table_name || "";
+    const fields: Record<string, any> = schema.fields || {};
+    const keys: string[] = [];
+    const values: string[] = [];
+    const updates: string[] = [];
+    let query = "";
+
+    _.keys(fields).forEach((key) => {
+      const field = fields[key];
+      let val = data[field.field] || "0";
+
+      if (field.is_json) val = ` '${JSON.stringify(val)}' `;
+      else if (field.is_array) val = ` '{${val}}' `;
+      else val = ` '${val}' `;
+
+      keys.push(` "${key}" `);
+      values.push(val);
+      updates.push(` "${key}" = ${val} `);
+    });
+
+    if (data[checking_data_field] == 0) {
+      query = `INSERT INTO ${table_name} (${keys.join(",")}) VALUES (${values.join(",")})`;
+      if (schema.returning) query += ` RETURNING ${schema.returning}`;
+    } else {
+      query = `UPDATE ${table_name} SET ${updates.join(",")} WHERE "${table_id}" = ${data[checking_data_field]}`;
+    }
+    return query;
+  }
+
+  // private static async upsert() {}
+
   private static sanitizeArgs(args: IReadTable): IReadTable {
     args.fields = args.fields || "*";
     args.where = args.where && args.where.length ? ` where ${args.where} ` : "";
@@ -34,7 +69,7 @@ class Repository {
     return args;
   }
 
-  private static executeQuery(args: { query: string; source: Pool }): Promise<any> {
+  protected executeQuery(args: { query: string; source: Pool }): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const { source, query = "" } = args;
 

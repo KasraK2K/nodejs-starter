@@ -15,13 +15,27 @@ import { getUserInformation } from "./common/functions/information";
 const corsConfig: ICorsConfig = config.get("cors");
 
 /**
- * @class Application
- * @description Application class
+ * # Application
+ * ---
+ *
+ * This class is core of the application. It is responsible for starting the server and handling the requests. To use this class, you need to create an instance of it. The constructor takes an object has port as a number.
+ *
+ * ```typescript
+ * // This is an example of how to use the Application class.
+ *
+ * const server = new Application();
+ * server.start({ port: 3000 });
+ * ```
+ *
+ * @category Application
  */
 class Application {
   public app: Express;
   private port: number;
 
+  /**
+   * @param options Get some options to constructing core class
+   */
   constructor(options: { port: number }) {
     const { port } = options;
     this.app = express();
