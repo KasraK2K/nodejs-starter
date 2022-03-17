@@ -4,6 +4,10 @@ export const objectSchema = {
     password: { type: "string", force_type: true },
   },
   manager: {
+    list: {
+      id: { type: "int" },
+      email: { type: "string" },
+    },
     upsert: {
       id: { type: "int", default: 0 },
       name: { type: "string", force_type: true, min_length: 5, cut_at_max: 100 },

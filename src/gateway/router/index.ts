@@ -30,6 +30,7 @@ router.post("/", homeController.index);
 router.post("/shake-hand", informationController.info);
 
 // ─── USER ───────────────────────────────────────────────────────────────────────
+router.post("/mng-users/list", mngUserController.list);
 router.post("/mng-users/upsert", mngUserController.upsert);
 
 // ─── AUTHORIZATION ──────────────────────────────────────────────────────────────

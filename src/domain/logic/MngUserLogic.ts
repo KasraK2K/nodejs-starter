@@ -2,6 +2,19 @@ import Logic from "./Logic";
 import mngUserRepository from "../repository/MngUserRepository";
 
 class MngUserLogic extends Logic {
+  public async list(args: Record<string, any> = {}): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      const value = objectValidator(args ?? {}, objectSchema.manager.list);
+
+      if ("errors" in value) return reject({ result: false, error_code: 3002, errors: value.errors });
+      else
+        await mngUserRepository
+          .list(value)
+          .then((response) => resolve({ result: true, data: response }))
+          .catch((err) => reject({ result: false, err }));
+    });
+  }
+
   public async upsert(args: Record<string, any> = {}): Promise<any> {
     return new Promise(async (resolve, reject) => {
       /* REVIEW Use to log with mongodb */
@@ -10,11 +23,8 @@ class MngUserLogic extends Logic {
 
       const value = objectValidator(args.data ?? {}, objectSchema.manager.upsert);
 
-      console.log("value:", value);
-
-      if ("errors" in value) {
-        return reject({ result: false, error_code: 3002, errors: value.errors });
-      } else {
+      if ("errors" in value) return reject({ result: false, error_code: 3002, errors: value.errors });
+      else {
         /* REVIEW I hold this for venue and we see that another time */
         // const sql_schema = {
         //   table_name: `"mng_users"`,

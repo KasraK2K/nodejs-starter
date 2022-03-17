@@ -13,7 +13,7 @@ class UserLogic extends Logic {
       let userList: Record<string, any>[] = [];
 
       await mngUserRepository
-        .listUser({ email: value.email })
+        .list({ email: value.email })
         .then((response) => {
           userList = response;
         })

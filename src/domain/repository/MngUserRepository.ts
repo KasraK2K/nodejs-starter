@@ -4,11 +4,11 @@ import { LoggerEnum } from "../../common/enums/logger.enum";
 class MngUserRepository extends Repository {
   private collection = "users";
 
-  listUser(args: Record<string, any>): Promise<Record<string, any>[]> {
+  list(args: Record<string, any>): Promise<Record<string, any>[]> {
     return new Promise(async (resolve, reject) => {
       const whereArray = [];
-      if ("email" in args) whereArray.push(` email = '${args.email}' `);
-      if ("user_id" in args) whereArray.push(` user_id = '${args.user_id}' `);
+      if (args.email) whereArray.push(` email = '${args.email}' `);
+      if (args.id) whereArray.push(` id = '${args.id}' `);
       const whereStr = whereArray.join(" and ");
 
       await super
@@ -17,7 +17,7 @@ class MngUserRepository extends Repository {
           resolve(response);
         })
         .catch((err) => {
-          logger(`{red} error listUser {reset}`);
+          logger(`{red} error manager user list {reset}`);
           logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
           reject(err);
         });
