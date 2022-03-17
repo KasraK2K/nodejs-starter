@@ -22,19 +22,6 @@ export default {
   //   :::::: E N D P O I N T S : :  :   :    :     :        :          :
   // ────────────────────────────────────────────────────────────────────
   paths: {
-    ...general,
-  },
-
-  definitions: {},
-
-  schemas: {
-    apiKey: {
-      type: "object",
-      in: "body",
-      required: ["api_key"],
-      properties: {
-        api_key: { type: "string", example: "api_key_1" },
-      },
-    },
+    "/shake-hand": general["/shake-hand"],
   },
 };

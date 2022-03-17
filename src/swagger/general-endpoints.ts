@@ -3,7 +3,7 @@ import { TagsEnum } from "./enums";
 export default {
   "/shake-hand": {
     post: {
-      tags: [TagsEnum.INFORMATION],
+      tags: [TagsEnum.GENERAL],
       summary: "Returns information about the server like version, name, etc.",
       description:
         "This api is created to get server information and to check if the server is running. no need to send authorization token but for security reason, you should send api key.",
