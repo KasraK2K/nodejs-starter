@@ -1,5 +1,6 @@
 import Logic from "./Logic";
 import mngUserRepository from "../repository/MngUserRepository";
+import { hashGen } from "./../../common/functions/bcrypt";
 
 class MngUserLogic extends Logic {
   public async list(args: Record<string, any> = {}): Promise<any> {
@@ -39,7 +40,7 @@ class MngUserLogic extends Logic {
         //   },
         // };
 
-        value.password && (value.hashPassword = await super.hashPasword(value.password));
+        value.password && (value.hashPassword = hashGen(value.password));
 
         await mngUserRepository
           .upsert(value)

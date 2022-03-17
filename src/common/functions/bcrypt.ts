@@ -1,11 +1,30 @@
 import bcrypt from "bcryptjs";
 
-export const saltGen = async (saltNum?: number) => {
-  return await bcrypt.genSalt(saltNum ? saltNum : Math.floor(Math.random() * (20 - 10) + 10));
+export const saltGen = (saltNum?: number): string => {
+  return bcrypt.genSaltSync(saltNum ? saltNum : Math.floor(Math.random() * (20 - 10) + 10));
 };
 
-export const hashGen = async (text: string, salt?: string) => {
-  return await bcrypt.hash(text, salt ? salt : await saltGen());
+export const hashGen = (text: string, salt?: string | number): string => {
+  let generatedSalt: string;
+
+  switch (typeof salt) {
+    case "string":
+      generatedSalt = salt;
+      break;
+
+    case "number":
+      generatedSalt = saltGen(salt);
+      break;
+
+    default:
+      generatedSalt = saltGen();
+  }
+
+  return bcrypt.hashSync(text, generatedSalt);
 };
 
-export default { saltGen, hashGen };
+export const compareHash = (text: string, hash: string) => {
+  return bcrypt.compareSync(text, hash);
+};
+
+export default { saltGen, hashGen, compareHash };

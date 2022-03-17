@@ -3,6 +3,7 @@ import mngUserRepository from "../repository/MngUserRepository";
 import bcrypt from "bcryptjs";
 import { LoggerEnum } from "../../common/enums/logger.enum";
 import jwt from "jsonwebtoken";
+import { compareHash } from "../../common/functions/bcrypt";
 
 class UserLogic extends Logic {
   async login(params: Record<string, any>): Promise<any> {
@@ -26,9 +27,8 @@ class UserLogic extends Logic {
       // ────────────────────────────────────────────── USER FOUNDED ─────
       if (userList.length > 0) {
         const user = userList[0];
-        const hashPassword = user.password;
         const user_id = user.id;
-        const compareResult = bcrypt.compareSync(value.password, hashPassword);
+        const compareResult = compareHash(value.password, user.password);
         if (compareResult) {
           logger(`user ${value.email} logged in`, LoggerEnum.INFO);
           const token = jwt.sign({ user_id }, process.env.JWT_SECRET ?? "", {
