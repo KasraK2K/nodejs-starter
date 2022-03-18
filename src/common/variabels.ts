@@ -10,12 +10,12 @@
 
 import config from "config";
 import { IConfig } from "../../config/config.interface";
-import validator from "../http/validator/validator";
-import schema from "../http/validator/schema";
+import validator from "../validator/validator";
+import schema from "../validator/schema";
 import { mongoClient, postgresPool } from "../boot";
 import { logger } from "./functions/logger";
-import { objectValidator } from "../http/validator/objectValidator";
-import objectSchema from "../http/validator/objectSchema";
+import { objectValidator } from "../validator/objectValidator";
+import objectSchema from "../validator/objectSchema";
 
 const configs: IConfig = config.util.toObject();
 
