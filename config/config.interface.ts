@@ -30,26 +30,15 @@ export interface IMongodbConfig {
 
 // ─── POSTGRESQL ─────────────────────────────────────────────────────────────────
 export interface IPostgresConfig {
-  main: {
-    user: string;
-    host: string;
-    database: string;
-    password: string;
-    port: number;
-    idleTimeoutMillis: number;
-    connectionTimeoutMillis: number;
-  };
-  cloud: {
-    user: string;
-    host: string;
-    database: string;
-    password: string;
-    port: number;
-    idleTimeoutMillis: number;
-    connectionTimeoutMillis: number;
-    ssl: {
-      rejectUnauthorized: boolean;
-    };
+  user: string;
+  host: string;
+  database: string;
+  password: string;
+  port: number;
+  idleTimeoutMillis: number;
+  connectionTimeoutMillis: number;
+  ssl: {
+    rejectUnauthorized: boolean;
   };
 }
 

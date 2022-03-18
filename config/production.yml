@@ -6,24 +6,15 @@ database:
     default_collection: "default"
     uri: "mongodb://0.0.0.0:27017/node-starter"
   postgres:
-    main:
-      user: "postgres"
-      host: "104.236.243.125"
-      database: "Embargo"
-      password: "developmentaccess"
-      port: 5432
-      idleTimeoutMillis: 5000
-      connectionTimeoutMillis: 5000
-    cloud:
-      user: "doadmin"
-      host: "db-postgresql-lon1-79473-do-user-1331563-0.b.db.ondigitalocean.com"
-      database: "mng_dev"
-      password: "qeh6gl9o3194swd9"
-      port: 25060
-      idleTimeoutMillis: 5000
-      connectionTimeoutMillis: 5000
-      ssl:
-        rejectUnauthorized: false
+    user: "postgres"
+    host: "0.0.0.0"
+    database: "node-starter"
+    password: "postgres"
+    port: 5432
+    idleTimeoutMillis: 5000
+    connectionTimeoutMillis: 5000
+    ssl:
+      rejectUnauthorized: false
 
 cors:
   allow_origin: "*"
