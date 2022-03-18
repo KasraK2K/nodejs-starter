@@ -1,6 +1,6 @@
 import "./boot/bootstrap";
+import { app, express } from "./boot/bootstrap";
 import cors from "cors";
-import express, { Express } from "express";
 import helmet from "helmet";
 import compression from "compression";
 import _ from "lodash";
@@ -30,7 +30,6 @@ const corsConfig: ICorsConfig = config.get("cors");
  * @category Application
  */
 class Application {
-  public app: Express;
   private port: number;
 
   /**
@@ -38,7 +37,6 @@ class Application {
    */
   constructor(options: { port: number }) {
     const { port } = options;
-    this.app = express();
     this.port = Number(process.env.PORT) || port;
 
     this.config();
@@ -47,34 +45,34 @@ class Application {
   }
 
   private config() {
-    this.app.locals = locals;
+    app.locals = locals;
     _.assign(global, globals);
   }
 
   private middlewares() {
-    this.app.use(express.json());
-    this.app.use(express.urlencoded({ extended: false }));
-    this.app.use(helmet());
-    this.app.use(compression());
-    this.app.disable("x-powered-by");
-    this.app.use(
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: false }));
+    app.use(helmet());
+    app.use(compression());
+    app.disable("x-powered-by");
+    app.use(
       cors({
         optionsSuccessStatus: 200,
         methods: corsConfig.allow_method,
         origin: corsConfig.allow_origin,
       })
     );
-    this.app.use(rateLimiterMiddleware.check());
-    this.app.use(requestMiddleware.isPost);
-    this.app.use(requestMiddleware.auth);
+    app.use(rateLimiterMiddleware.check());
+    app.use(requestMiddleware.isPost);
+    app.use(requestMiddleware.auth);
   }
 
   private routes() {
-    this.app.use("/", router);
+    app.use("/", router);
   }
 
   public start() {
-    this.app.listen(this.port, () => getUserInformation(this.port));
+    app.listen(this.port, () => getUserInformation(this.port));
   }
 }
 

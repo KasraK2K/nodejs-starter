@@ -13,7 +13,12 @@
 // ──────────────────────────────────────────────────────────────────────────────────
 import "reflect-metadata";
 import starterConfig from "../../starter.config";
+import express, { Express } from "express";
+
+const app: Express = express();
 
 starterConfig.boot.forEach(async (module) => {
   await import(`./${module}`).catch((err) => console.log(err));
 });
+
+export { express, app };
