@@ -1,14 +1,14 @@
 import Middleware from "./Middleware";
 import rateLimit from "express-rate-limit";
-import Controller from "../controller/Controller";
+import BaseController from "../base/controller/BaseController";
 import { Request, Response } from "express";
 import config from "config";
-import { IRateLimiter } from "../../../config/config.interface";
+import { IRateLimiter } from "../../config/config.interface";
 
 const reateLimiterConfig: IRateLimiter = config.get("rate_limiter");
 
 class RateLimiterMiddleware extends Middleware {
-  constructor(private controller: Controller) {
+  constructor(private controller: BaseController) {
     super();
   }
 
@@ -31,4 +31,4 @@ class RateLimiterMiddleware extends Middleware {
   }
 }
 
-export default new RateLimiterMiddleware(new Controller());
+export default new RateLimiterMiddleware(new BaseController());

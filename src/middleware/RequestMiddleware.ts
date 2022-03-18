@@ -1,13 +1,13 @@
 import Middleware from "./Middleware";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import Controller from "../controller/Controller";
+import BaseController from "../base/controller/BaseController";
 import _ from "lodash";
-import { LoggerEnum } from "../../common/enums/logger.enum";
+import { LoggerEnum } from "../common/enums/logger.enum";
 
 class RequestMiddleware extends Middleware {
   public isPost(req: Request, res: Response, next: NextFunction) {
-    const controller = new Controller();
+    const controller = new BaseController();
     const process_id = (+new Date() + Math.floor(Math.random() * (999 - 100) + 100)).toString(16);
     _.assign(res.locals, { params: { process_id } });
     _.assign(global, { process_id });
@@ -32,7 +32,7 @@ class RequestMiddleware extends Middleware {
   }
 
   public auth(req: Request, res: Response, next: NextFunction) {
-    const controller = new Controller();
+    const controller = new BaseController();
     const apiKeys = process.env.API_KEYS?.split(",") || [];
     const ignoreApikeys: string[] = ["swagger"];
     const ignoreToken: string[] = ["login", "logout", "shake-hand", "swagger"];

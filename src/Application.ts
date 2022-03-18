@@ -7,9 +7,9 @@ import _ from "lodash";
 import config from "config";
 import { ICorsConfig } from "./../config/config.interface";
 import { locals, globals } from "./common/variabels";
-import router from "./gateway/router";
-import rateLimiterMiddleware from "./gateway/middleware/RateLimiterMiddleware";
-import requestMiddleware from "./gateway/middleware/RequestMiddleware";
+import router from "./http/router";
+import rateLimiterMiddleware from "./http/middleware/RateLimiterMiddleware";
+import requestMiddleware from "./http/middleware/RequestMiddleware";
 import { getUserInformation } from "./common/functions/information";
 
 const corsConfig: ICorsConfig = config.get("cors");

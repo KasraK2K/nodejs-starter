@@ -1,4 +1,4 @@
-import Controller from "./Controller";
+import BaseController from "./BaseController";
 import config from "config";
 import { IApplicationConfig } from "../../../config/config.interface";
 import { Request, Response } from "express";
@@ -11,11 +11,11 @@ const mockEndpoint = "/some-endpoint";
 const applicationConfig: IApplicationConfig = config.get("application");
 const mode: string = config.get("mode");
 
-describe("Controller", () => {
-  let controller: Controller;
+describe("BaseController", () => {
+  let controller: BaseController;
 
   beforeEach(() => {
-    controller = new Controller();
+    controller = new BaseController();
     req = new RequestMock(mockEndpoint) as any as Request;
     res = new ResponseMock() as any as Response;
   });
@@ -30,28 +30,28 @@ describe("Controller", () => {
   // ──────────────────────────────────────────────────────────────
   //   :::::: D E F I N E : :  :   :    :     :        :          :
   // ──────────────────────────────────────────────────────────────
-  it("Controller should be defined", () => {
+  it("BaseController should be defined", () => {
     expect(controller).toBeDefined();
   });
 
   // ──────────────────────────────────────────────────────────────
   //   :::::: L O G G E R : :  :   :    :     :        :          :
   // ──────────────────────────────────────────────────────────────
-  it("Controller.logger() should log", () => {
+  it("BaseController.logger() should log", () => {
     const logSpy = jest.spyOn(console, "log");
 
     controller.logger();
     expect(console.log).toHaveBeenCalledTimes(1);
-    expect(logSpy).toHaveBeenCalledWith("Log from Controller");
+    expect(logSpy).toHaveBeenCalledWith("Log from BaseController");
   });
 
   // ──────────────────────────────────────────────────────────────
   //   :::::: R E S G E N : :  :   :    :     :        :          :
   // ──────────────────────────────────────────────────────────────
-  describe("Controller.resGen()", () => {
+  describe("BaseController.resGen()", () => {
     global.logger = jest.fn();
 
-    it("Controller.resGen() should use responseGenerator", () => {
+    it("BaseController.resGen() should use responseGenerator", () => {
       const result = controller.resGen({
         req,
         res,
@@ -74,7 +74,7 @@ describe("Controller", () => {
       });
     });
 
-    it("Controller.resGen() should use errorGenerator", () => {
+    it("BaseController.resGen() should use errorGenerator", () => {
       const result = controller.resGen({
         req,
         res,

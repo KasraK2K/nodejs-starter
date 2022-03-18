@@ -8,9 +8,9 @@ import _ from "lodash";
 const applicationConfig: IApplicationConfig = config.get("application");
 const mode: string = config.get("mode");
 
-class Controller {
+class BaseController {
   public logger() {
-    console.log("Log from Controller");
+    console.log("Log from BaseController");
   }
 
   public resGen(options: IResGen) {
@@ -20,8 +20,8 @@ class Controller {
       .status(status || 200)
       .json(
         options.result
-          ? Controller.responseGenerator(options as IResGenOptions)
-          : Controller.errorGenerator(options as IErrGenOptions)
+          ? BaseController.responseGenerator(options as IResGenOptions)
+          : BaseController.errorGenerator(options as IErrGenOptions)
       );
   }
 
@@ -61,4 +61,4 @@ class Controller {
   }
 }
 
-export default Controller;
+export default BaseController;

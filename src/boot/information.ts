@@ -1,14 +1,16 @@
 if (process.env.NODE_ENV === "development") {
   import("jsonwebtoken")
     .then(({ default: jwt }) => {
-      const sample_jwt = jwt.sign({ user_id: 123 }, process.env.JWT_SECRET ?? "", {
+      const example_jwt_data = { user_id: 123 };
+      const example_jwt_token = jwt.sign(example_jwt_data, process.env.JWT_SECRET ?? "", {
         expiresIn: "365d",
       });
       const api_keys = process.env.API_KEYS?.split(",");
       console.log({
-        sample_jwt,
-        api_keys,
-        isServer: JSON.parse(process.env.IS_ON_SERVER || "false"),
+        EXAMPLE_JWT_DATA: example_jwt_data,
+        EXAMPLE_JWT_TOKEN: example_jwt_token,
+        API_KEYS: api_keys,
+        IS_ON_SERVER: JSON.parse(process.env.IS_ON_SERVER || "false"),
       });
     })
     .catch((err) => console.log(`boot information error: ${err.message}`));
