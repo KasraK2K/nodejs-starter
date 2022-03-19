@@ -5,4 +5,7 @@ application:
   front_version: "1.0.0"
   portal_version: "1.0.0"
   print_info: false
-  logPath: "/var/embargo-logs/mng-api/"
+  logger:
+    logPath: "/var/embargo-logs/mng-api/"
+    console: true
+

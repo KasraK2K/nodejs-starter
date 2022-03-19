@@ -1,5 +1,12 @@
 import { getError } from "../../common/functions/errors";
-import { IResGen, IResGenOptions, IErrGenOptions, IResponse, IError, IRes } from "../../common/interfaces/information";
+import {
+  IResGen,
+  IResGenOptions,
+  IErrGenOptions,
+  ISuccessResponse,
+  IErrorResponse,
+  IRes,
+} from "../../common/interfaces/general";
 import config from "config";
 import { IApplicationConfig } from "../../../config/config.interface";
 import { LoggerEnum } from "../../common/enums/logger.enum";
@@ -26,7 +33,7 @@ class BaseController {
       );
   }
 
-  private static responseGenerator<T>(options: IResGenOptions<T>): IResponse<T> {
+  private static responseGenerator<T>(options: IResGenOptions<T>): ISuccessResponse<T> {
     const { req, result, data } = options;
     const response = {
       api_version: applicationConfig.api_version,
@@ -42,7 +49,7 @@ class BaseController {
     return response;
   }
 
-  private static errorGenerator(options: IErrGenOptions): IError {
+  private static errorGenerator(options: IErrGenOptions): IErrorResponse {
     const { req, result, error_code, error_user_messages } = options;
     const error = getError(error_code);
     const response = {
@@ -53,7 +60,7 @@ class BaseController {
       env: process.env.NODE_ENV,
       mode,
       result,
-      error_code: error.code,
+      error_code: error.code ?? 3000,
       error_message: error.message,
       error_user_messages,
     };

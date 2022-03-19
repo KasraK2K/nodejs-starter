@@ -19,7 +19,9 @@ export interface IErrGenOptions {
 
 export type IResGen<T> = IResGenOptions<T> | IErrGenOptions;
 
-export interface IResponse<T> {
+// ────────────────────────────────────────────────────────────────────────────────
+
+export interface ISuccessResponse<T> {
   api_version: string;
   front_version: string;
   portal_vertion: string;
@@ -30,7 +32,7 @@ export interface IResponse<T> {
   data: T;
 }
 
-export interface IError {
+export interface IErrorResponse {
   api_version: string;
   front_version: string;
   portal_vertion: string;
@@ -43,4 +45,6 @@ export interface IError {
   error_user_message?: string[];
 }
 
-export type IRes<T> = IResponse<T> | IError;
+export type IRes<T> = ISuccessResponse<T> | IErrorResponse;
+
+// ────────────────────────────────────────────────────────────────────────────────

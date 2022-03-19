@@ -11,7 +11,7 @@
 import express from "express";
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "../swagger";
-import { IErrGenOptions } from "../common/interfaces/information";
+import { IErrGenOptions } from "../common/interfaces/general";
 
 // ────────────────────────────────────────────────────────────────────────
 //   :::::: C O N T R O L L E R S : :  :   :    :     :        :          :

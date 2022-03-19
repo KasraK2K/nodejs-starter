@@ -6,6 +6,7 @@ const map = new Map([
   [3004, "Unauthenticated"],
   [3005, "Method not allowed"],
   [3006, "Too Many Requests"],
+  [3007, "Table not found"],
 ]);
 
 export const getError = (code: number) => {

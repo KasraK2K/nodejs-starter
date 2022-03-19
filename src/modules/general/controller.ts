@@ -1,6 +1,6 @@
 import BaseController from "../../base/controller/BaseController";
 import { Request, Response } from "express";
-import { IResGenOptions } from "../../common/interfaces/information";
+import { IResGenOptions } from "../../common/interfaces/general";
 
 class GeneralController extends BaseController {
   public shakeHand(req: Request, res: Response) {

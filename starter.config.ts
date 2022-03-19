@@ -9,5 +9,5 @@
 //=========================================================================================================================
 
 export default {
-  boot: ["envirement", "cron-jobs", "mongodb", /*mongoose,*/ "postgresql", "information"],
+  boot: ["envirement", /*"cron-jobs",/* "mongodb", /*mongoose,*/ "postgresql" /*"information"*/],
 };

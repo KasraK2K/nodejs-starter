@@ -22,7 +22,7 @@ export const logger = (text: any, type = LoggerEnum.INFO) => {
   const now = new Date();
   const date = now.getFullYear() + "-" + ("0" + (now.getMonth() + 1)).slice(-2) + "-" + ("0" + now.getDate()).slice(-2);
 
-  const path = `${applicationConfig.logPath}${date}/`;
+  const path = `${applicationConfig.logger.logPath}${date}/`;
 
   isServer && !fs.existsSync(path) && fs.mkdirSync(path);
 
@@ -46,7 +46,7 @@ export const logger = (text: any, type = LoggerEnum.INFO) => {
     .replace(/{red}/g, "\x1b[31m")
     .replace(/{reset}/g, "\x1b[0m");
 
-  console.log("-" + text);
+  applicationConfig.logger.console && console.log("- " + text);
 
   if (isServer) {
     fs.appendFile(path + type + ".log", `${date} ${time} ${text} \n`, (err) => console.log(err));
