@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 
 export const saltGen = (saltNum?: number): string => {
-  return bcrypt.genSaltSync(saltNum ? saltNum : Math.floor(Math.random() * (20 - 10) + 10));
+  return bcrypt.genSaltSync(saltNum ? saltNum : 7);
 };
 
 export const hashGen = (text: string, salt?: string | number): string => {

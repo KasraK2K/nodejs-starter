@@ -7,7 +7,7 @@ class PostgresRepository extends PgRepository {
   public async list(): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       await super
-        .executeQuery(` SELECT * FROM ${this.table};`)
+        .list(this.table, ["password"])
         .then((response) => resolve(response))
         .catch((err) => reject(err));
     });

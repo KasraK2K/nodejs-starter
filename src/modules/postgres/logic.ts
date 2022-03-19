@@ -1,3 +1,4 @@
+import { hashGen } from "./../../common/functions/bcrypt";
 import BaseLogic from "../../base/logic/BaseLogic";
 import { IUserCreate } from "./common/interface";
 import postgresRepository from "./repository";
@@ -17,6 +18,8 @@ class PostgresLogic extends BaseLogic {
     return new Promise(async (resolve, reject) => {
       const { valid, errors } = validator(schema.user.create, args);
       if (!valid) return reject({ result: false, error_code: 3002, errors });
+
+      args.password = hashGen(args.password);
 
       await postgresRepository
         .create(args)

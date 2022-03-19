@@ -18,7 +18,7 @@ CREATE TYPE gender AS ENUM ('male', 'female', 'transsexual', 'other');
 CREATE TABLE users (
   id SERIAL  PRIMARY KEY,
   user_name VARCHAR(50) NOT NULL UNIQUE,
-  password VARCHAR (50) NOT NULL,
+  password VARCHAR (200) NOT NULL,
   first_name VARCHAR (50),
   last_name VARCHAR (50),
   email VARCHAR (50) NOT NULL UNIQUE,

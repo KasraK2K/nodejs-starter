@@ -1,13 +1,25 @@
 import { LoggerEnum } from "../../common/enums/logger.enum";
+import _ from "lodash";
 // import { IReadTable } from "../../common/interfaces/repository";
 // import { Pool, PoolClient } from "pg";
 
 class PgRepository {
-  protected executeQuery(query: string): Promise<Record<string, any>> {
+  protected async list(tableName: string, omits: string[] = []): Promise<Record<string, any>> {
+    return new Promise(async (resolve, reject) => {
+      await this.executeQuery(` SELECT * FROM ${tableName};`, omits)
+        .then((response) => resolve(response))
+        .catch((err) => reject(err));
+    });
+  }
+
+  protected executeQuery(query: string, omits: string[] = []): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       await pg.pool
         .query(query)
-        .then((response) => resolve({ rowCount: response.rowCount, rows: response.rows }))
+        .then((response) => {
+          const rows = response.rows.map((row) => _.omit(row, omits));
+          return resolve({ rowCount: response.rowCount, rows });
+        })
         .catch((err) => {
           switch (err.code) {
             case "23505": // unique key is already exist
