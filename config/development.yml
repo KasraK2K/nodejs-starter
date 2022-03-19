@@ -2,13 +2,13 @@ mode: development
 
 database:
   mongodb:
-    name: "node-starter"
+    name: "node_starter"
     default_collection: "default"
-    uri: "mongodb://0.0.0.0:27017/node-starter"
+    uri: "mongodb://0.0.0.0:27017/node_starter"
   postgres:
     user: "postgres"
     host: "0.0.0.0"
-    database: "node-starter"
+    database: "node_starter"
     password: "postgres"
     port: 5432
     idleTimeoutMillis: 5000

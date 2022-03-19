@@ -1,3 +1,4 @@
+import { hashGen } from "./../common/functions/bcrypt";
 if (process.env.NODE_ENV === "development") {
   import("jsonwebtoken")
     .then(({ default: jwt }) => {

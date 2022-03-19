@@ -1,0 +1,23 @@
+export interface IUserList {
+  rowCount: number;
+  rows: IUser[];
+}
+
+export interface IUser {
+  id: number;
+  user_name: string;
+  password: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  gender: string;
+  created_at: Date;
+  updated_at: Date;
+  deleted_at: Date | null;
+  is_active: boolean;
+  is_verified: boolean;
+  is_admin: boolean;
+  is_super_admin: boolean;
+  is_blocked: boolean;
+}

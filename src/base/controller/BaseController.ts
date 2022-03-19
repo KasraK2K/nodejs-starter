@@ -1,9 +1,10 @@
 import { getError } from "../../common/functions/errors";
-import { IResGen, IResGenOptions, IErrGenOptions } from "../../common/interfaces/information";
+import { IResGen, IResGenOptions, IErrGenOptions, IResponse, IError, IRes } from "../../common/interfaces/information";
 import config from "config";
 import { IApplicationConfig } from "../../../config/config.interface";
 import { LoggerEnum } from "../../common/enums/logger.enum";
 import _ from "lodash";
+import { Response } from "express";
 
 const applicationConfig: IApplicationConfig = config.get("application");
 const mode: string = config.get("mode");
@@ -13,19 +14,19 @@ class BaseController {
     console.log("Log from BaseController");
   }
 
-  public resGen(options: IResGen) {
+  public resGen<T>(options: IResGen<T>): Response<IRes<T>> {
     const { res, status } = options;
     logger(`{green}${JSON.stringify(_.omit(res.locals.params, ["process_id"]), null, 2)}{reset}`, LoggerEnum.REQUEST);
     return res
       .status(status || 200)
       .json(
         options.result
-          ? BaseController.responseGenerator(options as IResGenOptions)
+          ? BaseController.responseGenerator(options as IResGenOptions<T>)
           : BaseController.errorGenerator(options as IErrGenOptions)
       );
   }
 
-  private static responseGenerator(options: IResGenOptions) {
+  private static responseGenerator<T>(options: IResGenOptions<T>): IResponse<T> {
     const { req, result, data } = options;
     const response = {
       api_version: applicationConfig.api_version,
@@ -41,7 +42,7 @@ class BaseController {
     return response;
   }
 
-  private static errorGenerator(options: IErrGenOptions) {
+  private static errorGenerator(options: IErrGenOptions): IError {
     const { req, result, error_code, error_user_messages } = options;
     const error = getError(error_code);
     const response = {

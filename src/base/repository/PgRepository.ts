@@ -3,7 +3,7 @@ import { Pool, PoolClient } from "pg";
 import { LoggerEnum } from "../../common/enums/logger.enum";
 
 class PgRepository {
-  protected async readTable(args: IReadTable, source: Pool = pg.pool_main): Promise<any> {
+  protected async readTable(args: IReadTable, source: Pool = pg.pool): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const { fields, where, table, order, limit, group } = PgRepository.sanitizeArgs(args);
       const list: Record<string, any>[] = [];

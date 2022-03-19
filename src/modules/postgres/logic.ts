@@ -1,10 +1,12 @@
 import BaseLogic from "../../base/logic/BaseLogic";
 import postgresRepository from "./repository";
-import { QueryResult } from "pg";
+import _ from "lodash";
+import { IUserList } from "./common/interface";
 
 class PostgresLogic extends BaseLogic {
-  public async list(): Promise<QueryResult<any>> {
-    return await postgresRepository.list();
+  public async list(): Promise<IUserList> {
+    const result = await postgresRepository.list();
+    return _.assign({ rowCount: result.rowCount, rows: result.rows });
   }
 }
 

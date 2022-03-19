@@ -18,6 +18,7 @@ import { IErrGenOptions } from "../common/interfaces/information";
 // ────────────────────────────────────────────────────────────────────────
 import BaseController from "../base/controller/BaseController";
 import generalController from "../modules/general/controller";
+import postgresController from "../modules/postgres/controller";
 // ────────────────────────────────────────────────────────────────────────
 
 // ────────────────────────────────────────────────────────────────────────
@@ -34,6 +35,9 @@ const router = express.Router();
 // ──────────────────────────────────────────────────────────────
 // generals
 router.post("/shake-hand", generalController.shakeHand);
+
+// postgres
+router.post("/postgres/list", postgresController.list);
 
 // swagger
 router.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerOptions));

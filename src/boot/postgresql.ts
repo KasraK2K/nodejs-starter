@@ -1,3 +1,13 @@
+//====================================================================
+//
+//  #####    #####    ####  ######   ####    #####    #####   ####
+//  ##  ##  ##   ##  ##       ##    ##       ##  ##   ##     ##
+//  #####   ##   ##   ###     ##    ##  ###  #####    #####   ###
+//  ##      ##   ##     ##    ##    ##   ##  ##  ##   ##        ##
+//  ##       #####   ####     ##     ####    ##   ##  #####  ####
+//
+//====================================================================
+
 import { IPostgresConfig } from "../../config/config.interface";
 import pg from "pg";
 import config from "config";
@@ -13,9 +23,9 @@ const pool = new pg.Pool({
   port: pgConfig.port,
   idleTimeoutMillis: pgConfig.idleTimeoutMillis,
   connectionTimeoutMillis: pgConfig.connectionTimeoutMillis,
-  ssl: {
-    rejectUnauthorized: pgConfig.ssl.rejectUnauthorized,
-  },
+  // ssl: {
+  //   rejectUnauthorized: pgConfig.ssl.rejectUnauthorized,
+  // },
 });
 
 pool
