@@ -1,3 +1,4 @@
+import { GenderEnum } from "./enum";
 export interface IUserList {
   rowCount: number;
   rows: IUser[];
@@ -11,7 +12,7 @@ export interface IUser {
   last_name: string;
   email: string;
   phone: string;
-  gender: string;
+  gender: GenderEnum;
   created_at: Date;
   updated_at: Date;
   deleted_at: Date | null;
@@ -20,4 +21,14 @@ export interface IUser {
   is_admin: boolean;
   is_super_admin: boolean;
   is_blocked: boolean;
+}
+
+export interface IUserCreate {
+  user_name: string;
+  password: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  gender: GenderEnum;
 }

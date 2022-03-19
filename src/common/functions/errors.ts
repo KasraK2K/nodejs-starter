@@ -7,6 +7,8 @@ const map = new Map([
   [3005, "Method not allowed"],
   [3006, "Too Many Requests"],
   [3007, "Table not found"],
+  [3008, "Some uniques are not unique"],
+  [3009, "Database Connection Refused"],
 ]);
 
 export const getError = (code: number) => {

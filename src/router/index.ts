@@ -38,6 +38,7 @@ router.post("/shake-hand", generalController.shakeHand);
 
 // postgres
 router.post("/postgres/list", postgresController.list);
+router.post("/postgres/create", postgresController.create);
 
 // swagger
 router.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerOptions));

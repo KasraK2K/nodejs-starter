@@ -1,6 +1,6 @@
-import { IReadTable } from "../../common/interfaces/repository";
-import { Pool, PoolClient } from "pg";
 import { LoggerEnum } from "../../common/enums/logger.enum";
+// import { IReadTable } from "../../common/interfaces/repository";
+// import { Pool, PoolClient } from "pg";
 
 class PgRepository {
   protected executeQuery(query: string): Promise<Record<string, any>> {
@@ -9,14 +9,26 @@ class PgRepository {
         .query(query)
         .then((response) => resolve({ rowCount: response.rowCount, rows: response.rows }))
         .catch((err) => {
-          if (err.code === "42P01") {
-            logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
-            logger(`{red}Database Table Not Found{reset}`, LoggerEnum.ERROR);
-            return reject({ result: false, error_code: 3007 });
-          } else {
-            logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
-            logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
-            return reject(err);
+          switch (err.code) {
+            case "23505": // unique key is already exist
+              logger(`{red}${err.detail}{reset}`, LoggerEnum.ERROR);
+              logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
+              return reject({ result: false, error_code: 3008, errors: [err.detail] });
+
+            case "42P01":
+              logger(`{red}Database Table Not Found{reset}`, LoggerEnum.ERROR);
+              logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
+              return reject({ result: false, error_code: 3007 });
+
+            case "ECONNREFUSED":
+              logger(`{red}Database Connection Refused{reset}`, LoggerEnum.ERROR);
+              logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
+              return reject({ result: false, error_code: 3009 });
+
+            default:
+              logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
+              logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
+              return reject(err);
           }
         });
     });
