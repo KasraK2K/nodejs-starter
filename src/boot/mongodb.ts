@@ -16,13 +16,6 @@ const mongodbConfig: IMongodbConfig = config.get("database.mongodb");
 
 const mongoClient = new MongoClient(mongodbConfig.uri);
 
-mongoClient.connect((err) => {
-  if (err) {
-    console.error(err);
-    process.exit(1);
-  }
-});
-
 mongoClient
   .on("connect", () => console.log("MongoDB connected"))
   .on("close", () => console.log("MongoDB connection closed"))
