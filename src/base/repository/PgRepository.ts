@@ -1,4 +1,4 @@
-import { IPagination } from "./../../modules/postgres/common/interface";
+import { IFilter, IPagination } from "./../../modules/postgres/common/interface";
 import { LoggerEnum } from "../../common/enums/logger.enum";
 import _ from "lodash";
 import { IReadTable } from "../../common/interfaces/repository";
@@ -72,37 +72,42 @@ class PgRepository {
   }
 
   // ─── GET PAGINATION QUERY ───────────────────────────────────────────────────────
-  protected getPaginateQuery(tableName: string, pagination: IPagination = { limit: 200, page: 1, filter: {} }) {
+  protected getPaginateQuery(tableName: string, pagination: IPagination = { limit: 200, page: 1, filter: {} }): string {
     const { limit, page } = pagination;
-    let query = `SELECT *, count(*) OVER() AS total_count FROM "${tableName}" `;
+    const query = `SELECT *, count(*) OVER() AS total_count FROM "${tableName}" `;
+    const filter: IFilter = { ...pagination.filter, limit, page };
+    return this.addFiltertoQuery(filter, query);
+  }
 
+  protected addFiltertoQuery(filter: IFilter, query: string): string {
     // ───────────────────────────────────────────────── AND WHERE ─────
-    if (pagination.filter && pagination.filter.where) {
-      const where = pagination.filter.where;
+    if (filter && filter.where) {
+      const where = filter.where;
       query += `\n\tWHERE ${where
         .map((whereItem) => `${whereItem.field} ${whereItem.operator} '${whereItem.value}'`)
         .join(" AND ")} `;
     }
 
     // ────────────────────────────────────────────────── GROUP BY ─────
-    if (pagination.filter && pagination.filter.group) {
-      const group = pagination.filter.group;
+    if (filter && filter.group) {
+      const group = filter.group;
       query += `\n\tGROUP BY ${group.map((groupItem) => `"${groupItem}"`).join(", ")}, "id" `;
     }
 
     // ───────────────────────────────────────────────── ORDER BY ─────
-    if (pagination.filter && pagination.filter.order) {
-      const order = pagination.filter.order;
+    if (filter && filter.order) {
+      const order = filter.order;
       query += `\n\tORDER BY ${order.map((orderItem) => `"${orderItem}"`).join(", ")} `;
-      pagination.filter && pagination.filter.is_asc ? (query += "ASC ") : (query += "DESC ");
+      filter && filter.is_asc ? (query += "ASC ") : (query += "DESC ");
     }
 
     // ────────────────────────────────────────── LIMIT AND OFFSET ─────
-    if (limit) query += `\n\tLIMIT ${limit} `;
-    if (page) query += `OFFSET ${(page - 1) * limit} `;
-    query.trim() + ";";
+    if (filter.limit && filter.page) {
+      if (filter.limit) query += `\n\tLIMIT ${filter.limit} `;
+      if (filter.page) query += `OFFSET ${(filter.page - 1) * filter.limit} `;
+    }
 
-    return query;
+    return query.trim() + ";";
   }
 
   // ─── TOTAL COUNT ────────────────────────────────────────────────────────────────
