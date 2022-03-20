@@ -36,7 +36,11 @@ class PgRepository {
     return new Promise(async (resolve, reject) => {
       await this.executeQuery(query, omits)
         .then((response) => resolve(response))
-        .catch((err) => reject(err));
+        .catch((err) => {
+          logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
+          logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
+          return reject(err);
+        });
     });
   }
 
@@ -45,7 +49,11 @@ class PgRepository {
     return new Promise(async (resolve, reject) => {
       await this.executeQuery(totalCountQuery)
         .then((response) => resolve(Number(response.rows[0].count)))
-        .catch((err) => reject(err));
+        .catch((err) => {
+          logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
+          logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
+          return reject(err);
+        });
     });
   }
 
