@@ -4,11 +4,40 @@ import _ from "lodash";
 import { IReadTable } from "../../common/interfaces/repository";
 
 class PgRepository {
+  // ─── SELECT ALL ─────────────────────────────────────────────────────────────────
+  protected async find(tableName: string, omits: string[] = []): Promise<Record<string, any>> {
+    const query = ` SELECT * FROM ${tableName}`;
+
+    return new Promise(async (resolve, reject) => {
+      await this.executeQuery(query, omits)
+        .then((response) => resolve(response))
+        .catch((err) => {
+          logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
+          logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
+          return reject(err);
+        });
+    });
+  }
+
+  // ─── SELECT ONE ─────────────────────────────────────────────────────────────────
+
+  // ─── CREATE ─────────────────────────────────────────────────────────────────────
+
+  // ─── UPDATE ─────────────────────────────────────────────────────────────────────
+
+  // ─── UPSERT ─────────────────────────────────────────────────────────────────────
+
+  // ─── SAFE DELETE ────────────────────────────────────────────────────────────────
+
+  // ─── DELETE ─────────────────────────────────────────────────────────────────────
+
+  // ─── RESTORE ────────────────────────────────────────────────────────────────────
+
   // ─── PAGINATION ─────────────────────────────────────────────────────────────────
   protected async paginate(
     tableName: string,
     omits: string[] = [],
-    pagination: { limit: number; page: number } = { limit: 200, page: 1 }
+    pagination: IPagination = { limit: 200, page: 1, filter: {} }
   ): Promise<Record<string, any>> {
     const { limit, page } = pagination;
     const query = this.getPaginateQuery(tableName, pagination);
@@ -74,21 +103,6 @@ class PgRepository {
     query.trim() + ";";
 
     return query;
-  }
-
-  // ─── SELECT ALL ─────────────────────────────────────────────────────────────────
-  protected async findAll(tableName: string, omits: string[] = []): Promise<Record<string, any>> {
-    const query = ` SELECT * FROM ${tableName}`;
-
-    return new Promise(async (resolve, reject) => {
-      await this.executeQuery(query, omits)
-        .then((response) => resolve(response))
-        .catch((err) => {
-          logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
-          logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
-          return reject(err);
-        });
-    });
   }
 
   // ─── TOTAL COUNT ────────────────────────────────────────────────────────────────
