@@ -3,25 +3,7 @@ import _ from "lodash";
 import { IReadTable } from "../../common/interfaces/repository";
 
 class PgRepository {
-  protected async readTable(args: IReadTable): Promise<any> {
-    return new Promise(async (resolve, reject) => {
-      const query = this.getReadTableQuery(args);
-
-      await this.executeQuery(query)
-        .then((response) => resolve(response.rows))
-        .catch((err) => {
-          logger(`{red} error readTable {reset}`);
-          logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
-          reject(err);
-        });
-    });
-  }
-
-  protected getReadTableQuery(args: IReadTable): string {
-    const { fields, where, table, order, limit, group } = PgRepository.sanitizeArgs(args);
-    return `select ${fields} from ${table} ${where} ${order} ${group} ${limit}`;
-  }
-
+  // ─── PAGINATION ─────────────────────────────────────────────────────────────────
   protected async paginate(
     tableName: string,
     omits: string[] = [],
@@ -50,6 +32,7 @@ class PgRepository {
     });
   }
 
+  // ─── GET PAGINATION QUERY ───────────────────────────────────────────────────────
   protected getPaginateQuery(tableName: string, pagination: { limit: number; page: number } = { limit: 200, page: 0 }) {
     const { limit, page } = pagination;
     let query = `SELECT *, count(*) OVER() AS total_count FROM ${tableName}`;
@@ -59,6 +42,7 @@ class PgRepository {
     return query;
   }
 
+  // ─── SELECT ALL ─────────────────────────────────────────────────────────────────
   protected async findAll(tableName: string, omits: string[] = []): Promise<Record<string, any>> {
     const query = ` SELECT * FROM ${tableName}`;
 
@@ -73,6 +57,7 @@ class PgRepository {
     });
   }
 
+  // ─── TOTAL COUNT ────────────────────────────────────────────────────────────────
   protected async totalCount(tableName: string): Promise<number> {
     const totalCountQuery = `SELECT COUNT(*) FROM ${tableName}`;
     return new Promise(async (resolve, reject) => {
@@ -86,6 +71,7 @@ class PgRepository {
     });
   }
 
+  // ─── EXECUTE QUERY ──────────────────────────────────────────────────────────────
   protected executeQuery(query: string, omits: string[] = []): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       await pg.pool
@@ -120,6 +106,28 @@ class PgRepository {
     });
   }
 
+  // ─── READ TABLE ─────────────────────────────────────────────────────────────────
+  protected async readTable(args: IReadTable): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      const query = this.getReadTableQuery(args);
+
+      await this.executeQuery(query)
+        .then((response) => resolve(response.rows))
+        .catch((err) => {
+          logger(`{red} error readTable {reset}`);
+          logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
+          reject(err);
+        });
+    });
+  }
+
+  // ─── GET READ TABLE QUERY ───────────────────────────────────────────────────────
+  protected getReadTableQuery(args: IReadTable): string {
+    const { fields, where, table, order, limit, group } = PgRepository.sanitizeArgs(args);
+    return `select ${fields} from ${table} ${where} ${order} ${group} ${limit}`;
+  }
+
+  // ─── SANITIZE ARGUMENTS ─────────────────────────────────────────────────────────
   private static sanitizeArgs(args: IReadTable): IReadTable {
     args.table = args.table || "";
     args.fields = args.fields || "*";
