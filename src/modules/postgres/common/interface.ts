@@ -1,5 +1,5 @@
-import { IReadTable } from "./../../../common/interfaces/repository";
 import { GenderEnum } from "./enum";
+
 export interface IUserList {
   rowCount: number;
   rows: IUser[];
@@ -37,9 +37,4 @@ export interface IUserCreate {
 export interface IPagination {
   limit: number;
   page: number;
-}
-
-export interface IPaginationOptions {
-  args: IReadTable;
-  pagination: IPagination;
 }
