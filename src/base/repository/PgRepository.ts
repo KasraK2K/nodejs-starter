@@ -44,7 +44,7 @@ class PgRepository {
     const totalCountQuery = `SELECT COUNT(*) FROM ${tableName}`;
     return new Promise(async (resolve, reject) => {
       await this.executeQuery(totalCountQuery)
-        .then((response) => resolve(response.rows[0].count))
+        .then((response) => resolve(Number(response.rows[0].count)))
         .catch((err) => reject(err));
     });
   }
