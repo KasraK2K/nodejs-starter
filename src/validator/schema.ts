@@ -5,6 +5,31 @@ export const schema = {
     properties: {
       limit: { type: "integer", minimum: 1, maximum: 200 },
       page: { type: "integer" },
+      filter: {
+        type: "object",
+        properties: {
+          where: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: { field: { type: "string" }, operator: { type: "string" }, value: { type: "string" } },
+              required: ["field", "operator", "value"],
+              minProperties: 3,
+            },
+          },
+          group: {
+            type: "array",
+            items: { type: "string" },
+            minItems: 1,
+          },
+          order: {
+            type: "array",
+            items: { type: "string" },
+            minItems: 1,
+          },
+          is_asc: { type: "boolean" },
+        },
+      },
     },
     required: ["limit", "page"],
   },

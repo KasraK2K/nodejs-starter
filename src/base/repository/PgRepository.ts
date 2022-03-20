@@ -1,3 +1,4 @@
+import { IPagination } from "./../../modules/postgres/common/interface";
 import { LoggerEnum } from "../../common/enums/logger.enum";
 import _ from "lodash";
 import { IReadTable } from "../../common/interfaces/repository";
@@ -7,7 +8,7 @@ class PgRepository {
   protected async paginate(
     tableName: string,
     omits: string[] = [],
-    pagination: { limit: number; page: number } = { limit: 200, page: 0 }
+    pagination: { limit: number; page: number } = { limit: 200, page: 1 }
   ): Promise<Record<string, any>> {
     const { limit, page } = pagination;
     const query = this.getPaginateQuery(tableName, pagination);
@@ -17,27 +18,60 @@ class PgRepository {
       let total_page: number;
       await this.executeQuery(query, omits)
         .then((response) => {
-          total_count = Number(response.rows[0].total_count);
-          total_page = Math.ceil(total_count / limit);
-          response.total_count = total_count;
-          response.total_page = total_page;
-          response.page = page;
-          response.limit = limit;
-          page !== total_page && (response.nextPage = page + 1);
-          page - 1 && (response.prevPage = page - 1);
-          response.rows = response.rows.map((row: any) => _.omit(row, ["total_count"]));
-          resolve(response);
+          if (response.rowCount) {
+            total_count = Number(response.rows[0].total_count);
+            total_page = Math.ceil(total_count / limit);
+            response.total_count = total_count;
+            response.total_page = total_page;
+            response.page = page;
+            response.limit = limit;
+            page !== total_page && (response.nextPage = page + 1);
+            page - 1 && (response.prevPage = page - 1);
+            response.rows = response.rows.map((row: any) => _.omit(row, ["total_count"]));
+            return resolve(response);
+          } else {
+            return resolve([]);
+          }
         })
-        .catch((err) => reject(err));
+        .catch((err) => {
+          console.log(123123493987257, err);
+          logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
+          logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
+          return reject(err);
+        });
     });
   }
 
   // ─── GET PAGINATION QUERY ───────────────────────────────────────────────────────
-  protected getPaginateQuery(tableName: string, pagination: { limit: number; page: number } = { limit: 200, page: 0 }) {
+  protected getPaginateQuery(tableName: string, pagination: IPagination = { limit: 200, page: 1, filter: {} }) {
     const { limit, page } = pagination;
-    let query = `SELECT *, count(*) OVER() AS total_count FROM ${tableName}`;
-    if (limit) query += ` LIMIT ${limit}`;
-    if (page) query += ` OFFSET ${(page - 1) * limit}`;
+    let query = `SELECT *, count(*) OVER() AS total_count FROM "${tableName}" `;
+
+    // ───────────────────────────────────────────────── AND WHERE ─────
+    if (pagination.filter && pagination.filter.where) {
+      const where = pagination.filter.where;
+      query += `\n\tWHERE ${where
+        .map((whereItem) => `${whereItem.field} ${whereItem.operator} '${whereItem.value}'`)
+        .join(" AND ")} `;
+    }
+
+    // ────────────────────────────────────────────────── GROUP BY ─────
+    if (pagination.filter && pagination.filter.group) {
+      const group = pagination.filter.group;
+      query += `\n\tGROUP BY ${group.map((groupItem) => `"${groupItem}"`).join(", ")}, "id" `;
+    }
+
+    // ───────────────────────────────────────────────── ORDER BY ─────
+    if (pagination.filter && pagination.filter.order) {
+      const order = pagination.filter.order;
+      query += `\n\tORDER BY ${order.map((orderItem) => `"${orderItem}"`).join(", ")} `;
+      pagination.filter && pagination.filter.is_asc ? (query += "ASC ") : (query += "DESC ");
+    }
+
+    // ────────────────────────────────────────── LIMIT AND OFFSET ─────
+    if (limit) query += `\n\tLIMIT ${limit} `;
+    if (page) query += `OFFSET ${(page - 1) * limit} `;
+    query.trim() + ";";
 
     return query;
   }
@@ -92,6 +126,11 @@ class PgRepository {
               logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
               return reject({ result: false, error_code: 3007 });
 
+            case "42703":
+              logger(`{red}Database Column Not Found{reset}`, LoggerEnum.ERROR);
+              logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
+              return reject({ result: false, error_code: 3010 });
+
             case "ECONNREFUSED":
               logger(`{red}Database Connection Refused{reset}`, LoggerEnum.ERROR);
               logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
@@ -131,10 +170,10 @@ class PgRepository {
   private static sanitizeArgs(args: IReadTable): IReadTable {
     args.table = args.table || "";
     args.fields = args.fields || "*";
-    args.where = args.where && args.where.length ? ` where ${args.where} ` : "";
-    args.order = args.order && args.order.length ? ` order by ${args.order} ` : "";
-    args.limit = args.limit && Number(args.limit) ? ` limit ${args.limit} ` : "";
-    args.group = args.group && args.group.length ? ` group by ${args.group} ` : "";
+    args.where = args.where && args.where.length ? ` WHERE ${args.where} ` : "";
+    args.order = args.order && args.order.length ? ` ORDER BY ${args.order} ` : "";
+    args.limit = args.limit && Number(args.limit) ? ` LIMIT ${args.limit} ` : "";
+    args.group = args.group && args.group.length ? ` GROUP BY ${args.group} ` : "";
     return args;
   }
 }

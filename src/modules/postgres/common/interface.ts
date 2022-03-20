@@ -37,4 +37,10 @@ export interface IUserCreate {
 export interface IPagination {
   limit: number;
   page: number;
+  filter?: {
+    where?: { field: string; operator: string; value: string }[];
+    group?: string[];
+    order?: { field: string; value: string }[];
+    is_asc?: boolean;
+  };
 }
