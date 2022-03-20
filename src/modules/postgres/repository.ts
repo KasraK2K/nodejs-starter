@@ -1,13 +1,13 @@
 import PgRepository from "../../base/repository/PgRepository";
-import { IUserCreate } from "./common/interface";
+import { IPagination, IUserCreate } from "./common/interface";
 
 class PostgresRepository extends PgRepository {
   private table = "users";
 
-  public async list(): Promise<Record<string, any>> {
+  public async list(pagination: IPagination): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       await super
-        .list(this.table, ["password"])
+        .paginate(this.table, ["password"], pagination)
         .then((response) => resolve(response))
         .catch((err) => reject(err));
     });

@@ -4,10 +4,47 @@ import _ from "lodash";
 // import { Pool, PoolClient } from "pg";
 
 class PgRepository {
-  protected async list(tableName: string, omits: string[] = []): Promise<Record<string, any>> {
+  protected async paginate(
+    tableName: string,
+    omits: string[] = [],
+    pagination: { limit: number; page: number } = { limit: 200, page: 0 }
+  ): Promise<Record<string, any>> {
+    const totalCount = (await this.totalCount(tableName)) || 0;
+    const { limit, page } = pagination;
+    let query = ` SELECT * FROM ${tableName}`;
+    if (limit) query += ` LIMIT ${limit}`;
+    if (page) query += ` OFFSET ${(page - 1) * limit}`;
+
     return new Promise(async (resolve, reject) => {
-      await this.executeQuery(` SELECT * FROM ${tableName};`, omits)
+      const totalPage = Math.ceil(totalCount / limit);
+      await this.executeQuery(query, omits)
+        .then((response) => {
+          response.totalCount = totalCount;
+          response.totalPage = totalPage;
+          response.page = page;
+          response.limit = limit;
+          page !== totalPage && (response.nextPage = page + 1);
+          page - 1 && (response.prevPage = page - 1);
+          resolve(response);
+        })
+        .catch((err) => reject(err));
+    });
+  }
+
+  protected async find(tableName: string, omits: string[] = []): Promise<Record<string, any>> {
+    const query = ` SELECT * FROM ${tableName}`;
+    return new Promise(async (resolve, reject) => {
+      await this.executeQuery(query, omits)
         .then((response) => resolve(response))
+        .catch((err) => reject(err));
+    });
+  }
+
+  protected async totalCount(tableName: string): Promise<number> {
+    const totalCountQuery = `SELECT COUNT(*) FROM ${tableName}`;
+    return new Promise(async (resolve, reject) => {
+      await this.executeQuery(totalCountQuery)
+        .then((response) => resolve(response.rows[0].count))
         .catch((err) => reject(err));
     });
   }

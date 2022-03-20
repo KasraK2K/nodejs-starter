@@ -32,3 +32,8 @@ export interface IUserCreate {
   phone: string;
   gender: GenderEnum;
 }
+
+export interface IPagination {
+  limit: number;
+  page: number;
+}

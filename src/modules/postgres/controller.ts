@@ -7,7 +7,7 @@ import { IRes } from "../../common/interfaces/general";
 class PostgresController extends BaseController {
   public async list(req: Request, res: Response): Promise<Response<IRes<IUserList>>> {
     return await postgresLogic
-      .list()
+      .list(res.locals.params)
       .then((result) => {
         return super.resGen<IUserList>({
           req,

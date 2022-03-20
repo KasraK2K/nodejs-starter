@@ -1,5 +1,13 @@
 import { GenderEnum } from "./../modules/postgres/common/enum";
 export const schema = {
+  list: {
+    type: "object",
+    properties: {
+      limit: { type: "integer", minimum: 1, maximum: 200 },
+      page: { type: "integer" },
+    },
+    required: ["limit", "page"],
+  },
   user: {
     create: {
       type: "object",
