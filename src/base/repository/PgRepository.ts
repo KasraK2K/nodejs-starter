@@ -1,38 +1,67 @@
 import { LoggerEnum } from "../../common/enums/logger.enum";
 import _ from "lodash";
-// import { IReadTable } from "../../common/interfaces/repository";
-// import { Pool, PoolClient } from "pg";
+import { IReadTable } from "../../common/interfaces/repository";
 
 class PgRepository {
+  protected async readTable(args: IReadTable): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      const query = this.getReadTableQuery(args);
+
+      await this.executeQuery(query)
+        .then((response) => resolve(response.rows))
+        .catch((err) => {
+          logger(`{red} error readTable {reset}`);
+          logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
+          reject(err);
+        });
+    });
+  }
+
+  protected getReadTableQuery(args: IReadTable): string {
+    const { fields, where, table, order, limit, group } = PgRepository.sanitizeArgs(args);
+    return `select ${fields} from ${table} ${where} ${order} ${group} ${limit}`;
+  }
+
   protected async paginate(
     tableName: string,
     omits: string[] = [],
     pagination: { limit: number; page: number } = { limit: 200, page: 0 }
   ): Promise<Record<string, any>> {
-    const totalCount = (await this.totalCount(tableName)) || 0;
     const { limit, page } = pagination;
-    let query = ` SELECT * FROM ${tableName}`;
-    if (limit) query += ` LIMIT ${limit}`;
-    if (page) query += ` OFFSET ${(page - 1) * limit}`;
+    const query = this.getPaginateQuery(tableName, pagination);
 
     return new Promise(async (resolve, reject) => {
-      const totalPage = Math.ceil(totalCount / limit);
+      let total_count: number;
+      let total_page: number;
       await this.executeQuery(query, omits)
         .then((response) => {
-          response.totalCount = totalCount;
-          response.totalPage = totalPage;
+          total_count = Number(response.rows[0].total_count);
+          total_page = Math.ceil(total_count / limit);
+          response.total_count = total_count;
+          response.total_page = total_page;
           response.page = page;
           response.limit = limit;
-          page !== totalPage && (response.nextPage = page + 1);
+          page !== total_page && (response.nextPage = page + 1);
           page - 1 && (response.prevPage = page - 1);
+          response.rows = response.rows.map((row: any) => _.omit(row, ["total_count"]));
           resolve(response);
         })
         .catch((err) => reject(err));
     });
   }
 
-  protected async find(tableName: string, omits: string[] = []): Promise<Record<string, any>> {
+  protected getPaginateQuery(tableName: string, pagination: { limit: number; page: number } = { limit: 200, page: 0 }) {
+    const { limit, page } = pagination;
+    let query = `SELECT *, count(*) OVER() AS total_count FROM ${tableName}`;
+    if (limit) query += ` LIMIT ${limit}`;
+    if (page) query += ` OFFSET ${(page - 1) * limit}`;
+
+    return query;
+  }
+
+  protected async findAll(tableName: string, omits: string[] = []): Promise<Record<string, any>> {
     const query = ` SELECT * FROM ${tableName}`;
+
     return new Promise(async (resolve, reject) => {
       await this.executeQuery(query, omits)
         .then((response) => resolve(response))
@@ -91,66 +120,15 @@ class PgRepository {
     });
   }
 
-  // protected async readTable(args: IReadTable, source: Pool = pg.pool): Promise<any> {
-  //   return new Promise(async (resolve, reject) => {
-  //     const { fields, where, table, order, limit, group } = PgRepository.sanitizeArgs(args);
-  //     const list: Record<string, any>[] = [];
-  //     const query = `select ${fields} from ${table} ${where} ${order} ${group} ${limit}`;
-
-  //     await this.executeQuery({ query, source })
-  //       .then((response) => {
-  //         response?.rows?.forEach((row: Record<string, any>) => {
-  //           list.push(row);
-  //         });
-  //         resolve(list);
-  //       })
-  //       .catch((err) => {
-  //         logger(`{red} error readTable {reset}`);
-  //         logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
-  //         reject(err);
-  //       });
-  //   });
-  // }
-
-  // protected executeQuery(args: { query: string; source: Pool }): Promise<any> {
-  //   return new Promise(async (resolve, reject) => {
-  //     const { source, query = "" } = args;
-
-  //     await source
-  //       .connect()
-  //       .then((client: PoolClient) => {
-  //         client
-  //           .query(query)
-  //           .then((response) => {
-  //             resolve(response);
-  //           })
-  //           .catch((err) => {
-  //             logger(`{red} error executeQuery {reset}`);
-  //             logger(`{red} ${query} {reset}`);
-  //             logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
-  //             reject(err);
-  //           })
-  //           .finally(() => {
-  //             client.release();
-  //           });
-  //       })
-  //       .catch((err) => {
-  //         logger(`{red} error executeQuery {reset}`);
-  //         logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
-  //         reject(err);
-  //       });
-  //   });
-  // }
-
-  // private static sanitizeArgs(args: IReadTable): IReadTable {
-  //   args.fields = args.fields || "*";
-  //   args.where = args.where && args.where.length ? ` where ${args.where} ` : "";
-  //   args.table = args.table || "";
-  //   args.order = args.order && args.order.length ? ` order by ${args.order} ` : "";
-  //   args.limit = args.limit && Number(args.limit) ? ` limit ${args.limit} ` : "";
-  //   args.group = args.group && args.group.length ? ` group by ${args.group} ` : "";
-  //   return args;
-  // }
+  private static sanitizeArgs(args: IReadTable): IReadTable {
+    args.table = args.table || "";
+    args.fields = args.fields || "*";
+    args.where = args.where && args.where.length ? ` where ${args.where} ` : "";
+    args.order = args.order && args.order.length ? ` order by ${args.order} ` : "";
+    args.limit = args.limit && Number(args.limit) ? ` limit ${args.limit} ` : "";
+    args.group = args.group && args.group.length ? ` group by ${args.group} ` : "";
+    return args;
+  }
 }
 
 export default PgRepository;

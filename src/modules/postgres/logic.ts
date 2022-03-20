@@ -6,7 +6,7 @@ import postgresRepository from "./repository";
 class PostgresLogic extends BaseLogic {
   public async list(pagination: IPagination): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
-      const { valid, errors } = validator(schema.list, pagination);
+      const { valid, errors } = validator(schema.pagination, pagination);
       if (!valid) return reject({ result: false, error_code: 3002, errors });
 
       await postgresRepository
