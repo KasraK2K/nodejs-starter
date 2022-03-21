@@ -38,12 +38,10 @@ class RequestMiddleware extends Middleware {
     const ignoreToken: string[] = ["login", "logout", "shake-hand", "swagger"];
     const endpoint = req.originalUrl;
     const params = req.body;
-    res.locals.params = params;
+    _.assign(res.locals.params, params);
 
     const checkApiKey = !ignoreApikeys.some((ignoreApiKey) => endpoint.includes(ignoreApiKey));
     const checkToken = !ignoreToken.some((ignoreTkn) => endpoint.includes(ignoreTkn));
-
-    let portal_user_id = 0;
 
     // ───────────────────────────────── IF PARAMS HAS NOT API KEY ─────
     if (checkApiKey && (!params.api_key || !apiKeys.includes(params.api_key))) {
@@ -71,9 +69,7 @@ class RequestMiddleware extends Middleware {
           error_code: 3004,
         });
       } else {
-        portal_user_id = jwtPayload?.data?.user_id || 0;
-        res.locals.params.portal_user_id = portal_user_id;
-        _.assign(res.locals, { params });
+        _.assign(res.locals, { jwt_payload: jwtPayload.data });
         next();
       }
     } else {

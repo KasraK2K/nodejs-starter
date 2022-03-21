@@ -22,6 +22,35 @@ class PgRepository {
   // ─── SELECT ONE ─────────────────────────────────────────────────────────────────
 
   // ─── CREATE ─────────────────────────────────────────────────────────────────────
+  protected async insert(
+    tableName: string,
+    args: Record<string, any>,
+    omits: string[] = []
+  ): Promise<Record<string, any>> {
+    args = _.omit(args, ["api_key"]);
+    const query = this.getInsertQuery(tableName, args);
+
+    return new Promise(async (resolve, reject) => {
+      await this.executeQuery(query, omits)
+        .then((response) => resolve(response))
+        .catch((err) => {
+          logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
+          logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
+          return reject(err);
+        });
+    });
+  }
+
+  protected getInsertQuery(tableName: string, args: any): string {
+    return `
+      INSERT INTO ${tableName}
+      \t(${_.keys(args)})
+      \tVALUES (${_.values(args)
+        .map((val) => `'${val}'`)
+        .join(", ")})
+      \tRETURNING *;
+    `;
+  }
 
   // ─── UPDATE ─────────────────────────────────────────────────────────────────────
 
@@ -36,8 +65,8 @@ class PgRepository {
   // ─── PAGINATION ─────────────────────────────────────────────────────────────────
   protected async paginate(
     tableName: string,
-    omits: string[] = [],
-    pagination: IPagination = { limit: 200, page: 1, filter: {} }
+    pagination: IPagination = { limit: 200, page: 1, filter: {} },
+    omits: string[] = []
   ): Promise<Record<string, any>> {
     const { limit, page } = pagination;
     const query = this.getPaginateQuery(tableName, pagination);
@@ -63,7 +92,6 @@ class PgRepository {
           }
         })
         .catch((err) => {
-          console.log(123123493987257, err);
           logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
           logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
           return reject(err);

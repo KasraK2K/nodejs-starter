@@ -7,24 +7,16 @@ class PostgresRepository extends PgRepository {
   public async list(pagination: IPagination): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       await super
-        .paginate(this.table, ["password"], pagination)
+        .paginate(this.table, pagination, ["password"])
         .then((response) => resolve(response))
         .catch((err) => reject(err));
     });
   }
 
   public async create(args: IUserCreate): Promise<Record<string, any>> {
-    const { user_name, password, first_name, last_name, email, phone, gender } = args;
-    const query = `
-      INSERT INTO ${this.table}
-      (user_name, password, first_name, last_name, email, phone, gender)
-      VALUES ('${user_name}', '${password}', '${first_name}', '${last_name}', '${email}', '${phone}', '${gender}')
-      RETURNING *;
-    `;
-
     return new Promise(async (resolve, reject) => {
       await super
-        .executeQuery(query)
+        .insert(this.table, args, ["password"])
         .then((response) => resolve(response))
         .catch((err) => reject(err));
     });
