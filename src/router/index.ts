@@ -37,7 +37,8 @@ const router = express.Router();
 router.post("/shake-hand", generalController.shakeHand);
 
 // postgres
-router.post("/postgres/list", postgresController.list);
+router.post("/postgres/list", postgresController.getAll);
+router.post("/postgres/find/:id", postgresController.getOne);
 router.post("/postgres/create", postgresController.create);
 
 // swagger

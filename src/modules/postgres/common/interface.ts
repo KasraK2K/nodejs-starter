@@ -24,16 +24,6 @@ export interface IUser {
   is_blocked: boolean;
 }
 
-export interface IUserCreate {
-  user_name: string;
-  password: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone: string;
-  gender: GenderEnum;
-}
-
 export interface IPagination {
   limit: number;
   page: number;
@@ -47,4 +37,14 @@ export interface IFilter {
   is_asc?: boolean;
   limit?: number;
   page?: number;
+}
+
+export interface IUserCreate {
+  user_name: string;
+  password: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  gender: GenderEnum;
 }

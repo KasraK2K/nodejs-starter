@@ -20,6 +20,23 @@ class PgRepository {
   }
 
   // ─── SELECT ONE ─────────────────────────────────────────────────────────────────
+  protected async findOne(tableName: string, id: string, omits: string[] = []): Promise<Record<string, any>> {
+    const query = this.getfindOneQuery(tableName, id);
+    return new Promise(async (resolve, reject) => {
+      await this.executeQuery(query, omits)
+        .then((response) => resolve(response))
+        .catch((err) => {
+          logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
+          logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
+          return reject(err);
+        });
+    });
+  }
+
+  // ─── SELECT ONE ─────────────────────────────────────────────────────────────────
+  protected getfindOneQuery(tableName: string, id: string): string {
+    return `SELECT * FROM ${tableName} WHERE id = '${id}' LIMIT 1 `;
+  }
 
   // ─── CREATE ─────────────────────────────────────────────────────────────────────
   protected async insert(
@@ -41,6 +58,7 @@ class PgRepository {
     });
   }
 
+  // ─── GET INSERT QUERY ───────────────────────────────────────────────────────────
   protected getInsertQuery(tableName: string, args: any): string {
     return `
       INSERT INTO ${tableName}
