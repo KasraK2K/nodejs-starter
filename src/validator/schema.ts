@@ -5,6 +5,8 @@ export const schema = {
   // ──────────────────────────────────────────────────────────────────────
   pagination: {
     type: "object",
+    additionalProperties: false,
+    required: ["limit", "page"],
     properties: {
       limit: { type: "integer", minimum: 1, maximum: 200 },
       page: { type: "integer" },
@@ -34,21 +36,25 @@ export const schema = {
         },
       },
     },
-    required: ["limit", "page"],
   },
+  // ──────────────────────────────────────────────────────────────────
+  //   :::::: F I N D   O N E : :  :   :    :     :        :          :
+  // ──────────────────────────────────────────────────────────────────
+  findOne: { type: "string", format: "uuid", additionalProperties: false },
   // ──────────────────────────────────────────────────────────
   //   :::::: U S E R : :  :   :    :     :        :          :
   // ──────────────────────────────────────────────────────────
   user: {
     create: {
       type: "object",
+      additionalProperties: false,
       properties: {
         user_name: { type: "string" },
         password: { type: "string", minLength: 6, maxLength: 20 },
         first_name: { type: "string", minLength: 2, maxLength: 20 },
         last_name: { type: "string", minLength: 2, maxLength: 20 },
         email: { type: "string", format: "email", minLength: 6, maxLength: 100 },
-        phone: { type: "string", minLength: 13, maxLength: 13 },
+        phone: { type: "string", format: "phone" },
         gender: {
           type: "string",
           enum: [GenderEnum.FEMALE, GenderEnum.MALE, GenderEnum.TRANSSEXUAL, GenderEnum.OTHER],

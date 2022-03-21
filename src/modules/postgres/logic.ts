@@ -18,7 +18,9 @@ class PostgresLogic extends BaseLogic {
 
   public async getOne(id: string): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
-      // TODO validate id to be string uuid
+      const { valid, errors } = validator(schema.findOne, id);
+      if (!valid) return reject({ result: false, error_code: 3002, errors });
+
       await postgresRepository
         .getOne(id)
         .then((response) => resolve({ result: true, data: response }))
