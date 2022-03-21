@@ -14,7 +14,7 @@ export interface IErrGenOptions {
   status: number;
   result: boolean;
   error_code: number;
-  error_user_messages?: string[];
+  error_user_messages?: Record<string, any>[];
 }
 
 export type IResGen<T> = IResGenOptions<T> | IErrGenOptions;
@@ -42,7 +42,7 @@ export interface IErrorResponse {
   result: boolean;
   error_code: number;
   error_message: string | undefined;
-  error_user_message?: string[];
+  error_user_message?: Record<string, any>[];
 }
 
 export type IRes<T> = ISuccessResponse<T> | IErrorResponse;
