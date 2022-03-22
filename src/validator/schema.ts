@@ -40,7 +40,16 @@ export const schema = {
   // ──────────────────────────────────────────────────────────────────
   //   :::::: F I N D   O N E : :  :   :    :     :        :          :
   // ──────────────────────────────────────────────────────────────────
-  findOne: { type: "string", format: "uuid", additionalProperties: false },
+  findOne: {
+    type: "object",
+    additionalProperties: false,
+    properties: {
+      id: { type: "string", format: "uuid" },
+      user_name: { type: "string" },
+      email: { type: "string", format: "email" },
+    },
+    minProperties: 1,
+  },
   // ──────────────────────────────────────────────────────────
   //   :::::: U S E R : :  :   :    :     :        :          :
   // ──────────────────────────────────────────────────────────

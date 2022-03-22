@@ -20,8 +20,8 @@ class PgRepository {
   }
 
   // ─── SELECT ONE ─────────────────────────────────────────────────────────────────
-  protected findOne(tableName: string, id: string, omits: string[] = []): Promise<Record<string, any>> {
-    const query = this.getfindOneQuery(tableName, id);
+  protected findOne(tableName: string, args: Record<string, any>, omits: string[] = []): Promise<Record<string, any>> {
+    const query = this.getfindOneQuery(tableName, args);
     return new Promise(async (resolve, reject) => {
       await this.executeQuery(query, omits)
         .then((response) => resolve(response))
@@ -34,8 +34,14 @@ class PgRepository {
   }
 
   // ─── SELECT ONE ─────────────────────────────────────────────────────────────────
-  protected getfindOneQuery(tableName: string, id: string): string {
-    return `SELECT * FROM ${tableName} WHERE id = '${id}' LIMIT 1`;
+  protected getfindOneQuery(tableName: string, args: Record<string, any>): string {
+    return `
+      SELECT * FROM ${tableName}
+      \tWHERE ${_.entries(args)
+        .map((arg) => `\n\t${arg[0]} = '${arg[1]}'`)
+        .join(" AND ")}
+      \tLIMIT 1
+    `;
   }
 
   // ─── CREATE ─────────────────────────────────────────────────────────────────────

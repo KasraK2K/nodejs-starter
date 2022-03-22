@@ -30,7 +30,7 @@ class PostgresController extends BaseController {
 
   public async getOne(req: Request, res: Response): Promise<Response<IRes<IUserList>>> {
     return await postgresLogic
-      .getOne(req.body.id)
+      .getOne(req.body)
       .then((response) => {
         return super.resGen<IUserList>({
           req,

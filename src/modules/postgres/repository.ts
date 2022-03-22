@@ -1,5 +1,5 @@
 import PgRepository from "../../base/repository/PgRepository";
-import { IPagination, IUserCreate, IUserUpdate } from "./common/interface";
+import { IPagination, IUserCreate, IUserGetOne, IUserUpdate } from "./common/interface";
 
 class PostgresRepository extends PgRepository {
   private table = "users";
@@ -13,10 +13,10 @@ class PostgresRepository extends PgRepository {
     });
   }
 
-  public async getOne(id: string): Promise<Record<string, any>> {
+  public async getOne(args: Partial<IUserGetOne>): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       await super
-        .findOne(this.table, id, ["password"])
+        .findOne(this.table, args, ["password"])
         .then((response) => resolve(response))
         .catch((err) => reject(err));
     });

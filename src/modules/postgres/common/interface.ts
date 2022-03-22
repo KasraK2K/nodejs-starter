@@ -39,6 +39,12 @@ export interface IFilter {
   page?: number;
 }
 
+export interface IUserGetOne {
+  id: string;
+  user_name: string;
+  email: string;
+}
+
 export interface IUserCreate {
   user_name: string;
   password: string;
