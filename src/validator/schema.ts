@@ -48,6 +48,7 @@ export const schema = {
     create: {
       type: "object",
       additionalProperties: false,
+      required: ["user_name", "password", "email"],
       properties: {
         user_name: { type: "string" },
         password: { type: "string", minLength: 6, maxLength: 20 },
@@ -60,7 +61,24 @@ export const schema = {
           enum: [GenderEnum.FEMALE, GenderEnum.MALE, GenderEnum.TRANSSEXUAL, GenderEnum.OTHER],
         },
       },
-      required: ["user_name", "password", "email"],
+    },
+    edit: {
+      type: "object",
+      additionalProperties: false,
+      required: ["id"],
+      properties: {
+        id: { type: "string", format: "uuid" },
+        user_name: { type: "string" },
+        password: { type: "string", minLength: 6, maxLength: 20 },
+        first_name: { type: "string", minLength: 2, maxLength: 20 },
+        last_name: { type: "string", minLength: 2, maxLength: 20 },
+        email: { type: "string", format: "email", minLength: 6, maxLength: 100 },
+        phone: { type: "string", format: "phone" },
+        gender: {
+          type: "string",
+          enum: [GenderEnum.FEMALE, GenderEnum.MALE, GenderEnum.TRANSSEXUAL, GenderEnum.OTHER],
+        },
+      },
     },
   },
 };

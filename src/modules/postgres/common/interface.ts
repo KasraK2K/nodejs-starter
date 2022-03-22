@@ -48,3 +48,13 @@ export interface IUserCreate {
   phone: string;
   gender: GenderEnum;
 }
+
+export interface IUserUpdate {
+  id: string;
+  password: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  gender: GenderEnum;
+}

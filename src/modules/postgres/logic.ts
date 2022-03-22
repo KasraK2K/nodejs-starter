@@ -1,6 +1,6 @@
 import { hashGen } from "./../../common/functions/bcrypt";
 import BaseLogic from "../../base/logic/BaseLogic";
-import { IPagination, IUserCreate } from "./common/interface";
+import { IPagination, IUserCreate, IUserUpdate } from "./common/interface";
 import postgresRepository from "./repository";
 
 class PostgresLogic extends BaseLogic {
@@ -37,6 +37,20 @@ class PostgresLogic extends BaseLogic {
 
       await postgresRepository
         .create(args)
+        .then((response) => resolve({ result: true, data: response }))
+        .catch((err) => reject({ result: false, ...err }));
+    });
+  }
+
+  public async edit(args: Partial<IUserUpdate>): Promise<Record<string, any>> {
+    return new Promise(async (resolve, reject) => {
+      const { valid, errors } = validator(schema.user.edit, args);
+      if (!valid) return reject({ result: false, error_code: 3002, errors });
+
+      args.password = args.password ? hashGen(args.password) : "";
+
+      await postgresRepository
+        .edit(args)
         .then((response) => resolve({ result: true, data: response }))
         .catch((err) => reject({ result: false, ...err }));
     });

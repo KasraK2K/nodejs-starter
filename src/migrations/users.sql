@@ -13,16 +13,16 @@ CREATE TYPE gender AS ENUM ('male', 'female', 'transsexual', 'other');
 
 CREATE SEQUENCE user_id_seq;
 
-CREATE TABLE users (
-  id uuid DEFAULT gen_random_uuid(),
+CREATE TABLE IF NOT EXISTS users (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   no smallint NOT NULL DEFAULT nextval('user_id_seq'),
-  user_name VARCHAR(50) NOT NULL,
+  user_name VARCHAR(50) NOT NULL UNIQUE,
   password VARCHAR (200) NOT NULL,
   first_name VARCHAR (50),
   last_name VARCHAR (50),
-  email VARCHAR (50) NOT NULL,
+  email VARCHAR (50) NOT NULL UNIQUE,
   phone VARCHAR (50),
-  gender gender DEFAULT 'other',
+  gender VARCHAR (50) DEFAULT 'other',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP,
@@ -30,10 +30,7 @@ CREATE TABLE users (
   is_verified BOOLEAN DEFAULT FALSE,
   is_admin BOOLEAN DEFAULT FALSE,
   is_super_admin BOOLEAN DEFAULT FALSE,
-  is_blocked BOOLEAN DEFAULT FALSE,
-
-  PRIMARY KEY (id),
-  UNIQUE (user_name, email)
+  is_blocked BOOLEAN DEFAULT FALSE
 );
 
 -- Password is 12345678 and hashed by bcryptjs salt 7

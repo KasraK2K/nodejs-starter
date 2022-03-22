@@ -5,7 +5,7 @@ import { IReadTable } from "../../common/interfaces/repository";
 
 class PgRepository {
   // ─── SELECT ALL ─────────────────────────────────────────────────────────────────
-  protected async find(tableName: string, omits: string[] = []): Promise<Record<string, any>> {
+  protected find(tableName: string, omits: string[] = []): Promise<Record<string, any>> {
     const query = ` SELECT * FROM ${tableName}`;
 
     return new Promise(async (resolve, reject) => {
@@ -20,7 +20,7 @@ class PgRepository {
   }
 
   // ─── SELECT ONE ─────────────────────────────────────────────────────────────────
-  protected async findOne(tableName: string, id: string, omits: string[] = []): Promise<Record<string, any>> {
+  protected findOne(tableName: string, id: string, omits: string[] = []): Promise<Record<string, any>> {
     const query = this.getfindOneQuery(tableName, id);
     return new Promise(async (resolve, reject) => {
       await this.executeQuery(query, omits)
@@ -35,15 +35,11 @@ class PgRepository {
 
   // ─── SELECT ONE ─────────────────────────────────────────────────────────────────
   protected getfindOneQuery(tableName: string, id: string): string {
-    return `SELECT * FROM ${tableName} WHERE id = '${id}' LIMIT 1 `;
+    return `SELECT * FROM ${tableName} WHERE id = '${id}' LIMIT 1`;
   }
 
   // ─── CREATE ─────────────────────────────────────────────────────────────────────
-  protected async insert(
-    tableName: string,
-    args: Record<string, any>,
-    omits: string[] = []
-  ): Promise<Record<string, any>> {
+  protected insert(tableName: string, args: Record<string, any>, omits: string[] = []): Promise<Record<string, any>> {
     args = _.omit(args, ["api_key"]);
     const query = this.getInsertQuery(tableName, args);
 
@@ -59,7 +55,7 @@ class PgRepository {
   }
 
   // ─── GET INSERT QUERY ───────────────────────────────────────────────────────────
-  protected getInsertQuery(tableName: string, args: any): string {
+  protected getInsertQuery(tableName: string, args: Record<string, any>): string {
     return `
       INSERT INTO ${tableName}
       \t(${_.keys(args)})
@@ -71,6 +67,32 @@ class PgRepository {
   }
 
   // ─── UPDATE ─────────────────────────────────────────────────────────────────────
+  protected update(tableName: string, args: Record<string, any>, omits: string[] = []): Promise<any> {
+    const query = this.getUpdateQuery(tableName, args, omits);
+
+    return new Promise(async (resolve, reject) => {
+      await this.executeQuery(query)
+        .then((response) => resolve(response))
+        .catch((err) => {
+          logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
+          logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
+          return reject(err);
+        });
+    });
+  }
+
+  // ─── GET UPDATE QUERY ───────────────────────────────────────────────────────────
+  protected getUpdateQuery(tableName: string, args: Record<string, any>, omits: string[] = []): string {
+    const id = args.id;
+    delete args.id;
+
+    return `
+      UPDATE ${tableName} SET
+      \t${_.entries(args).map((arg) => `\n\t${arg[0]} = '${arg[1]}'`)}
+      \tWHERE id = '${id}'
+      \tRETURNING ${_.keys(_.omit(args, omits)).join(", ")}
+    `;
+  }
 
   // ─── UPSERT ─────────────────────────────────────────────────────────────────────
 
@@ -81,7 +103,7 @@ class PgRepository {
   // ─── RESTORE ────────────────────────────────────────────────────────────────────
 
   // ─── PAGINATION ─────────────────────────────────────────────────────────────────
-  protected async paginate(
+  protected paginate(
     tableName: string,
     pagination: IPagination = { limit: 200, page: 1, filter: {} },
     omits: string[] = []
@@ -157,7 +179,7 @@ class PgRepository {
   }
 
   // ─── TOTAL COUNT ────────────────────────────────────────────────────────────────
-  protected async totalCount(tableName: string): Promise<number> {
+  protected totalCount(tableName: string): Promise<number> {
     const totalCountQuery = `SELECT COUNT(*) FROM ${tableName}`;
     return new Promise(async (resolve, reject) => {
       await this.executeQuery(totalCountQuery)
@@ -211,7 +233,7 @@ class PgRepository {
   }
 
   // ─── READ TABLE ─────────────────────────────────────────────────────────────────
-  protected async readTable(args: IReadTable): Promise<any> {
+  protected readTable(args: IReadTable): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const query = this.getReadTableQuery(args);
 
