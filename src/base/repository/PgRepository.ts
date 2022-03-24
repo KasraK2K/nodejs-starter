@@ -2,6 +2,7 @@ import { IFilter, IPagination } from "./../../modules/postgres/common/interface"
 import { LoggerEnum } from "../../common/enums/logger.enum";
 import _ from "lodash";
 import { IExecuteQueryOptions, IQueryGenerator, IReadTable } from "../../common/interfaces/repository";
+import { resolve } from "path";
 
 class PgRepository {
   // ─── SELECT ALL ─────────────────────────────────────────────────────────────────
@@ -48,7 +49,7 @@ class PgRepository {
     return { query, parameters };
   }
 
-  // ─── CREATE ─────────────────────────────────────────────────────────────────────
+  // ─── INSERT ─────────────────────────────────────────────────────────────────────
   protected insert(tableName: string, args: Record<string, any>, omits: string[] = []): Promise<Record<string, any>> {
     args = _.omit(args, ["api_key"]);
     const { query, parameters } = this.getInsertQuery(tableName, args);
@@ -80,7 +81,7 @@ class PgRepository {
   }
 
   // ─── UPDATE ─────────────────────────────────────────────────────────────────────
-  protected update(tableName: string, args: Record<string, any>, omits: string[] = []): Promise<any> {
+  protected update(tableName: string, args: Record<string, any>, omits: string[] = []): Promise<Record<string, any>> {
     const { query, parameters } = this.getUpdateQuery(tableName, args, omits);
 
     return new Promise(async (resolve, reject) => {
@@ -112,15 +113,74 @@ class PgRepository {
     return { query, parameters };
   }
 
+  // SECTION: Write more
   // ─── UPSERT ─────────────────────────────────────────────────────────────────────
 
   // ─── GET UPSERT QUERY ───────────────────────────────────────────────────────────
 
   // ─── SAFE DELETE ────────────────────────────────────────────────────────────────
+  protected safeDeleteOne(tableName: string, id: string, omits: string[] = []): Promise<Record<string, any>> {
+    const { query, parameters } = this.getSafeDeleteOneQuery(tableName, id);
 
-  // ─── DELETE ─────────────────────────────────────────────────────────────────────
+    return new Promise(async (resolve, reject) => {
+      await this.executeQuery({ query, parameters, omits })
+        .then((response) => resolve(response))
+        .catch((err) => {
+          logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
+          logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
+          return reject(err);
+        });
+    });
+  }
 
-  // ─── RESTORE ────────────────────────────────────────────────────────────────────
+  // ─── GET SAFE DELETE ONE QUERY ──────────────────────────────────────────────────
+  protected getSafeDeleteOneQuery(tableName: string, id: string): IQueryGenerator {
+    const parameters = [id];
+    const query = `UPDATE ${tableName} SET deleted_at = NOW() WHERE id = $1 LIMIT 1`;
+    return { query, parameters };
+  }
+
+  // ─── RESTORE ONE ────────────────────────────────────────────────────────────────
+  protected restoreOne(tableName: string, id: string): Promise<Record<string, any>> {
+    const { query, parameters } = this.getRestoreOneQuery(tableName, id);
+    return new Promise(async (resolve, reject) => {
+      await this.executeQuery({ query, parameters })
+        .then((response) => resolve(response))
+        .catch((err) => {
+          logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
+          logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
+          return reject(err);
+        });
+    });
+  }
+
+  // ─── GET RESTORE ONE QUERY ──────────────────────────────────────────────────────
+  protected getRestoreOneQuery(tableName: string, id: string): IQueryGenerator {
+    const parameters = [id];
+    const query = `UPDATE ${tableName} SET deleted_at = NULL WHERE id = $1 LIMIT 1`;
+    return { query, parameters };
+  }
+
+  // ─── DELETE ONE ─────────────────────────────────────────────────────────────────
+  protected deleteOne(tableName: string, id: string): Promise<Record<string, any>> {
+    const { query, parameters } = this.getDeleteOneQuery(tableName, id);
+    return new Promise(async (resolve, reject) => {
+      await this.executeQuery({ query, parameters })
+        .then((response) => resolve(response))
+        .catch((err) => {
+          logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
+          logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
+          return reject(err);
+        });
+    });
+  }
+
+  // ─── GET DELETE ONE QUERY ───────────────────────────────────────────────────────
+  protected getDeleteOneQuery(tableName: string, id: string): IQueryGenerator {
+    const parameters = [id];
+    const query = `DELETE FROM ${tableName} WHERE id = $1 LIMIT 1`;
+    return { query, parameters };
+  }
 
   // ─── PAGINATION ─────────────────────────────────────────────────────────────────
   protected paginate(
@@ -170,6 +230,7 @@ class PgRepository {
     return this.addFiltertoQuery(filter, query);
   }
 
+  // ─── ADD FILTER TO QUERY ────────────────────────────────────────────────────────
   protected addFiltertoQuery(filter: IFilter, query: string, index = 0): IQueryGenerator {
     const parameters: string[] = [];
 
@@ -264,7 +325,7 @@ class PgRepository {
   }
 
   // ─── READ TABLE ─────────────────────────────────────────────────────────────────
-  protected readTable(args: IReadTable): Promise<any> {
+  protected readTable(args: IReadTable): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       const query = this.getReadTableQuery(args);
 
