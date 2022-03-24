@@ -12,7 +12,7 @@ class RequestMiddleware extends Middleware {
     _.assign(res.locals, { params: { process_id } });
     _.assign(global, { process_id });
 
-    logger(`{blue}${req.originalUrl}{reset}`, LoggerEnum.REQUEST);
+    logger(`{blue}[${req.method}]: ${req.originalUrl}{reset}`, LoggerEnum.REQUEST);
 
     const ignoreCheckMethod: string[] = ["swagger"];
     const endpoint = req.originalUrl;

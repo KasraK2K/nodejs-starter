@@ -33,7 +33,7 @@ export interface IPagination {
 export interface IFilter {
   where?: { field: string; operator: string; value: string }[];
   group?: string[];
-  order?: { field: string; value: string }[];
+  order?: string[];
   is_asc?: boolean;
   limit?: number;
   page?: number;

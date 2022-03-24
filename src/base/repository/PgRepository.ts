@@ -1,7 +1,7 @@
 import { IFilter, IPagination } from "./../../modules/postgres/common/interface";
 import { LoggerEnum } from "../../common/enums/logger.enum";
 import _ from "lodash";
-import { IReadTable } from "../../common/interfaces/repository";
+import { IExecuteQueryOptions, IQueryGenerator, IReadTable } from "../../common/interfaces/repository";
 
 class PgRepository {
   // ─── SELECT ALL ─────────────────────────────────────────────────────────────────
@@ -9,7 +9,7 @@ class PgRepository {
     const query = ` SELECT * FROM ${tableName}`;
 
     return new Promise(async (resolve, reject) => {
-      await this.executeQuery(query, omits)
+      await this.executeQuery({ query, omits })
         .then((response) => resolve(response))
         .catch((err) => {
           logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
@@ -21,9 +21,10 @@ class PgRepository {
 
   // ─── SELECT ONE ─────────────────────────────────────────────────────────────────
   protected findOne(tableName: string, args: Record<string, any>, omits: string[] = []): Promise<Record<string, any>> {
-    const query = this.getfindOneQuery(tableName, args);
+    const { query, parameters } = this.getfindOneQuery(tableName, args);
+
     return new Promise(async (resolve, reject) => {
-      await this.executeQuery(query, omits)
+      await this.executeQuery({ query, parameters, omits })
         .then((response) => resolve(response))
         .catch((err) => {
           logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
@@ -34,23 +35,27 @@ class PgRepository {
   }
 
   // ─── SELECT ONE ─────────────────────────────────────────────────────────────────
-  protected getfindOneQuery(tableName: string, args: Record<string, any>): string {
-    return `
+  protected getfindOneQuery(tableName: string, args: Record<string, any>): IQueryGenerator {
+    let index = 0;
+    const parameters = _.values(args);
+    const query = `
       SELECT * FROM ${tableName}
-      \tWHERE ${_.entries(args)
-        .map((arg) => `\n\t${arg[0]} = '${arg[1]}'`)
+      \tWHERE ${_.keys(args)
+        .map((arg) => `\n\t${arg} = $${++index}`)
         .join(" AND ")}
       \tLIMIT 1
     `;
+    return { query, parameters };
   }
 
   // ─── CREATE ─────────────────────────────────────────────────────────────────────
   protected insert(tableName: string, args: Record<string, any>, omits: string[] = []): Promise<Record<string, any>> {
     args = _.omit(args, ["api_key"]);
-    const query = this.getInsertQuery(tableName, args);
+    const { query, parameters } = this.getInsertQuery(tableName, args);
 
     return new Promise(async (resolve, reject) => {
-      await this.executeQuery(query, omits)
+      // TODO: FIX parameters
+      await this.executeQuery({ query, parameters, omits })
         .then((response) => resolve(response))
         .catch((err) => {
           logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
@@ -61,23 +66,25 @@ class PgRepository {
   }
 
   // ─── GET INSERT QUERY ───────────────────────────────────────────────────────────
-  protected getInsertQuery(tableName: string, args: Record<string, any>): string {
-    return `
+  protected getInsertQuery(tableName: string, args: Record<string, any>): IQueryGenerator {
+    let index = 0;
+    const parameters = _.values(args);
+    const keys = _.keys(args);
+    const query = `
       INSERT INTO ${tableName}
-      \t(${_.keys(args)})
-      \tVALUES (${_.values(args)
-        .map((val) => `'${val}'`)
-        .join(", ")})
+      \t(${keys})
+      \tVALUES (${keys.map(() => `$${++index}`).join(", ")})
       \tRETURNING *;
     `;
+    return { query, parameters };
   }
 
   // ─── UPDATE ─────────────────────────────────────────────────────────────────────
   protected update(tableName: string, args: Record<string, any>, omits: string[] = []): Promise<any> {
-    const query = this.getUpdateQuery(tableName, args, omits);
+    const { query, parameters } = this.getUpdateQuery(tableName, args, omits);
 
     return new Promise(async (resolve, reject) => {
-      await this.executeQuery(query)
+      await this.executeQuery({ query, parameters })
         .then((response) => resolve(response))
         .catch((err) => {
           logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
@@ -88,19 +95,26 @@ class PgRepository {
   }
 
   // ─── GET UPDATE QUERY ───────────────────────────────────────────────────────────
-  protected getUpdateQuery(tableName: string, args: Record<string, any>, omits: string[] = []): string {
+  protected getUpdateQuery(tableName: string, args: Record<string, any>, omits: string[] = []): IQueryGenerator {
+    let index = 0;
     const id = args.id;
     delete args.id;
 
-    return `
+    const parameters = _.values(args);
+    parameters.push(id);
+    const query = `
       UPDATE ${tableName} SET
-      \t${_.entries(args).map((arg) => `\n\t${arg[0]} = '${arg[1]}'`)}
-      \tWHERE id = '${id}'
+      \t${_.keys(args).map((arg) => `\n\t${arg} = $${++index}`)}
+      \tWHERE id = $${++index}
       \tRETURNING ${_.keys(_.omit(args, omits)).join(", ")}
     `;
+
+    return { query, parameters };
   }
 
   // ─── UPSERT ─────────────────────────────────────────────────────────────────────
+
+  // ─── GET UPSERT QUERY ───────────────────────────────────────────────────────────
 
   // ─── SAFE DELETE ────────────────────────────────────────────────────────────────
 
@@ -115,12 +129,12 @@ class PgRepository {
     omits: string[] = []
   ): Promise<Record<string, any>> {
     const { limit, page } = pagination;
-    const query = this.getPaginateQuery(tableName, pagination);
+    const { query, parameters } = this.getPaginateQuery(tableName, pagination);
 
     return new Promise(async (resolve, reject) => {
       let total_count: number;
       let total_page: number;
-      await this.executeQuery(query, omits)
+      await this.executeQuery({ query, parameters, omits })
         .then((response) => {
           if (response.rowCount) {
             total_count = Number(response.rows[0].total_count);
@@ -146,32 +160,40 @@ class PgRepository {
   }
 
   // ─── GET PAGINATION QUERY ───────────────────────────────────────────────────────
-  protected getPaginateQuery(tableName: string, pagination: IPagination = { limit: 200, page: 1, filter: {} }): string {
+  protected getPaginateQuery(
+    tableName: string,
+    pagination: IPagination = { limit: 200, page: 1, filter: {} }
+  ): IQueryGenerator {
     const { limit, page } = pagination;
-    const query = `SELECT *, count(*) OVER() AS total_count FROM "${tableName}" `;
-    const filter: IFilter = { ...pagination.filter, limit, page };
+    const query = `SELECT *, count(*) OVER() AS total_count FROM ${tableName} `;
+    const filter: IFilter = _.assign({ ...pagination.filter, limit, page });
     return this.addFiltertoQuery(filter, query);
   }
 
-  protected addFiltertoQuery(filter: IFilter, query: string): string {
+  protected addFiltertoQuery(filter: IFilter, query: string, index = 0): IQueryGenerator {
+    const parameters: string[] = [];
+
     // ───────────────────────────────────────────────── AND WHERE ─────
     if (filter && filter.where) {
       const where = filter.where;
+      where.map((objItem) => parameters.push(objItem.value));
       query += `\n\tWHERE ${where
-        .map((whereItem) => `${whereItem.field} ${whereItem.operator} '${whereItem.value}'`)
-        .join(" AND ")} `;
+        .map((objItem) => `${objItem.field} ${objItem.operator} $${++index}`)
+        .join("\n\tAND ")} `;
     }
 
     // ────────────────────────────────────────────────── GROUP BY ─────
     if (filter && filter.group) {
       const group = filter.group;
-      query += `\n\tGROUP BY ${group.map((groupItem) => `"${groupItem}"`).join(", ")}, "id" `;
+      group.forEach((item) => parameters.push(item));
+      query += `\n\tGROUP BY ${group.map(() => `$${++index}`).join(", ")}, "id" `;
     }
 
     // ───────────────────────────────────────────────── ORDER BY ─────
     if (filter && filter.order) {
       const order = filter.order;
-      query += `\n\tORDER BY ${order.map((orderItem) => `"${orderItem}"`).join(", ")} `;
+      order.forEach((item) => parameters.push(item));
+      query += `\n\tORDER BY ${order.map(() => `$${++index}`).join(", ")} `;
       filter && filter.is_asc ? (query += "ASC ") : (query += "DESC ");
     }
 
@@ -180,15 +202,16 @@ class PgRepository {
       if (filter.limit) query += `\n\tLIMIT ${filter.limit} `;
       if (filter.page) query += `OFFSET ${(filter.page - 1) * filter.limit} `;
     }
+    query.trim();
 
-    return query.trim() + ";";
+    return { query, parameters };
   }
 
   // ─── TOTAL COUNT ────────────────────────────────────────────────────────────────
   protected totalCount(tableName: string): Promise<number> {
-    const totalCountQuery = `SELECT COUNT(*) FROM ${tableName}`;
+    const query = `SELECT COUNT(*) FROM ${tableName}`;
     return new Promise(async (resolve, reject) => {
-      await this.executeQuery(totalCountQuery)
+      await this.executeQuery({ query })
         .then((response) => resolve(Number(response.rows[0].count)))
         .catch((err) => {
           logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
@@ -199,10 +222,12 @@ class PgRepository {
   }
 
   // ─── EXECUTE QUERY ──────────────────────────────────────────────────────────────
-  protected executeQuery(query: string, omits: string[] = []): Promise<Record<string, any>> {
+  protected executeQuery(options: IExecuteQueryOptions): Promise<Record<string, any>> {
+    const { query, parameters = [], omits = [] } = options;
+
     return new Promise(async (resolve, reject) => {
       await pg.pool
-        .query(query)
+        .query(query, parameters)
         .then((response) => {
           const rows = response.rows.map((row) => _.omit(row, omits));
           return resolve({ rowCount: response.rowCount, rows });
@@ -243,7 +268,7 @@ class PgRepository {
     return new Promise(async (resolve, reject) => {
       const query = this.getReadTableQuery(args);
 
-      await this.executeQuery(query)
+      await this.executeQuery({ query, parameters: [] })
         .then((response) => resolve(response.rows))
         .catch((err) => {
           logger(`{red} error readTable {reset}`);
