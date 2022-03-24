@@ -17,7 +17,11 @@ export const schema = {
             type: "array",
             items: {
               type: "object",
-              properties: { field: { type: "string" }, operator: { type: "string" }, value: { type: "string" } },
+              properties: {
+                field: { type: "string" },
+                operator: { type: "string", enum: ["=", "<", ">", "IS NOT"] },
+                value: { type: "string" },
+              },
               required: ["field", "operator", "value"],
               minProperties: 3,
             },
