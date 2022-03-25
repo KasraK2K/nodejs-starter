@@ -1,4 +1,4 @@
-const typedoc = require("gulp-typedoc");
+import typedoc from "gulp-typedoc";
 
 gulp.task("typedoc", function () {
   return gulp.src(["src/**/*.ts"]).pipe(
