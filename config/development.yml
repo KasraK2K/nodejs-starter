@@ -1,10 +1,18 @@
 mode: development
 
+application:
+  print_info: true
+  logger:
+    logFilePath: "/var/embargo-logs/mng-api/"
+    logOnFile: false
+    logOnConsole: true
+    logOnDatabase: true
+
 database:
   mongodb:
-    name: "node_starter"
+    name: "node_starter_development"
     default_collection: "default"
-    uri: "mongodb://0.0.0.0:27017/node_starter"
+    uri: "mongodb://0.0.0.0:27017/node_starter_development"
   postgres:
     user: "postgres"
     host: "0.0.0.0"

@@ -42,8 +42,11 @@ export const globals = {
   objectSchema,
   mongo: {
     mongoClient,
-    database: mongoClient.db(configs.database.mongodb.name),
-    collection: mongoClient.db(configs.database.mongodb.name).collection(configs.database.mongodb.default_collection),
+    database: (databaseName?: string) => mongoClient.db(databaseName ?? configs.database.mongodb.name),
+    collection: (collectionName?: string) =>
+      mongoClient
+        .db(configs.database.mongodb.name)
+        .collection(collectionName ?? configs.database.mongodb.default_collection),
   },
   pg: { pool },
   logger,

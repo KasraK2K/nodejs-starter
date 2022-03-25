@@ -13,8 +13,10 @@ export interface IApplicationConfig {
   front_version: string;
   portal_version: string;
   logger: {
-    logPath: string;
-    console: boolean;
+    logFilePath: string;
+    logOnFile: boolean;
+    logOnConsole: boolean;
+    logOnDatabase: boolean;
   };
 }
 
