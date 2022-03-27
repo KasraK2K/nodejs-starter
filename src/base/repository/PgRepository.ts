@@ -2,7 +2,6 @@ import { IFilter, IPagination } from "./../../modules/postgres/common/interface"
 import { LoggerEnum } from "../../common/enums/logger.enum";
 import _ from "lodash";
 import { IExecuteQueryOptions, IQueryGenerator, IReadTable } from "../../common/interfaces/repository";
-import { resolve } from "path";
 
 class PgRepository {
   // ─── SELECT ALL ─────────────────────────────────────────────────────────────────
@@ -20,6 +19,8 @@ class PgRepository {
     });
   }
 
+  // ─── GET SELECT ALL QUERY ───────────────────────────────────────────────────────
+
   // ─── SELECT ONE ─────────────────────────────────────────────────────────────────
   protected findOne(tableName: string, args: Record<string, any>, omits: string[] = []): Promise<Record<string, any>> {
     const { query, parameters } = this.getfindOneQuery(tableName, args);
@@ -35,7 +36,7 @@ class PgRepository {
     });
   }
 
-  // ─── SELECT ONE ─────────────────────────────────────────────────────────────────
+  // ─── GET SELECT ONE QUERY ───────────────────────────────────────────────────────
   protected getfindOneQuery(tableName: string, args: Record<string, any>): IQueryGenerator {
     let index = 0;
     const parameters = _.values(args);
@@ -298,7 +299,11 @@ class PgRepository {
             case "23505": // unique key is already exist
               logger(`{red}${err.detail}{reset}`, LoggerEnum.ERROR);
               logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
-              return reject({ result: false, error_code: 3008, errors: [err.detail] });
+              return reject({
+                result: false,
+                error_code: 3008,
+                errors: [err.detail],
+              });
 
             case "42P01":
               logger(`{red}Database Table Not Found{reset}`, LoggerEnum.ERROR);

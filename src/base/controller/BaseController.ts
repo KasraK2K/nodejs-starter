@@ -24,7 +24,7 @@ class BaseController {
   public resGen<T>(options: IResGen<T>): Response<IRes<T>> {
     const { res, status } = options;
     const generatedStatus = BaseController.statusGen(status);
-    // logger(`{green}${JSON.stringify(_.omit(res.locals.params, ["process_id"]), null, 2)}{reset}`, LoggerEnum.REQUEST);
+    logger(`{green}${JSON.stringify(_.omit(res.locals.params, ["process_id"]), null, 2)}{reset}`, LoggerEnum.REQUEST);
 
     return options.result
       ? res.status(generatedStatus).json(BaseController.responseGenerator(options as IResGenOptions<T>))
@@ -43,7 +43,7 @@ class BaseController {
       result,
       data,
     };
-    // logger(response, LoggerEnum.REQUEST);
+    logger(response, LoggerEnum.REQUEST);
     return response;
   }
 
@@ -62,7 +62,7 @@ class BaseController {
       error_message: error.message,
       error_user_messages,
     };
-    // logger(response, LoggerEnum.REQUEST);
+    logger(response, LoggerEnum.REQUEST);
     return response;
   }
 

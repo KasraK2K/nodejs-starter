@@ -15,13 +15,19 @@ export default {
               in: "body",
               required: ["api_key"],
               properties: {
-                api_key: { type: "string", example: { $ref: "#/variables/api_key" } },
+                api_key: {
+                  type: "string",
+                  example: { $ref: "#/variables/api_key" },
+                },
               },
             },
           },
         },
       },
-      responses: { 200: { description: "OK" }, 401: { description: "Unauthorized" } },
+      responses: {
+        200: { description: "OK" },
+        401: { description: "Unauthorized" },
+      },
     },
   },
 };

@@ -27,7 +27,10 @@ import postgresController from "../modules/postgres/controller";
 // import you routes middleware here
 // ────────────────────────────────────────────────────────────────────────
 
-const swaggerOptions = { explorer: true, swaggerOptions: { validatorUrl: null } };
+const swaggerOptions = {
+  explorer: true,
+  swaggerOptions: { validatorUrl: null },
+};
 const router = express.Router();
 
 // ──────────────────────────────────────────────────────────────

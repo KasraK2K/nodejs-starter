@@ -1,8 +1,6 @@
 {
   "entryPointStrategy": "expand",
-  "entryPoints": [
-    "./src/Application.ts"
-  ],
+  "entryPoints": ["./src/Application.ts"],
   "categorizeByGroup": false,
   "categoryOrder": ["*", "Uncategorized"],
   "defaultCategory": "Uncategorized",
@@ -10,17 +8,7 @@
   "includeVersion": true,
   "out": "docs",
   "sort": "alphabetical",
-  "exclude": [
-    "node_modules",
-    "docs",
-    "webpack.config.js",
-    "build",
-    "target",
-    "coverage",
-    "out",
-    "dist",
-    "build"
-  ],
+  "exclude": ["node_modules", "docs", "webpack.config.js", "build", "target", "coverage", "out", "dist", "build"],
   "theme": "default",
   "name": "Node Starter Kit",
   "gitRevision": "master",

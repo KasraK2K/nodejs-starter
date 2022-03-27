@@ -67,7 +67,12 @@ export const schema = {
         password: { type: "string", minLength: 6, maxLength: 20 },
         first_name: { type: "string", minLength: 2, maxLength: 20 },
         last_name: { type: "string", minLength: 2, maxLength: 20 },
-        email: { type: "string", format: "email", minLength: 6, maxLength: 100 },
+        email: {
+          type: "string",
+          format: "email",
+          minLength: 6,
+          maxLength: 100,
+        },
         phone: { type: "string", format: "phone" },
         gender: {
           type: "string",
@@ -85,7 +90,12 @@ export const schema = {
         password: { type: "string", minLength: 6, maxLength: 20 },
         first_name: { type: "string", minLength: 2, maxLength: 20 },
         last_name: { type: "string", minLength: 2, maxLength: 20 },
-        email: { type: "string", format: "email", minLength: 6, maxLength: 100 },
+        email: {
+          type: "string",
+          format: "email",
+          minLength: 6,
+          maxLength: 100,
+        },
         phone: { type: "string", format: "phone" },
         gender: {
           type: "string",
