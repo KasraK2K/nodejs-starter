@@ -1,7 +1,14 @@
+interface IWhereArguments {
+  field: string;
+  operator: string;
+  value: string | number;
+}
+
 class PgBuilderRepository {
   public readonly name = "PgBuilderRepository";
-  private parameters: string[] = [];
-  private replaceChar = "??";
+  private readonly replaceChar = "??";
+
+  private parameters: any[] = [];
   private parameterIndex = 0;
 
   constructor(
@@ -34,25 +41,22 @@ class PgBuilderRepository {
   /* -------------------------------------------------------------------------- */
 
   // ─── SELECT ─────────────────────────────────────────────────────────────────────
-  protected select(selectArg: string | string[] = "*"): this {
-    this.selectQuery += `SELECT `;
-
+  protected select(selectArg?: string | string[]): this {
     switch (typeof selectArg) {
       case "string":
-        this.selectQuery += `SELECT ${this.replaceChar}`;
+        this.selectQuery = `SELECT ${this.replaceChar}`;
         this.parameters.push(selectArg);
         this.parameterIndex++;
         break;
 
       case "object":
-        this.selectQuery += `SELECT ${selectArg.map(() => `${this.replaceChar}`).join(", ")}`;
+        this.selectQuery = `SELECT ${selectArg.map(() => `${this.replaceChar}`).join(", ")}`;
         this.parameters = [...this.parameters, ...selectArg];
         this.parameterIndex += selectArg.length;
         break;
 
       default:
         this.selectQuery = `SELECT *`;
-        console.log(`${this.name}: select argument is not a string or string[] and we are not handling it`);
         break;
     }
     return this;
@@ -60,40 +64,35 @@ class PgBuilderRepository {
 
   // ─── FROM ───────────────────────────────────────────────────────────────────────
   protected from(fromArg: string): this {
-    this.fromQuery += `FROM ${this.replaceChar}`;
+    this.fromQuery = `FROM ${this.replaceChar}`;
     this.parameters.push(fromArg);
     this.parameterIndex++;
     return this;
   }
 
   // ─── WHERE ──────────────────────────────────────────────────────────────────────
-  protected where(whereArg: string | string[]): this {
-    this.whereQuery += `WHERE `;
-
-    switch (typeof whereArg) {
-      case "string":
-        this.whereQuery += `${this.replaceChar}`;
-        this.parameters.push(whereArg);
-        this.parameterIndex++;
-        break;
-
-      case "object":
-        this.whereQuery += `${whereArg.map(() => `${this.replaceChar}`).join(" AND ")}`;
-        this.parameters = [...this.parameters, ...whereArg];
-        this.parameterIndex += whereArg.length;
-        break;
-
-      default:
-        this.whereQuery = ``;
-        console.log(`${this.name}: where argument is not a string or string[] and we are not handling it`);
-        break;
+  protected where(whereArgs: IWhereArguments | IWhereArguments[]): this {
+    if (Array.isArray(whereArgs)) {
+      this.whereQuery = `WHERE ${whereArgs
+        .map(
+          (arg) =>
+            `${arg.field} ${arg.operator} ${typeof arg.value === "string" ? `'${this.replaceChar}'` : this.replaceChar}`
+        )
+        .join(" AND ")}`;
+      this.parameters = [...this.parameters, ...whereArgs.map((arg) => arg.value)];
+      this.parameterIndex += whereArgs.length;
+    } else {
+      this.whereQuery += `WHERE ${whereArgs.field} ${whereArgs.operator} ${this.replaceChar}`;
+      this.parameters.push(whereArgs.value);
+      this.parameterIndex++;
     }
+
     return this;
   }
 
   // ─── ORDER BY ───────────────────────────────────────────────────────────────────
   protected orderBy(orderByArg: string | string[], sort: "ASC" | "DESC" = "ASC"): this {
-    this.orderByQuery += `ORDER BY `;
+    this.orderByQuery = `ORDER BY `;
 
     switch (typeof orderByArg) {
       case "string":
@@ -118,7 +117,7 @@ class PgBuilderRepository {
 
   // ─── GROUP BY ───────────────────────────────────────────────────────────────────
   protected groupBy(groupByArg: string | string[]): this {
-    this.groupByQuery += `GROUP BY `;
+    this.groupByQuery = `GROUP BY `;
 
     switch (typeof groupByArg) {
       case "string":
@@ -143,7 +142,7 @@ class PgBuilderRepository {
 
   // ─── LIMIT ──────────────────────────────────────────────────────────────────────
   protected limit(limitArg: number | string): this {
-    this.limitQuery += `LIMIT ${this.replaceChar}`;
+    this.limitQuery = `LIMIT ${this.replaceChar}`;
     this.parameters.push(String(limitArg));
     this.parameterIndex++;
     return this;
@@ -151,7 +150,7 @@ class PgBuilderRepository {
 
   // ─── OFFSET ─────────────────────────────────────────────────────────────────────
   protected offset(offsetArg: number | string): this {
-    this.offsetQuery += `OFFSET ${this.replaceChar}`;
+    this.offsetQuery = `OFFSET ${this.replaceChar}`;
     this.parameters.push(String(offsetArg));
     this.parameterIndex++;
     return this;
@@ -233,7 +232,11 @@ class PgBuilderRepository {
   //   :::::: G E N E R A T E   Q U E S T I O N   M A R K   Q U E R Y : :  :   :    :     :        :          :
   // ──────────────────────────────────────────────────────────────────────────────────────────────────────────
   private generateQuestionMarkQuery(): string {
-    this.query = `${this.selectQuery} ${this.fromQuery} ${this.whereQuery}`;
+    this.query = `
+      ${this.selectQuery}
+      ${this.fromQuery}
+      ${this.whereQuery}
+    `;
 
     if (this.innerJoinQuery) this.query += this.innerJoinQuery;
     if (this.leftJoinQuery) this.query += this.leftJoinQuery;
@@ -254,9 +257,14 @@ class PgBuilderRepository {
   // ────────────────────────────────────────────────────────────────────────────────────────────
   private generateDollarQuery(): void {
     let index = 0;
-    this.query = this.query.replace(this.replaceChar, () => `$${++index}`);
+    this.query = this.query.replaceAll(this.replaceChar, () => `$${++index}`);
     if (index !== this.parameterIndex || index !== this.parameters.length)
-      console.log(`${this.name}: parameterIndex and parameters.length and index are not equal`);
+      console.error({
+        error: `${this.name}: parameterIndex and parameters.length and index are not equal`,
+        index,
+        parameterIndex: this.parameterIndex,
+        parametersLength: this.parameters.length,
+      });
   }
 
   // ────────────────────────────────────────────────────────────────────
@@ -275,9 +283,14 @@ class PgBuilderRepository {
     this.generateQuestionMarkQuery();
 
     let index = 0;
-    this.query = this.query.replace(this.replaceChar, () => this.parameters[index++]);
+    this.query = this.query.replaceAll(this.replaceChar, () => this.parameters[index++]);
     if (index !== this.parameterIndex || index !== this.parameters.length)
-      console.log(`${this.name}: parameterIndex and parameters.length and index are not equal`);
+      console.error({
+        error: `${this.name}: parameterIndex and parameters.length and index are not equal`,
+        index,
+        parameterIndex: this.parameterIndex,
+        parametersLength: this.parameters.length,
+      });
     return this.query;
   }
 

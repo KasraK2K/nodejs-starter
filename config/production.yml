@@ -4,6 +4,7 @@ application:
   print_info: false
   logger:
     logFilePath: "/var/embargo-logs/mng-api/"
+    logOnFile: false
     logOnConsole: true
     logOnDatabase: true
 

@@ -6,7 +6,7 @@ application:
     logFilePath: "/var/embargo-logs/mng-api/"
     logOnFile: false
     logOnConsole: true
-    logOnDatabase: true
+    logOnDatabase: false
 
 database:
   mongodb:
