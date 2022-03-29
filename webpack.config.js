@@ -1,6 +1,6 @@
-import path from "path";
-import nodeExternals from "webpack-node-externals";
-import WebpackShellPluginNext from "webpack-shell-plugin-next";
+const path = require("path");
+const nodeExternals = require("webpack-node-externals");
+const WebpackShellPluginNext = require("webpack-shell-plugin-next");
 
 const { NODE_ENV = "production" } = process.env;
 
