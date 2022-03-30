@@ -9,6 +9,8 @@
 //=======================================================
 
 import express from "express";
+import fs from "fs";
+import path from "path";
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "../swagger";
 import { IErrGenOptions } from "../common/interfaces/general";
@@ -30,6 +32,7 @@ import postgresController from "../modules/postgres/controller";
 const swaggerOptions = {
   explorer: true,
   swaggerOptions: { validatorUrl: null },
+  customCss: fs.readFileSync(path.join(__dirname, "../swagger/css/flattop.css"), "utf8"),
 };
 const router = express.Router();
 
