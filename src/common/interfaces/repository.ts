@@ -9,7 +9,7 @@ export interface IReadTable {
 
 export interface IExecuteQueryOptions {
   query: string;
-  parameters?: string[];
+  parameters?: any[];
   omits?: string[];
 }
 

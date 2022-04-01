@@ -32,7 +32,7 @@ import postgresController from "../modules/postgres/controller";
 const swaggerOptions = {
   explorer: true,
   swaggerOptions: { validatorUrl: null },
-  customCss: fs.readFileSync(path.join(__dirname, "../swagger/css/flattop.css"), "utf8"),
+  customCss: fs.readFileSync(path.resolve(process.cwd(), "src/swagger/css/feeling-blue.css"), "utf8"),
 };
 const router = express.Router();
 
@@ -43,10 +43,10 @@ const router = express.Router();
 router.post("/shake-hand", generalController.shakeHand);
 
 // postgres
-// router.post("/postgres/list", postgresController.getAll);
-// router.post("/postgres/find", postgresController.getOne);
-// router.post("/postgres/create", postgresController.create);
-// router.post("/postgres/edit", postgresController.edit);
+router.post("/postgres/list", postgresController.selectAll);
+router.post("/postgres/find", postgresController.selectOne);
+router.post("/postgres/create", postgresController.create);
+router.post("/postgres/edit", postgresController.edit);
 
 router.post("/postgres/builder/test", postgresController.testBuilder);
 

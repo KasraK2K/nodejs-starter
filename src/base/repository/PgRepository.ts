@@ -2,8 +2,13 @@ import { IFilter, IPagination } from "./../../modules/postgres/common/interface"
 import { LoggerEnum } from "../../common/enums/logger.enum";
 import _ from "lodash";
 import { IExecuteQueryOptions, IQueryGenerator, IReadTable } from "../../common/interfaces/repository";
+import PgBuilderRepository from "./PgBuilderRepository";
 
-class PgRepository {
+class PgRepository extends PgBuilderRepository {
+  constructor() {
+    super();
+  }
+
   // ─── SELECT ALL ─────────────────────────────────────────────────────────────────
   protected find(tableName: string, omits: string[] = []): Promise<Record<string, any>> {
     const query = ` SELECT * FROM ${tableName}`;
