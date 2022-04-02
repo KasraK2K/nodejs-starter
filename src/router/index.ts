@@ -13,7 +13,7 @@ import fs from "fs";
 import path from "path";
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "../swagger";
-import { IErrGenOptions } from "../common/interfaces/general";
+import { IErrGenOptions } from "../common/interfaces/general.interface";
 
 // ────────────────────────────────────────────────────────────────────────
 //   :::::: C O N T R O L L E R S : :  :   :    :     :        :          :

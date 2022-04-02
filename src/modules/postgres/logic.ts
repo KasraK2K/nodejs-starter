@@ -56,8 +56,13 @@ class PostgresLogic extends BaseLogic {
     });
   }
 
-  public testBuilder() {
-    return postgresRepository.testBuilder();
+  public testBuilder(): Promise<Record<string, any>> {
+    return new Promise(async (resolve, reject) => {
+      await postgresRepository
+        .testBuilder()
+        .then((response) => resolve({ result: true, data: response }))
+        .catch((err) => reject({ result: false, ...err }));
+    });
   }
 }
 

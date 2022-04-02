@@ -2,7 +2,7 @@ import BaseController from "../../base/controller/BaseController";
 import { Request, Response } from "express";
 import postgresLogic from "./logic";
 import { IUserList } from "./common/interface";
-import { IRes } from "../../common/interfaces/general";
+import { IRes } from "../../common/interfaces/general.interface";
 
 class PostgresController extends BaseController {
   public async selectAll(req: Request, res: Response): Promise<Response<IRes<IUserList>>> {
@@ -97,8 +97,27 @@ class PostgresController extends BaseController {
       });
   }
 
-  public testBuilder(req: Request, res: Response) {
-    return res.send(postgresLogic.testBuilder());
+  public async testBuilder(req: Request, res: Response) {
+    return await postgresLogic
+      .testBuilder()
+      .then((response) => {
+        return super.resGen<IUserList>({
+          req,
+          res,
+          result: response.result,
+          data: response.data,
+        });
+      })
+      .catch((err) => {
+        return super.resGen({
+          req,
+          res,
+          status: err.code,
+          result: err.result,
+          error_code: err.error_code,
+          error_user_messages: err.errors,
+        });
+      });
   }
 }
 

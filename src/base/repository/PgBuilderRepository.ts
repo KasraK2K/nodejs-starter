@@ -1,5 +1,5 @@
 import { LoggerEnum } from "./../../common/enums/logger.enum";
-import { IExecuteQueryOptions } from "../../common/interfaces/repository";
+import { IExecuteQueryOptions } from "../../common/interfaces/repository.interface";
 import { ErrorHandlerTypeEnum } from "./../../common/enums/repository.enum";
 import _ from "lodash";
 
@@ -159,13 +159,13 @@ class PgBuilderRepository {
 
     switch (orderArgsType) {
       case "string":
-        this.orderByQuery = `ORDER BY ${this.replaceChar} ${this.replaceChar}`;
+        this.orderByQuery = `\nORDER BY ${this.replaceChar} ${this.replaceChar}`;
         this.orderByParams = [orderArgs, sort];
         break;
 
       case "object":
         if (isSortArray && isArgsArray && orderArgs.length === sort.length) {
-          this.orderByQuery = `ORDER BY ${orderArgs.map(() => this.replaceChar).join(", ")} ${sort
+          this.orderByQuery = `\nORDER BY ${orderArgs.map(() => this.replaceChar).join(", ")} ${sort
             .map(() => this.replaceChar)
             .join(", ")}`;
           for (let i = 0; i < orderArgs.length; i++) {
@@ -196,12 +196,12 @@ class PgBuilderRepository {
   protected groupBy(groupByArg: string | string[]): this {
     switch (typeof groupByArg) {
       case "string":
-        this.groupByQuery += `GROUP BY ${this.replaceChar}`;
+        this.groupByQuery += `\nGROUP BY ${this.replaceChar}`;
         this.groupByParams.push(groupByArg);
         break;
 
       case "object":
-        this.groupByQuery += `GROUP BY ${groupByArg.map(() => `${this.replaceChar}`).join(", ")}`;
+        this.groupByQuery += `\nGROUP BY ${groupByArg.map(() => `${this.replaceChar}`).join(", ")}`;
         this.groupByParams = [...groupByArg];
         break;
 
@@ -218,14 +218,14 @@ class PgBuilderRepository {
 
   // ─── LIMIT ──────────────────────────────────────────────────────────────────────
   protected limit(limitArg: number | string): this {
-    this.limitQuery = `LIMIT ${this.replaceChar}`;
+    this.limitQuery = `\nLIMIT ${this.replaceChar}`;
     this.limitParams.push(limitArg);
     return this;
   }
 
   // ─── OFFSET ─────────────────────────────────────────────────────────────────────
   protected offset(offsetArg: number | string): this {
-    this.offsetQuery = `OFFSET ${this.replaceChar}`;
+    this.offsetQuery = `\nOFFSET ${this.replaceChar}`;
     this.offsetParams.push(offsetArg);
     return this;
   }
@@ -305,11 +305,10 @@ class PgBuilderRepository {
     if (this.fullOuterJoinQuery) this.query += this.fullOuterJoinQuery;
     if (this.crossJoinQuery) this.query += this.crossJoinQuery;
 
-    this.query += `
-      ${this.groupByQuery}
-      ${this.orderByQuery}
-      ${this.limitQuery}
-      ${this.offsetQuery}`;
+    if (this.groupByQuery) this.query += this.groupByQuery;
+    if (this.orderByQuery) this.query += this.orderByQuery;
+    if (this.limitQuery) this.query += this.limitQuery;
+    if (this.offsetQuery) this.query += this.offsetQuery;
 
     // ─────────────────────────────────────────── GENERATE PARAMS ─────
     this.params = [...this.selectParams, ...this.fromParams, ...this.whereParams];
@@ -322,13 +321,10 @@ class PgBuilderRepository {
     if (this.fullOuterJoinParams.length) this.params = [...this.params, ...this.fullOuterJoinParams];
     if (this.crossJoinParams.length) this.params = [...this.params, ...this.crossJoinParams];
 
-    this.params = [
-      ...this.params,
-      ...this.groupByParams,
-      ...this.orderByParams,
-      ...this.limitParams,
-      ...this.offsetParams,
-    ];
+    if (this.groupByParams.length) this.params = [...this.params, ...this.groupByParams];
+    if (this.orderByParams.length) this.params = [...this.params, ...this.orderByParams];
+    if (this.limitParams.length) this.params = [...this.params, ...this.limitParams];
+    if (this.offsetParams.length) this.params = [...this.params, ...this.offsetParams];
 
     return { query: this.query, params: this.params };
   }
@@ -336,18 +332,22 @@ class PgBuilderRepository {
   // ────────────────────────────────────────────────────────────────────────────────────────────
   //   :::::: G E N E R A T E   D O L L A R   Q U E R Y : :  :   :    :     :        :          :
   // ────────────────────────────────────────────────────────────────────────────────────────────
-  private generateDollarQuery(): void {
+  private generateDollarQuery(): string {
     let index = 0;
-    this.query = this.query.replaceAll(this.replaceChar, () => `$${++index}`);
+    return this.query.replaceAll(this.replaceChar, () => `$${++index}`);
   }
 
   // ────────────────────────────────────────────────────────────────────
   //   :::::: G E T   Q U E R Y : :  :   :    :     :        :          :
   // ────────────────────────────────────────────────────────────────────
-  protected getQuery(): string {
+  protected getQuery(): { query: string; params: any[] } {
     this.generateAllQueryAndParams();
-    this.generateDollarQuery();
-    return this.query;
+    const query = this.generateDollarQuery();
+    const params = this.params;
+
+    this.reset();
+
+    return { query, params };
   }
 
   // ────────────────────────────────────────────────────────────────
@@ -357,8 +357,11 @@ class PgBuilderRepository {
     this.generateAllQueryAndParams();
 
     let index = 0;
-    this.query = this.query.replaceAll(this.replaceChar, () => this.params[index++]);
-    return this.query;
+    const query = this.query.replaceAll(this.replaceChar, () => this.params[index++]);
+
+    this.reset();
+
+    return query;
   }
 
   /* -------------------------------------------------------------------------- */
@@ -370,8 +373,8 @@ class PgBuilderRepository {
   // ──────────────────────────────────────────────────────────────────
   protected getMany(): Promise<Record<string, any>[]> {
     return new Promise(async (resolve, reject) => {
-      const query = this.getQuery();
-      await this.executeQuery({ query, parameters: this.params })
+      const query = this.getSQL();
+      await this.executeQuery({ query })
         .then((result) => resolve(result.rows))
         .catch((err) => reject(err));
     });
@@ -382,8 +385,8 @@ class PgBuilderRepository {
   // ────────────────────────────────────────────────────────────────
   protected getOne(): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
-      const query = this.getQuery();
-      await this.executeQuery({ query, parameters: this.params })
+      const query = this.getSQL();
+      await this.executeQuery({ query })
         .then((result) => resolve(result.rows[0]))
         .catch((err) => reject(err));
     });
@@ -394,9 +397,9 @@ class PgBuilderRepository {
   // ──────────────────────────────────────────────────────────────────────
   protected getResult(): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
-      const query = this.getQuery();
+      const query = this.getSQL();
       await pg.pool
-        .query(query, this.params)
+        .query(query)
         .then((result) => resolve(result))
         .catch((err) => reject(this.databaseError(err)));
     });

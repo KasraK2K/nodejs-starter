@@ -6,7 +6,7 @@ import {
   ISuccessResponse,
   IErrorResponse,
   IRes,
-} from "../../common/interfaces/general";
+} from "../../common/interfaces/general.interface";
 import config from "config";
 import { IApplicationConfig } from "../../../config/config.interface";
 import { LoggerEnum } from "../../common/enums/logger.enum";
@@ -43,7 +43,7 @@ class BaseController {
       result,
       data,
     };
-    logger(response, LoggerEnum.REQUEST);
+    logger(_.omit(response, "data"), LoggerEnum.REQUEST);
     return response;
   }
 
