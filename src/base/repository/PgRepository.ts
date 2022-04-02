@@ -50,7 +50,11 @@ class PgRepository extends PgBuilderRepository {
   }
 
   // ─── INSERT ─────────────────────────────────────────────────────────────────────
-  protected insert(tableName: string, args: Record<string, any>, omits: string[] = []): Promise<Record<string, any>> {
+  protected insertOne(
+    tableName: string,
+    args: Record<string, any>,
+    omits: string[] = []
+  ): Promise<Record<string, any>> {
     args = _.omit(args, ["api_key"]);
     const { query, parameters } = this.getInsertQuery(tableName, args);
 

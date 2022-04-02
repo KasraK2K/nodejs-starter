@@ -4,6 +4,10 @@ export interface IExecuteQueryOptions {
   omits?: string[];
 }
 
+export interface IExecuteOptions {
+  omits?: string[];
+}
+
 export interface IQueryGenerator {
   query: string;
   parameters: any[];

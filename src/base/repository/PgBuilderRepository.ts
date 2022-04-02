@@ -1,9 +1,10 @@
 import { LoggerEnum } from "./../../common/enums/logger.enum";
-import { IExecuteQueryOptions } from "../../common/interfaces/repository.interface";
+import { IExecuteOptions, IExecuteQueryOptions } from "../../common/interfaces/repository.interface";
 import { ErrorHandlerTypeEnum } from "./../../common/enums/repository.enum";
 import _ from "lodash";
+import BaseRepository from "./BaseRepository";
 
-class PgBuilderRepository {
+class PgBuilderRepository extends BaseRepository {
   public readonly name = "PgBuilderRepository";
   private readonly replaceChar = "??";
 
@@ -13,6 +14,9 @@ class PgBuilderRepository {
 
     private selectQuery = "",
     private selectParams: any[] = [],
+
+    private insertQuery = "",
+    private insertParams: any[] = [],
 
     private fromQuery = "",
     private fromParams: any[] = [],
@@ -80,6 +84,7 @@ class PgBuilderRepository {
     private returningQuery = "",
     private returningParams: any[] = []
   ) {
+    super();
     this.reset();
   }
 
@@ -104,6 +109,21 @@ class PgBuilderRepository {
         this.selectQuery = `SELECT *`;
         break;
     }
+    return this;
+  }
+
+  // ─── INSERT ─────────────────────────────────────────────────────────────────────
+  protected insert(tableName: string, insertArg: Record<string, any>): this {
+    const keys = _.keys(insertArg);
+    const values = _.values(insertArg);
+
+    this.insertQuery = `INSERT INTO ${this.replaceChar}
+      (${keys.map(() => `${this.replaceChar}`).join(", ")})
+      VALUES (${values
+        .map((value) => `${typeof value === "string" ? `'${this.replaceChar}'` : this.replaceChar}`)
+        .join(", ")})
+      RETURNING *`;
+    this.insertParams = [tableName, ...keys, ...values];
     return this;
   }
 
@@ -310,6 +330,8 @@ class PgBuilderRepository {
     if (this.limitQuery) this.query += this.limitQuery;
     if (this.offsetQuery) this.query += this.offsetQuery;
 
+    if (this.insertQuery) this.query += this.insertQuery;
+
     // ─────────────────────────────────────────── GENERATE PARAMS ─────
     this.params = [...this.selectParams, ...this.fromParams, ...this.whereParams];
 
@@ -325,6 +347,8 @@ class PgBuilderRepository {
     if (this.orderByParams.length) this.params = [...this.params, ...this.orderByParams];
     if (this.limitParams.length) this.params = [...this.params, ...this.limitParams];
     if (this.offsetParams.length) this.params = [...this.params, ...this.offsetParams];
+
+    if (this.insertParams.length) this.params = [...this.params, ...this.insertParams];
 
     return { query: this.query, params: this.params };
   }
@@ -421,6 +445,18 @@ class PgBuilderRepository {
           }
         })
         .catch((err) => reject(this.databaseError(err)));
+    });
+  }
+
+  // ─── EXECUTE METHOD ─────────────────────────────────────────────────────────────
+  protected exec(options: IExecuteOptions): Promise<Record<string, any>> {
+    const { omits = [] } = options;
+
+    return new Promise(async (resolve, reject) => {
+      const query = this.getSQL();
+      await this.executeQuery({ query, omits })
+        .then((result) => resolve(result.rows))
+        .catch((err) => reject(err));
     });
   }
 
