@@ -1,5 +1,5 @@
 import PgRepository from "../../base/repository/PgRepository";
-import { IPagination, IUserCreate, IUserGetOne, IUserRemove, IUserUpdate } from "./common/interface";
+import { IPagination, IUserCreate, IUserGetOne, IUserRemove, IUserRestore, IUserUpdate } from "./common/interface";
 
 class PostgresRepository extends PgRepository {
   private table = "users";
@@ -52,7 +52,7 @@ class PostgresRepository extends PgRepository {
     });
   }
 
-  public async restore(args: IUserRemove): Promise<Record<string, any>> {
+  public async restore(args: IUserRestore): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       await this.restoreOne(this.table, args.id, ["password"])
         .then((response) => resolve(response))

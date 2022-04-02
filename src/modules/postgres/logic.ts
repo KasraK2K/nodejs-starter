@@ -56,6 +56,19 @@ class PostgresLogic extends BaseLogic {
     });
   }
 
+  public async upsert(args: Partial<IUserUpdate> | IUserCreate): Promise<Record<string, any>> {
+    return new Promise(async (resolve, reject) => {
+      if ("id" in args)
+        await this.edit(args as Partial<IUserUpdate>)
+          .then((response) => resolve(response))
+          .catch((err) => reject(err));
+      else
+        await this.create(args as IUserCreate)
+          .then((response) => resolve(response))
+          .catch((err) => reject(err));
+    });
+  }
+
   public async safeRemove(args: IUserRemove): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       const { valid, errors } = validator(schema.id, args);

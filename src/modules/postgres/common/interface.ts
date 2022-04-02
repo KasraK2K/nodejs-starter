@@ -68,3 +68,7 @@ export interface IUserUpdate {
 export interface IUserRemove {
   id: string;
 }
+
+export interface IUserRestore {
+  id: string;
+}

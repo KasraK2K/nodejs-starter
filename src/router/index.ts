@@ -47,6 +47,7 @@ router.post("/postgres/list", postgresController.selectAll);
 router.post("/postgres/find", postgresController.selectOne);
 router.post("/postgres/create", postgresController.create);
 router.post("/postgres/edit", postgresController.edit);
+router.post("/postgres/upsert", postgresController.upsert);
 router.post("/postgres/safe-remove", postgresController.safeRemove);
 router.post("/postgres/remove", postgresController.remove);
 router.post("/postgres/restore", postgresController.restore);

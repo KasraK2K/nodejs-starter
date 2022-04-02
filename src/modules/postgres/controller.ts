@@ -97,6 +97,29 @@ class PostgresController extends BaseController {
       });
   }
 
+  public async upsert(req: Request, res: Response): Promise<Response<IRes<IUserList>>> {
+    return await postgresLogic
+      .upsert(req.body)
+      .then((response) => {
+        return super.resGen<IUserList>({
+          req,
+          res,
+          result: response.result,
+          data: response.data,
+        });
+      })
+      .catch((err) => {
+        return super.resGen({
+          req,
+          res,
+          status: err.code,
+          result: err.result,
+          error_code: err.error_code,
+          error_user_messages: err.errors,
+        });
+      });
+  }
+
   public async safeRemove(req: Request, res: Response): Promise<Response<IRes<IUserList>>> {
     return await postgresLogic
       .safeRemove(req.body)

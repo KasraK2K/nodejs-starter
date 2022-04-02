@@ -73,9 +73,9 @@ class PgRepository extends PgBuilderRepository {
     const keys = _.keys(args);
     const query = `
       INSERT INTO ${tableName}
-      \t(${keys})
-      \tVALUES (${keys.map(() => `$${++index}`).join(", ")})
-      \tRETURNING *;
+      (${keys})
+      VALUES (${keys.map(() => `$${++index}`).join(", ")})
+      RETURNING *
     `;
     return { query, parameters };
   }
@@ -112,11 +112,6 @@ class PgRepository extends PgBuilderRepository {
 
     return { query, parameters };
   }
-
-  // SECTION: Write more
-  // ─── UPSERT ─────────────────────────────────────────────────────────────────────
-
-  // ─── GET UPSERT QUERY ───────────────────────────────────────────────────────────
 
   // ─── SAFE DELETE ────────────────────────────────────────────────────────────────
   protected safeDeleteOne(tableName: string, id: string, omits: string[] = []): Promise<Record<string, any>> {
