@@ -85,7 +85,11 @@ class PgRepository extends PgBuilderRepository {
   }
 
   // ─── UPDATE ─────────────────────────────────────────────────────────────────────
-  protected update(tableName: string, args: Record<string, any>, omits: string[] = []): Promise<Record<string, any>> {
+  protected updateOne(
+    tableName: string,
+    args: Record<string, any>,
+    omits: string[] = []
+  ): Promise<Record<string, any>> {
     const { query, parameters } = this.getUpdateQuery(tableName, args, omits);
 
     return new Promise(async (resolve, reject) => {
@@ -110,7 +114,7 @@ class PgRepository extends PgBuilderRepository {
     const query = `
       UPDATE ${tableName} SET
       \t${_.keys(args).map((arg) => `\n\t${arg} = $${++index}`)}
-      \tWHERE id = $${++index}
+      \tWHERE id = (SELECT id FROM ${tableName} WHERE id = $${++index} LIMIT 1)
       \tRETURNING ${_.keys(_.omit(args, omits)).join(", ")}
     `;
 

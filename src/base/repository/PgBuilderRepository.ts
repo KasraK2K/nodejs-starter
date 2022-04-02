@@ -18,6 +18,9 @@ class PgBuilderRepository extends BaseRepository {
     private insertQuery = "",
     private insertParams: any[] = [],
 
+    private updateQuery = "",
+    private updateParams: any[] = [],
+
     private fromQuery = "",
     private fromParams: any[] = [],
 
@@ -72,12 +75,6 @@ class PgBuilderRepository extends BaseRepository {
     private havingQuery = "",
     private havingParams: any[] = [],
 
-    private setQuery = "",
-    private setParams: any[] = [],
-
-    private valuesQuery = "",
-    private valuesParams: any[] = [],
-
     private onConflictQuery = "",
     private onConflictParams: any[] = [],
 
@@ -124,6 +121,29 @@ class PgBuilderRepository extends BaseRepository {
         .join(", ")})
       RETURNING *`;
     this.insertParams = [tableName, ...keys, ...values];
+    return this;
+  }
+
+  // ─── UPDATE ─────────────────────────────────────────────────────────────────────
+  protected update(tableName: string, id: string, updateArg: Record<string, any>): this {
+    const keys = _.keys(updateArg);
+    const values = _.values(updateArg);
+
+    this.updateParams.push(tableName);
+    this.updateQuery = `UPDATE ${this.replaceChar} SET`;
+
+    for (let i = 0; i < keys.length; i++) {
+      this.updateQuery += `\n\t${this.replaceChar} = ${
+        typeof values[i] === "string" ? `'${this.replaceChar}'` : this.replaceChar
+      }${i === keys.length - 1 ? "" : ","}`;
+      this.updateParams.push(keys[i]);
+      this.updateParams.push(values[i]);
+    }
+    this.updateQuery += `
+      WHERE id = (SELECT id FROM ${this.replaceChar} WHERE id = '${this.replaceChar}' LIMIT 1)
+      RETURNING *`;
+    this.updateParams.push(tableName);
+    this.updateParams.push(id);
     return this;
   }
 
@@ -331,6 +351,7 @@ class PgBuilderRepository extends BaseRepository {
     if (this.offsetQuery) this.query += this.offsetQuery;
 
     if (this.insertQuery) this.query += this.insertQuery;
+    if (this.updateQuery) this.query += this.updateQuery;
 
     // ─────────────────────────────────────────── GENERATE PARAMS ─────
     this.params = [...this.selectParams, ...this.fromParams, ...this.whereParams];
@@ -349,6 +370,7 @@ class PgBuilderRepository extends BaseRepository {
     if (this.offsetParams.length) this.params = [...this.params, ...this.offsetParams];
 
     if (this.insertParams.length) this.params = [...this.params, ...this.insertParams];
+    if (this.updateParams.length) this.params = [...this.params, ...this.updateParams];
 
     return { query: this.query, params: this.params };
   }
@@ -449,8 +471,8 @@ class PgBuilderRepository extends BaseRepository {
   }
 
   // ─── EXECUTE METHOD ─────────────────────────────────────────────────────────────
-  protected exec(options: IExecuteOptions): Promise<Record<string, any>> {
-    const { omits = [] } = options;
+  protected exec(options: IExecuteOptions = { omits: [] }): Promise<Record<string, any>> {
+    const { omits } = options;
 
     return new Promise(async (resolve, reject) => {
       const query = this.getSQL();
@@ -512,6 +534,12 @@ class PgBuilderRepository extends BaseRepository {
     this.selectQuery = "";
     this.selectParams = [];
 
+    this.insertQuery = "";
+    this.insertParams = [];
+
+    this.updateQuery = "";
+    this.updateParams = [];
+
     this.fromQuery = "";
     this.fromParams = [];
 
@@ -565,12 +593,6 @@ class PgBuilderRepository extends BaseRepository {
 
     this.havingQuery = "";
     this.havingParams = [];
-
-    this.setQuery = "";
-    this.setParams = [];
-
-    this.valuesQuery = "";
-    this.valuesParams = [];
 
     this.onConflictQuery = "";
     this.onConflictParams = [];

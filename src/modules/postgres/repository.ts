@@ -31,7 +31,7 @@ class PostgresRepository extends PgRepository {
 
   public async edit(args: Partial<IUserUpdate>): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
-      await this.update(this.table, args, ["password"])
+      await this.updateOne(this.table, args, ["password"])
         .then((response) => resolve(response))
         .catch((err) => reject(err));
     });
@@ -75,14 +75,27 @@ class PostgresRepository extends PgRepository {
       //   .catch((err) => reject(err));
 
       // ─────────────────────────────────────── INSERT WITH BUILDER ─────
-      await this.insert(this.table, {
-        user_name: "test3",
-        password: hashGen("test"),
-        first_name: "Test3",
-        last_name: "Tester3",
-        email: "test3@email.com",
-        phone: "+989183619393",
-        gender: "female",
+      // await this.insert(this.table, {
+      //   user_name: "test3",
+      //   password: hashGen("test"),
+      //   first_name: "Test3",
+      //   last_name: "Tester3",
+      //   email: "test3@email.com",
+      //   phone: "+989183619393",
+      //   gender: "female",
+      // })
+      //   .exec({ omits: ["password"] })
+      //   .then((response) => resolve(response))
+      //   .catch((err) => reject(err));
+
+      // ─────────────────────────────────────── UPDATE WITH BUILDER ─────
+      await this.update(this.table, "97c1abd1-d173-46a8-842e-a61a6873fbc3", {
+        password: hashGen("12345678"),
+        first_name: "Kasra",
+        last_name: "Karami",
+        email: "kasra@email.com",
+        phone: "+989183619290",
+        gender: "male",
       })
         .exec({ omits: ["password"] })
         .then((response) => resolve(response))
