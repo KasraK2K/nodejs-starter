@@ -408,13 +408,17 @@ class PgBuilderRepository {
   // ─── EXECUTE QUERY ──────────────────────────────────────────────────────────────
   protected executeQuery(options: IExecuteQueryOptions): Promise<Record<string, any>> {
     const { query, parameters = [], omits = [] } = options;
+    const doNotReturn = _.includes(omits, "*");
 
     return new Promise(async (resolve, reject) => {
       await pg.pool
         .query(query, parameters)
         .then((response) => {
-          const rows = response.rows.map((row) => _.omit(row, omits));
-          return resolve({ rowCount: response.rowCount, rows });
+          if (doNotReturn) return resolve({ rowCount: response.rowCount, rows: [] });
+          else {
+            const rows = response.rows.map((row) => _.omit(row, omits));
+            return resolve({ rowCount: response.rowCount, rows });
+          }
         })
         .catch((err) => reject(this.databaseError(err)));
     });

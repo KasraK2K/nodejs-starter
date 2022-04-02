@@ -1,5 +1,5 @@
 import PgRepository from "../../base/repository/PgRepository";
-import { IPagination, IUserCreate, IUserGetOne, IUserUpdate } from "./common/interface";
+import { IPagination, IUserCreate, IUserGetOne, IUserRemove, IUserUpdate } from "./common/interface";
 
 class PostgresRepository extends PgRepository {
   private table = "users";
@@ -31,6 +31,30 @@ class PostgresRepository extends PgRepository {
   public async edit(args: Partial<IUserUpdate>): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       await this.update(this.table, args, ["password"])
+        .then((response) => resolve(response))
+        .catch((err) => reject(err));
+    });
+  }
+
+  public async safeRemove(args: IUserRemove): Promise<Record<string, any>> {
+    return new Promise(async (resolve, reject) => {
+      await this.safeDeleteOne(this.table, args.id, ["password"])
+        .then((response) => resolve(response))
+        .catch((err) => reject(err));
+    });
+  }
+
+  public async remove(args: IUserRemove): Promise<Record<string, any>> {
+    return new Promise(async (resolve, reject) => {
+      await this.deleteOne(this.table, args.id, ["password"])
+        .then((response) => resolve(response))
+        .catch((err) => reject(err));
+    });
+  }
+
+  public async restore(args: IUserRemove): Promise<Record<string, any>> {
+    return new Promise(async (resolve, reject) => {
+      await this.restoreOne(this.table, args.id, ["password"])
         .then((response) => resolve(response))
         .catch((err) => reject(err));
     });

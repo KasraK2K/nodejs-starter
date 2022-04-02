@@ -64,3 +64,7 @@ export interface IUserUpdate {
   phone: string;
   gender: GenderEnum;
 }
+
+export interface IUserRemove {
+  id: string;
+}

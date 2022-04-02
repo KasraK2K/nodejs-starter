@@ -20,8 +20,6 @@ class PgRepository extends PgBuilderRepository {
     });
   }
 
-  // ─── GET SELECT ALL QUERY ───────────────────────────────────────────────────────
-
   // ─── SELECT ONE ─────────────────────────────────────────────────────────────────
   protected findOne(tableName: string, args: Record<string, any>, omits: string[] = []): Promise<Record<string, any>> {
     const { query, parameters } = this.getfindOneQuery(tableName, args);
@@ -138,15 +136,20 @@ class PgRepository extends PgBuilderRepository {
   // ─── GET SAFE DELETE ONE QUERY ──────────────────────────────────────────────────
   protected getSafeDeleteOneQuery(tableName: string, id: string): IQueryGenerator {
     const parameters = [id];
-    const query = `UPDATE ${tableName} SET deleted_at = NOW() WHERE id = $1 LIMIT 1`;
+    const query = `
+      UPDATE ${tableName}
+      SET deleted_at = NOW()
+      WHERE id = (SELECT id FROM ${tableName} WHERE id = $1 LIMIT 1)
+      RETURNING *
+    `;
     return { query, parameters };
   }
 
   // ─── RESTORE ONE ────────────────────────────────────────────────────────────────
-  protected restoreOne(tableName: string, id: string): Promise<Record<string, any>> {
+  protected restoreOne(tableName: string, id: string, omits: string[] = []): Promise<Record<string, any>> {
     const { query, parameters } = this.getRestoreOneQuery(tableName, id);
     return new Promise(async (resolve, reject) => {
-      await this.executeQuery({ query, parameters })
+      await this.executeQuery({ query, parameters, omits })
         .then((response) => resolve(response))
         .catch((err) => {
           logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
@@ -159,15 +162,20 @@ class PgRepository extends PgBuilderRepository {
   // ─── GET RESTORE ONE QUERY ──────────────────────────────────────────────────────
   protected getRestoreOneQuery(tableName: string, id: string): IQueryGenerator {
     const parameters = [id];
-    const query = `UPDATE ${tableName} SET deleted_at = NULL WHERE id = $1 LIMIT 1`;
+    const query = `
+      UPDATE ${tableName}
+      SET deleted_at = NULL
+      WHERE id = (SELECT id FROM ${tableName} WHERE id = $1 LIMIT 1)
+      RETURNING *
+    `;
     return { query, parameters };
   }
 
   // ─── DELETE ONE ─────────────────────────────────────────────────────────────────
-  protected deleteOne(tableName: string, id: string): Promise<Record<string, any>> {
+  protected deleteOne(tableName: string, id: string, omits: string[] = []): Promise<Record<string, any>> {
     const { query, parameters } = this.getDeleteOneQuery(tableName, id);
     return new Promise(async (resolve, reject) => {
-      await this.executeQuery({ query, parameters })
+      await this.executeQuery({ query, parameters, omits })
         .then((response) => resolve(response))
         .catch((err) => {
           logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
@@ -180,7 +188,11 @@ class PgRepository extends PgBuilderRepository {
   // ─── GET DELETE ONE QUERY ───────────────────────────────────────────────────────
   protected getDeleteOneQuery(tableName: string, id: string): IQueryGenerator {
     const parameters = [id];
-    const query = `DELETE FROM ${tableName} WHERE id = $1 LIMIT 1`;
+    const query = `
+      DELETE FROM ${tableName}
+      WHERE id = (SELECT id FROM ${tableName} WHERE id = $1 LIMIT 1)
+      RETURNING *
+    `;
     return { query, parameters };
   }
 

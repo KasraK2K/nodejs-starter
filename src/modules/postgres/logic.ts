@@ -1,6 +1,6 @@
 import { hashGen } from "./../../common/functions/bcrypt";
 import BaseLogic from "../../base/logic/BaseLogic";
-import { IPagination, IUserCreate, IUserGetOne, IUserUpdate } from "./common/interface";
+import { IPagination, IUserCreate, IUserGetOne, IUserRemove, IUserUpdate } from "./common/interface";
 import postgresRepository from "./repository";
 
 class PostgresLogic extends BaseLogic {
@@ -51,6 +51,42 @@ class PostgresLogic extends BaseLogic {
 
       await postgresRepository
         .edit(args)
+        .then((response) => resolve({ result: true, data: response }))
+        .catch((err) => reject({ result: false, ...err }));
+    });
+  }
+
+  public async safeRemove(args: IUserRemove): Promise<Record<string, any>> {
+    return new Promise(async (resolve, reject) => {
+      const { valid, errors } = validator(schema.id, args);
+      if (!valid) return reject({ result: false, error_code: 3002, errors });
+
+      await postgresRepository
+        .safeRemove(args)
+        .then((response) => resolve({ result: true, data: response }))
+        .catch((err) => reject({ result: false, ...err }));
+    });
+  }
+
+  public async remove(args: IUserRemove): Promise<Record<string, any>> {
+    return new Promise(async (resolve, reject) => {
+      const { valid, errors } = validator(schema.id, args);
+      if (!valid) return reject({ result: false, error_code: 3002, errors });
+
+      await postgresRepository
+        .remove(args)
+        .then((response) => resolve({ result: true, data: response }))
+        .catch((err) => reject({ result: false, ...err }));
+    });
+  }
+
+  public async restore(args: IUserRemove): Promise<Record<string, any>> {
+    return new Promise(async (resolve, reject) => {
+      const { valid, errors } = validator(schema.id, args);
+      if (!valid) return reject({ result: false, error_code: 3002, errors });
+
+      await postgresRepository
+        .restore(args)
         .then((response) => resolve({ result: true, data: response }))
         .catch((err) => reject({ result: false, ...err }));
     });
