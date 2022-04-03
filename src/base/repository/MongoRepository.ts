@@ -75,6 +75,28 @@ class MongoRepository {
   }
 
   // ─── UPSERT ONE ─────────────────────────────────────────────────────────────────
+  protected upsertOne(
+    tableName: string,
+    findArgs: Record<string, any>,
+    args: Record<string, any>,
+    options: Record<string, any> = { omits: [], upsert: true }
+  ): Promise<Record<string, any>> {
+    return new Promise(async (resolve, reject) => {
+      const { upsert, omits } = options;
+      findArgs = this.sanitizeArgs(findArgs);
+      args = this.sanitizeArgs(args);
+      const date = new Date();
+
+      await mongo
+        .collection(tableName)
+        .updateOne(findArgs, { $set: { ...args, updatedAt: date }, $setOnInsert: { createdAt: date } }, { upsert })
+        .then(async () => await this.findOne(tableName, args, omits).then((response) => resolve(response)))
+        .catch((err) => {
+          console.log(err);
+          reject(err);
+        });
+    });
+  }
 
   // ─── SAFE DELETE ────────────────────────────────────────────────────────────────
   protected safeDelete(

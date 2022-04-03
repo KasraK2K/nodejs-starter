@@ -37,6 +37,14 @@ class MongoDbRepository extends MongoRepository {
     });
   }
 
+  public async upsert(findArgs: Record<string, any>, args: Partial<IUserUpdate>): Promise<Record<string, any>> {
+    return new Promise(async (resolve, reject) => {
+      await this.upsertOne(this.table, findArgs, args, { omits: ["password"], upsert: true })
+        .then((response) => resolve(response))
+        .catch((err) => reject(err));
+    });
+  }
+
   // public async safeRemove(args: IUserRemove): Promise<Record<string, any>> {
   //   return new Promise(async (resolve, reject) => {
   //     await this.safeDeleteOne(this.table, args.id, ["password"])

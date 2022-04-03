@@ -99,7 +99,7 @@ class MongoDbController extends BaseController {
 
   public async upsert(req: Request, res: Response): Promise<Response<IRes<IUserList>>> {
     return await mongoDbLogic
-      .upsert(req.body)
+      .upsert(req.body.find, req.body.update)
       .then((response) => {
         return super.resGen<IUserList>({
           req,
