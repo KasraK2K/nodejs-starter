@@ -1,5 +1,3 @@
-import { GenderEnum } from "./common/enum";
-import { hashGen } from "./../../common/functions/bcrypt";
 import PgRepository from "../../base/repository/PgRepository";
 import { IPagination, IUserCreate, IUserGetOne, IUserRemove, IUserRestore, IUserUpdate } from "./common/interface";
 
@@ -64,46 +62,7 @@ class PostgresRepository extends PgRepository {
 
   public testBuilder(): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
-      // ─────────────────────────────────────── SELECT WITH BUILDER ─────
-      // await this.select(["first_name", "last_name"])
-      //   .from(this.table)
-      //   .where("last_name = '??'", ["Karami"])
-      //   .orderBy("first_name", "ASC")
-      //   .limit(1)
-      //   .offset(1)
-      //   .getMany()
-      //   .then((response) => resolve(response))
-      //   .catch((err) => reject(err));
-
-      // ─────────────────────────────────────── INSERT WITH BUILDER ─────
-      // await this.insert(this.table, {
-      //   user_name: "test3",
-      //   password: hashGen("test"),
-      //   first_name: "Test3",
-      //   last_name: "Tester3",
-      //   email: "test3@email.com",
-      //   phone: "+989183619393",
-      //   gender: "female",
-      // })
-      //   .exec({ omits: ["password"] })
-      //   .then((response) => resolve(response))
-      //   .catch((err) => reject(err));
-
-      // ─────────────────────────────────────── UPDATE WITH BUILDER ─────
-      // await this.update(this.table, "97c1abd1-d173-46a8-842e-a61a6873fbc3", {
-      //   password: hashGen("12345678"),
-      //   first_name: "Kasra",
-      //   last_name: "Karami",
-      //   email: "kasra@email.com",
-      //   phone: "+989183619290",
-      //   gender: GenderEnum.MALE,
-      // })
-      //   .exec({ omits: ["password"] })
-      //   .then((response) => resolve(response))
-      //   .catch((err) => reject(err));
-
-      // ─── QUERY ───────────────────────────────────────────────────────
-      await this.delete("users", "fea42144-af35-427e-af45-c762291a7ace")
+      await this.query("SELECT * FROM ??", ["users"])
         .exec({ omits: ["password"] })
         .then((response) => resolve(response))
         .catch((err) => reject(err));
