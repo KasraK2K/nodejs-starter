@@ -25,13 +25,13 @@ psql -U <user> -h <host> -p <port> -c "CREATE DATABASE <dbname>;"
 ### Create ENUM
 
 ```postgres
-CREATE TYPE gender AS ENUM ('male', 'female', 'transsexual', 'other');
+CREATE TYPE gender AS ENUM ('MALE', 'FEMALE', 'TRANSSEXUAL', 'OTHER');
 ```
 
 ### Create Sequence
 
 ```postgres
-CREATE SEQUENCE <table_name>_seq;
+CREATE SEQUENCE user_id_seq;
 ```
 
 ### Create Table
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS users (
   last_name VARCHAR (50),
   email VARCHAR (50) NOT NULL UNIQUE,
   phone VARCHAR (50),
-  gender VARCHAR (50) DEFAULT 'other',
+  gender gender DEFAULT 'OTHER',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP,
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS users (
 Password is 12345678 and hashed by bcryptjs salt 7
 
 ```postgres
-INSERT INTO users
+INSERT INTO users 
   (
     user_name, password, first_name, last_name, email, phone, gender,
     is_active, is_verified, is_admin, is_super_admin, is_blocked
@@ -71,7 +71,7 @@ INSERT INTO users
 VALUES
   (
     'kasra', '$2a$07$r66gkFrxBP5L5/XSd4No4eY.Z/UGu.56F/neHhsLjAwydlPvUnocO', 'Kasra', 'Karami',
-    'kasra.karami.kk@gmail.com', '09123456789', 'male', TRUE, TRUE, TRUE, TRUE, FALSE
+    'kasra.karami.kk@gmail.com', '09123456789', 'MALE', TRUE, TRUE, TRUE, TRUE, FALSE
   );
 ```
 

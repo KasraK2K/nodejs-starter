@@ -166,9 +166,9 @@ class PostgresController extends BaseController {
       });
   }
 
-  public async restore(req: Request, res: Response): Promise<Response<IRes<IUserList>>> {
+  public async recover(req: Request, res: Response): Promise<Response<IRes<IUserList>>> {
     return await postgresLogic
-      .restore(req.body)
+      .recover(req.body)
       .then((response) => {
         return super.resGen<IUserList>({
           req,

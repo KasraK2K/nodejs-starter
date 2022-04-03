@@ -9,8 +9,11 @@ class PgBuilderRepository extends BaseRepository {
   private readonly replaceChar = "??";
 
   constructor(
-    private query = "",
+    private questionMarkQuery = "",
     private params: any[] = [],
+
+    private queryString = "",
+    private queryParams: any[] = [],
 
     private selectQuery = "",
     private selectParams: any[] = [],
@@ -20,6 +23,15 @@ class PgBuilderRepository extends BaseRepository {
 
     private updateQuery = "",
     private updateParams: any[] = [],
+
+    private deleteQuery = "",
+    private deleteParams: any[] = [],
+
+    private safeDeleteQuery = "",
+    private safeDeleteParams: any[] = [],
+
+    private restoreQuery = "",
+    private restoreParams: any[] = [],
 
     private fromQuery = "",
     private fromParams: any[] = [],
@@ -86,28 +98,36 @@ class PgBuilderRepository extends BaseRepository {
   }
 
   /* -------------------------------------------------------------------------- */
-  /*                               NORMAL SECTION                               */
+  /*                                QUERY SECTION                               */
   /* -------------------------------------------------------------------------- */
 
-  // ─── SELECT ─────────────────────────────────────────────────────────────────────
-  protected select(selectArg?: string | string[]): this {
-    switch (typeof selectArg) {
-      case "string":
-        this.selectQuery = `SELECT ${this.replaceChar}`;
-        this.selectParams.push(selectArg);
-        break;
-
-      case "object":
-        this.selectQuery = `SELECT ${selectArg.map(() => `${this.replaceChar}`).join(", ")}`;
-        this.selectParams = [...selectArg];
-        break;
-
-      default:
-        this.selectQuery = `SELECT *`;
-        break;
-    }
+  // ─── QUERY ──────────────────────────────────────────────────────────────────────
+  /**
+   *
+   *
+   * @protected
+   * @param {string} queryArg
+   * @param {any[]} [params=[]]
+   * @return {*}  {this}
+   * @memberof PgBuilderRepository
+   *
+   * Use ?? in query to replace the params on it. if you use PostgreSQL parameter like $1 getSQL dosent work currectly.
+   *
+   * Do not forget we you use query, the query is replaced to all other methods
+   *
+   * ```typescript
+   * this.query("SELECT * FROM ??", ["<table_name>"])
+   * ```
+   */
+  protected query(queryArg: string, params: any[] = []): this {
+    this.queryString = queryArg;
+    this.queryParams = params;
     return this;
   }
+
+  /* -------------------------------------------------------------------------- */
+  /*                                CRUD SECTION                                */
+  /* -------------------------------------------------------------------------- */
 
   // ─── INSERT ─────────────────────────────────────────────────────────────────────
   protected insert(tableName: string, insertArg: Record<string, any>): this {
@@ -144,6 +164,62 @@ class PgBuilderRepository extends BaseRepository {
       RETURNING *`;
     this.updateParams.push(tableName);
     this.updateParams.push(id);
+    return this;
+  }
+
+  // ─── DELETE ─────────────────────────────────────────────────────────────────────
+  protected delete(tableName: string, id: string): this {
+    this.deleteQuery = `
+      DELETE FROM ${this.replaceChar}
+      WHERE id = (SELECT id FROM ${this.replaceChar} WHERE id = '${this.replaceChar}' LIMIT 1)
+      RETURNING *`;
+    this.deleteParams = [tableName, tableName, id];
+    return this;
+  }
+
+  // ─── SAFE DELETE ────────────────────────────────────────────────────────────────
+  protected safeDelete(tableName: string, id: string): this {
+    this.safeDeleteQuery = `
+      UPDATE ${this.replaceChar}
+      SET deleted_at = NOW()
+      WHERE id = (SELECT id FROM ${this.replaceChar} WHERE id = '${this.replaceChar}' LIMIT 1)
+      RETURNING *`;
+    this.safeDeleteParams = [tableName, tableName, id];
+    return this;
+  }
+
+  // ─── RESTORE ────────────────────────────────────────────────────────────────────
+  protected restore(tableName: string, id: string): this {
+    this.restoreQuery = `
+      UPDATE ${this.replaceChar}
+      SET deleted_at = NULL
+      WHERE id = (SELECT id FROM ${this.replaceChar} WHERE id = '${this.replaceChar}' LIMIT 1)
+      RETURNING *`;
+    this.restoreParams = [tableName, tableName, id];
+    return this;
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*                               SELECT SECTION                               */
+  /* -------------------------------------------------------------------------- */
+
+  // ─── SELECT ─────────────────────────────────────────────────────────────────────
+  protected select(selectArg?: string | string[]): this {
+    switch (typeof selectArg) {
+      case "string":
+        this.selectQuery = `SELECT ${this.replaceChar}`;
+        this.selectParams.push(selectArg);
+        break;
+
+      case "object":
+        this.selectQuery = `SELECT ${selectArg.map(() => `${this.replaceChar}`).join(", ")}`;
+        this.selectParams = [...selectArg];
+        break;
+
+      default:
+        this.selectQuery = `SELECT *`;
+        break;
+    }
     return this;
   }
 
@@ -324,91 +400,9 @@ class PgBuilderRepository extends BaseRepository {
   }
 
   /* -------------------------------------------------------------------------- */
-  /*                           QUERY FUNCTION SECTION                           */
+  /*                              PAGINATE SECTION                              */
   /* -------------------------------------------------------------------------- */
-
-  // ──────────────────────────────────────────────────────────────────────────────────────────────────────────
-  //   :::::: G E N E R A T E   Q U E S T I O N   M A R K   Q U E R Y : :  :   :    :     :        :          :
-  // ──────────────────────────────────────────────────────────────────────────────────────────────────────────
-  private generateAllQueryAndParams(): { query: string; params: any[] } {
-    // ────────────────────────────── GENERATE QUESTION MARK QUERY ─────
-    this.query = `
-      ${this.selectQuery}
-      ${this.fromQuery}
-      ${this.whereQuery}`;
-
-    if (this.innerJoinQuery) this.query += this.innerJoinQuery;
-    if (this.leftJoinQuery) this.query += this.leftJoinQuery;
-    if (this.rightJoinQuery) this.query += this.rightJoinQuery;
-    if (this.leftOuterJoinQuery) this.query += this.leftOuterJoinQuery;
-    if (this.rightOuterJoinQuery) this.query += this.rightOuterJoinQuery;
-    if (this.fullOuterJoinQuery) this.query += this.fullOuterJoinQuery;
-    if (this.crossJoinQuery) this.query += this.crossJoinQuery;
-
-    if (this.groupByQuery) this.query += this.groupByQuery;
-    if (this.orderByQuery) this.query += this.orderByQuery;
-    if (this.limitQuery) this.query += this.limitQuery;
-    if (this.offsetQuery) this.query += this.offsetQuery;
-
-    if (this.insertQuery) this.query += this.insertQuery;
-    if (this.updateQuery) this.query += this.updateQuery;
-
-    // ─────────────────────────────────────────── GENERATE PARAMS ─────
-    this.params = [...this.selectParams, ...this.fromParams, ...this.whereParams];
-
-    if (this.innerJoinParams.length) this.params = [...this.params, ...this.innerJoinParams];
-    if (this.leftJoinParams.length) this.params = [...this.params, ...this.leftJoinParams];
-    if (this.rightJoinParams.length) this.params = [...this.params, ...this.rightJoinParams];
-    if (this.leftOuterJoinParams.length) this.params = [...this.params, ...this.leftOuterJoinParams];
-    if (this.rightOuterJoinParams.length) this.params = [...this.params, ...this.rightOuterJoinParams];
-    if (this.fullOuterJoinParams.length) this.params = [...this.params, ...this.fullOuterJoinParams];
-    if (this.crossJoinParams.length) this.params = [...this.params, ...this.crossJoinParams];
-
-    if (this.groupByParams.length) this.params = [...this.params, ...this.groupByParams];
-    if (this.orderByParams.length) this.params = [...this.params, ...this.orderByParams];
-    if (this.limitParams.length) this.params = [...this.params, ...this.limitParams];
-    if (this.offsetParams.length) this.params = [...this.params, ...this.offsetParams];
-
-    if (this.insertParams.length) this.params = [...this.params, ...this.insertParams];
-    if (this.updateParams.length) this.params = [...this.params, ...this.updateParams];
-
-    return { query: this.query, params: this.params };
-  }
-
-  // ────────────────────────────────────────────────────────────────────────────────────────────
-  //   :::::: G E N E R A T E   D O L L A R   Q U E R Y : :  :   :    :     :        :          :
-  // ────────────────────────────────────────────────────────────────────────────────────────────
-  private generateDollarQuery(): string {
-    let index = 0;
-    return this.query.replaceAll(this.replaceChar, () => `$${++index}`);
-  }
-
-  // ────────────────────────────────────────────────────────────────────
-  //   :::::: G E T   Q U E R Y : :  :   :    :     :        :          :
-  // ────────────────────────────────────────────────────────────────────
-  protected getQuery(): { query: string; params: any[] } {
-    this.generateAllQueryAndParams();
-    const query = this.generateDollarQuery();
-    const params = this.params;
-
-    this.reset();
-
-    return { query, params };
-  }
-
-  // ────────────────────────────────────────────────────────────────
-  //   :::::: G E T   S Q L : :  :   :    :     :        :          :
-  // ────────────────────────────────────────────────────────────────
-  protected getSQL(): string {
-    this.generateAllQueryAndParams();
-
-    let index = 0;
-    const query = this.query.replaceAll(this.replaceChar, () => this.params[index++]);
-
-    this.reset();
-
-    return query;
-  }
+  // protected newPaginate()
 
   /* -------------------------------------------------------------------------- */
   /*                             AGGREGRATE SECTION                             */
@@ -483,6 +477,105 @@ class PgBuilderRepository extends BaseRepository {
   }
 
   /* -------------------------------------------------------------------------- */
+  /*                           QUERY FUNCTION SECTION                           */
+  /* -------------------------------------------------------------------------- */
+
+  // ────────────────────────────────────────────────────────────────────
+  //   :::::: G E T   Q U E R Y : :  :   :    :     :        :          :
+  // ────────────────────────────────────────────────────────────────────
+  protected getQuery(): { query: string; params: any[] } {
+    this.generateAllQueryAndParams();
+    const query = this.generateDollarQuery();
+    const params = this.params;
+
+    this.reset();
+
+    return { query, params };
+  }
+
+  // ────────────────────────────────────────────────────────────────
+  //   :::::: G E T   S Q L : :  :   :    :     :        :          :
+  // ────────────────────────────────────────────────────────────────
+  protected getSQL(): string {
+    this.generateAllQueryAndParams();
+
+    let index = 0;
+    const query = this.questionMarkQuery.replaceAll(this.replaceChar, () => this.params[index++]);
+
+    this.reset();
+
+    return query;
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+  //   :::::: G E N E R A T E   Q U E S T I O N   M A R K   Q U E R Y : :  :   :    :     :        :          :
+  // ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+  private generateAllQueryAndParams(): { query: string; params: any[] } {
+    // ────────────────────────────── GENERATE QUESTION MARK QUERY ─────
+    if (this.queryString) this.questionMarkQuery = this.queryString;
+    else {
+      this.questionMarkQuery = `
+        ${this.selectQuery}
+        ${this.fromQuery}
+        ${this.whereQuery}`;
+
+      if (this.innerJoinQuery) this.questionMarkQuery += this.innerJoinQuery;
+      if (this.leftJoinQuery) this.questionMarkQuery += this.leftJoinQuery;
+      if (this.rightJoinQuery) this.questionMarkQuery += this.rightJoinQuery;
+      if (this.leftOuterJoinQuery) this.questionMarkQuery += this.leftOuterJoinQuery;
+      if (this.rightOuterJoinQuery) this.questionMarkQuery += this.rightOuterJoinQuery;
+      if (this.fullOuterJoinQuery) this.questionMarkQuery += this.fullOuterJoinQuery;
+      if (this.crossJoinQuery) this.questionMarkQuery += this.crossJoinQuery;
+
+      if (this.groupByQuery) this.questionMarkQuery += this.groupByQuery;
+      if (this.orderByQuery) this.questionMarkQuery += this.orderByQuery;
+      if (this.limitQuery) this.questionMarkQuery += this.limitQuery;
+      if (this.offsetQuery) this.questionMarkQuery += this.offsetQuery;
+
+      if (this.insertQuery) this.questionMarkQuery += this.insertQuery;
+      if (this.updateQuery) this.questionMarkQuery += this.updateQuery;
+      if (this.deleteQuery) this.questionMarkQuery += this.deleteQuery;
+      if (this.safeDeleteQuery) this.questionMarkQuery += this.safeDeleteQuery;
+      if (this.restoreQuery) this.questionMarkQuery += this.restoreQuery;
+    }
+
+    // ─────────────────────────────────────────── GENERATE PARAMS ─────
+    if (this.queryString || this.queryParams.length) this.params = this.queryParams;
+    else {
+      this.params = [...this.selectParams, ...this.fromParams, ...this.whereParams];
+
+      if (this.innerJoinParams.length) this.params = [...this.params, ...this.innerJoinParams];
+      if (this.leftJoinParams.length) this.params = [...this.params, ...this.leftJoinParams];
+      if (this.rightJoinParams.length) this.params = [...this.params, ...this.rightJoinParams];
+      if (this.leftOuterJoinParams.length) this.params = [...this.params, ...this.leftOuterJoinParams];
+      if (this.rightOuterJoinParams.length) this.params = [...this.params, ...this.rightOuterJoinParams];
+      if (this.fullOuterJoinParams.length) this.params = [...this.params, ...this.fullOuterJoinParams];
+      if (this.crossJoinParams.length) this.params = [...this.params, ...this.crossJoinParams];
+
+      if (this.groupByParams.length) this.params = [...this.params, ...this.groupByParams];
+      if (this.orderByParams.length) this.params = [...this.params, ...this.orderByParams];
+      if (this.limitParams.length) this.params = [...this.params, ...this.limitParams];
+      if (this.offsetParams.length) this.params = [...this.params, ...this.offsetParams];
+
+      if (this.insertParams.length) this.params = [...this.params, ...this.insertParams];
+      if (this.updateParams.length) this.params = [...this.params, ...this.updateParams];
+      if (this.deleteParams.length) this.params = [...this.params, ...this.deleteParams];
+      if (this.safeDeleteParams.length) this.params = [...this.params, ...this.safeDeleteParams];
+      if (this.restoreParams.length) this.params = [...this.params, ...this.restoreParams];
+    }
+
+    return { query: this.questionMarkQuery, params: this.params };
+  }
+
+  // ────────────────────────────────────────────────────────────────────────────────────────────
+  //   :::::: G E N E R A T E   D O L L A R   Q U E R Y : :  :   :    :     :        :          :
+  // ────────────────────────────────────────────────────────────────────────────────────────────
+  private generateDollarQuery(): string {
+    let index = 0;
+    return this.questionMarkQuery.replaceAll(this.replaceChar, () => `$${++index}`);
+  }
+
+  /* -------------------------------------------------------------------------- */
   /*                                ERROR SECTION                               */
   /* -------------------------------------------------------------------------- */
   // ─────────────────────────────────────────────────── DATABASE ERROR HANDLER ─────
@@ -507,6 +600,11 @@ class PgBuilderRepository extends BaseRepository {
         logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
         return { result: false, error_code: 3010 };
 
+      case "22P02":
+        logger(`{red}Invalid input value for enum{reset}`, LoggerEnum.ERROR);
+        logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
+        return { result: false, error_code: 3011 };
+
       case "ECONNREFUSED":
         logger(`{red}Database Connection Refused{reset}`, LoggerEnum.ERROR);
         logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
@@ -528,8 +626,11 @@ class PgBuilderRepository extends BaseRepository {
   /*                                RESET SECTION                               */
   /* -------------------------------------------------------------------------- */
   private reset(): void {
-    this.query = "";
+    this.questionMarkQuery = "";
     this.params = [];
+
+    this.queryString = "";
+    this.queryParams = [];
 
     this.selectQuery = "";
     this.selectParams = [];
@@ -539,6 +640,15 @@ class PgBuilderRepository extends BaseRepository {
 
     this.updateQuery = "";
     this.updateParams = [];
+
+    this.deleteQuery = "";
+    this.deleteParams = [];
+
+    this.safeDeleteQuery = "";
+    this.safeDeleteParams = [];
+
+    this.restoreQuery = "";
+    this.restoreParams = [];
 
     this.fromQuery = "";
     this.fromParams = [];

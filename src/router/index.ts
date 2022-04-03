@@ -50,7 +50,7 @@ router.post("/postgres/edit", postgresController.edit);
 router.post("/postgres/upsert", postgresController.upsert);
 router.post("/postgres/safe-remove", postgresController.safeRemove);
 router.post("/postgres/remove", postgresController.remove);
-router.post("/postgres/restore", postgresController.restore);
+router.post("/postgres/recover", postgresController.recover);
 
 router.post("/postgres/builder/test", postgresController.testBuilder);
 

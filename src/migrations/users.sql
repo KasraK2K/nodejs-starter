@@ -9,7 +9,7 @@
 --======================================================================================================
 
 
-CREATE TYPE gender AS ENUM ('male', 'female', 'transsexual', 'other');
+CREATE TYPE gender AS ENUM ('MALE', 'FEMALE', 'TRANSSEXUAL', 'OTHER');
 
 CREATE SEQUENCE user_id_seq;
 
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS users (
   last_name VARCHAR (50),
   email VARCHAR (50) NOT NULL UNIQUE,
   phone VARCHAR (50),
-  gender VARCHAR (50) DEFAULT 'other',
+  gender gender DEFAULT 'OTHER',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP,
@@ -42,7 +42,7 @@ INSERT INTO users
 VALUES
   (
     'kasra', '$2a$07$r66gkFrxBP5L5/XSd4No4eY.Z/UGu.56F/neHhsLjAwydlPvUnocO', 'Kasra', 'Karami',
-    'kasra.karami.kk@gmail.com', '09123456789', 'male', TRUE, TRUE, TRUE, TRUE, FALSE
+    'kasra.karami.kk@gmail.com', '09123456789', 'MALE', TRUE, TRUE, TRUE, TRUE, FALSE
   );
 
 SELECT * FROM users;

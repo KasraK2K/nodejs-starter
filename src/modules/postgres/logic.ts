@@ -93,13 +93,13 @@ class PostgresLogic extends BaseLogic {
     });
   }
 
-  public async restore(args: IUserRemove): Promise<Record<string, any>> {
+  public async recover(args: IUserRemove): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       const { valid, errors } = validator(schema.id, args);
       if (!valid) return reject({ result: false, error_code: 3002, errors });
 
       await postgresRepository
-        .restore(args)
+        .recover(args)
         .then((response) => resolve({ result: true, data: response }))
         .catch((err) => reject({ result: false, ...err }));
     });

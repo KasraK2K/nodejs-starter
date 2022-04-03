@@ -10,6 +10,7 @@ const map = new Map([
   [3008, "Some uniques are not unique"],
   [3009, "Database Connection Refused"],
   [3010, "Column not found"],
+  [3011, "Invalid input value for enum"],
 ]);
 
 export const getError = (code: number) => {
