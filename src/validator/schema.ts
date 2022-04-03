@@ -87,7 +87,7 @@ export const schema = {
         phone: { type: "string", format: "phone" },
         gender: {
           type: "string",
-          // enum: [GenderEnum.FEMALE, GenderEnum.MALE, GenderEnum.TRANSSEXUAL, GenderEnum.OTHER],
+          enum: [GenderEnum.FEMALE, GenderEnum.MALE, GenderEnum.TRANSSEXUAL, GenderEnum.OTHER],
         },
       },
     },
