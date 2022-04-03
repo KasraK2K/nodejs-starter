@@ -91,15 +91,12 @@ class MongoRepository {
         .collection(tableName)
         .updateOne(findArgs, { $set: { ...args, updatedAt: date }, $setOnInsert: { createdAt: date } }, { upsert })
         .then(async () => await this.findOne(tableName, args, omits).then((response) => resolve(response)))
-        .catch((err) => {
-          console.log(err);
-          reject(err);
-        });
+        .catch((err) => reject(err));
     });
   }
 
   // ─── SAFE DELETE ────────────────────────────────────────────────────────────────
-  protected safeDelete(
+  protected safeDeleteOne(
     tableName: string,
     args: Record<string, any>,
     omits: string[] = []
@@ -111,7 +108,10 @@ class MongoRepository {
         .collection(tableName)
         .updateOne(args, { $set: { deletedAt: new Date() } })
         .then(async () => await this.findOne(tableName, args, omits).then((response) => resolve(response)))
-        .catch((err) => reject(err));
+        .catch((err) => {
+          console.log(err);
+          reject(err);
+        });
     });
   }
 

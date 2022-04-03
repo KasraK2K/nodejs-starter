@@ -1,11 +1,11 @@
 import { hashGen } from "./../../common/functions/bcrypt";
 import BaseLogic from "../../base/logic/BaseLogic";
-import { IUserCreate, IUserGetOne, IUserUpdate } from "./common/interface";
+import { IUserCreate, IUserGetOne, IUserRemove, IUserUpdate } from "./common/interface";
 import mongoDbRepository from "./repository";
 import _ from "lodash";
 
 class MongoDbLogic extends BaseLogic {
-  public async selectAll(args: Record<string, any>): Promise<Record<string, any>> {
+  public async selectAll(args: Partial<IUserGetOne>): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       const { valid, errors } = validator(schema.mongo.find, args);
       if (!valid) return reject({ result: false, error_code: 3002, errors });
@@ -43,7 +43,7 @@ class MongoDbLogic extends BaseLogic {
     });
   }
 
-  public async edit(findArgs: Record<string, any>, args: Partial<IUserUpdate>): Promise<Record<string, any>> {
+  public async edit(findArgs: Partial<IUserGetOne>, args: IUserUpdate): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       const findValidation = validator(schema.mongo.find, findArgs);
       const argsValidation = validator(schema.mongo.user.edit, args);
@@ -63,7 +63,7 @@ class MongoDbLogic extends BaseLogic {
     });
   }
 
-  public async upsert(findArgs: Record<string, any>, args: Partial<IUserUpdate>): Promise<Record<string, any>> {
+  public async upsert(findArgs: Partial<IUserGetOne>, args: IUserUpdate): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       const findValidation = validator(schema.mongo.find, findArgs);
       const argsValidation = validator(schema.mongo.user.edit, args);
@@ -83,17 +83,17 @@ class MongoDbLogic extends BaseLogic {
     });
   }
 
-  // public async safeRemove(args: IUserRemove): Promise<Record<string, any>> {
-  //   return new Promise(async (resolve, reject) => {
-  //     const { valid, errors } = validator(schema.mongo.id, args);
-  //     if (!valid) return reject({ result: false, error_code: 3002, errors });
+  public async safeRemove(args: IUserRemove): Promise<Record<string, any>> {
+    return new Promise(async (resolve, reject) => {
+      const { valid, errors } = validator(schema.mongo.id, args);
+      if (!valid) return reject({ result: false, error_code: 3002, errors });
 
-  //     await mongoDbRepository
-  //       .safeRemove(args)
-  //       .then((response) => resolve({ result: true, data: response }))
-  //       .catch((err) => reject({ result: false, ...err }));
-  //   });
-  // }
+      await mongoDbRepository
+        .safeRemove(args)
+        .then((response) => resolve({ result: true, data: response }))
+        .catch((err) => reject({ result: false, ...err }));
+    });
+  }
 
   // public async remove(args: IUserRemove): Promise<Record<string, any>> {
   //   return new Promise(async (resolve, reject) => {
