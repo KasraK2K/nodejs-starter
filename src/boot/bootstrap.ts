@@ -19,6 +19,14 @@ const app: Express = express();
 
 starterConfig.boot.forEach(async (module) => {
   await import(`./${module}`).catch((err) => console.log(err));
+
+  if (module === "mongodb")
+    mongo.mongoClient.connect((err) => {
+      if (err) {
+        console.error(err);
+        process.exit(1);
+      }
+    });
 });
 
 export { express, app };

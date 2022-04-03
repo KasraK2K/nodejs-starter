@@ -1,5 +1,6 @@
 import { GenderEnum } from "./../modules/postgres/common/enum";
-export const schema = {
+
+export const postgresSchema = {
   // ──────────────────────────────────────────────────────────────────────
   //   :::::: P A G I N A T I O N : :  :   :    :     :        :          :
   // ──────────────────────────────────────────────────────────────────────
@@ -117,4 +118,79 @@ export const schema = {
   },
 };
 
-export default schema;
+export const mongoSchema = {
+  // ──────────────────────────────────────────────────────────────────
+  //   :::::: F I N D   O N E : :  :   :    :     :        :          :
+  // ──────────────────────────────────────────────────────────────────
+  find: {
+    type: "object",
+    additionalProperties: false,
+    properties: {
+      _id: { type: "string", format: "objectId" },
+      user_name: { type: "string" },
+      email: { type: "string", format: "email" },
+    },
+    minProperties: 1,
+  },
+  // ──────────────────────────────────────────────────────
+  //   :::::: I D : :  :   :    :     :        :          :
+  // ──────────────────────────────────────────────────────
+  id: {
+    type: "object",
+    additionalProperties: false,
+    properties: {
+      _id: { type: "string", format: "objectId" },
+    },
+    required: ["_id"],
+  },
+  // ──────────────────────────────────────────────────────────
+  //   :::::: U S E R : :  :   :    :     :        :          :
+  // ──────────────────────────────────────────────────────────
+  user: {
+    create: {
+      type: "object",
+      additionalProperties: false,
+      required: ["user_name", "password", "email"],
+      properties: {
+        user_name: { type: "string" },
+        password: { type: "string", minLength: 6, maxLength: 20 },
+        first_name: { type: "string", minLength: 2, maxLength: 20 },
+        last_name: { type: "string", minLength: 2, maxLength: 20 },
+        email: {
+          type: "string",
+          format: "email",
+          minLength: 6,
+          maxLength: 100,
+        },
+        phone: { type: "string", format: "phone" },
+        gender: {
+          type: "string",
+          enum: [GenderEnum.FEMALE, GenderEnum.MALE, GenderEnum.TRANSSEXUAL, GenderEnum.OTHER],
+        },
+      },
+    },
+    edit: {
+      type: "object",
+      additionalProperties: false,
+      properties: {
+        user_name: { type: "string" },
+        password: { type: "string", minLength: 6, maxLength: 20 },
+        first_name: { type: "string", minLength: 2, maxLength: 20 },
+        last_name: { type: "string", minLength: 2, maxLength: 20 },
+        email: {
+          type: "string",
+          format: "email",
+          minLength: 6,
+          maxLength: 100,
+        },
+        phone: { type: "string", format: "phone" },
+        gender: {
+          type: "string",
+          enum: [GenderEnum.FEMALE, GenderEnum.MALE, GenderEnum.TRANSSEXUAL, GenderEnum.OTHER],
+        },
+      },
+    },
+  },
+};
+
+export default { postgresSchema, mongoSchema };

@@ -21,6 +21,7 @@ import { IErrGenOptions } from "../common/interfaces/general.interface";
 import BaseController from "../base/controller/BaseController";
 import generalController from "../modules/general/controller";
 import postgresController from "../modules/postgres/controller";
+import mongoDbController from "../modules/mongodb/controller";
 // ────────────────────────────────────────────────────────────────────────
 
 // ────────────────────────────────────────────────────────────────────────
@@ -51,8 +52,17 @@ router.post("/postgres/upsert", postgresController.upsert);
 router.post("/postgres/safe-remove", postgresController.safeRemove);
 router.post("/postgres/remove", postgresController.remove);
 router.post("/postgres/recover", postgresController.recover);
-
 router.post("/postgres/builder/test", postgresController.testBuilder);
+
+// mongodb
+router.post("/mongodb/list", mongoDbController.selectAll);
+router.post("/mongodb/find", mongoDbController.selectOne);
+router.post("/mongodb/create", mongoDbController.create);
+router.post("/mongodb/edit", mongoDbController.edit);
+// router.post("/mongodb/upsert", mongoDbController.upsert);
+// router.post("/mongodb/safe-remove", mongoDbController.safeRemove);
+// router.post("/mongodb/remove", mongoDbController.remove);
+// router.post("/mongodb/recover", mongoDbController.recover);
 
 // swagger
 router.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerOptions));

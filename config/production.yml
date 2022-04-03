@@ -10,9 +10,9 @@ application:
 
 database:
   mongodb:
-    name: "node_starter_production"
+    name: "node_starter"
     default_collection: "default"
-    uri: "mongodb://0.0.0.0:27017/node_starter_production"
+    uri: "mongodb://0.0.0.0:27017/node_starter"
   postgres:
     user: "postgres"
     host: "0.0.0.0"
