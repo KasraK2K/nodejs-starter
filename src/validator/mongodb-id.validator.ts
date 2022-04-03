@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
+import { ObjectId } from "mongodb";
 
-export const isMongoObjectId = (objectId: string): boolean => mongoose.Types.ObjectId.isValid(objectId);
+export const isMongoObjectId = (objectId: string): boolean => ObjectId.isValid(objectId);
 
 export default isMongoObjectId;

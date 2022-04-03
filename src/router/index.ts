@@ -59,7 +59,7 @@ router.post("/mongodb/list", mongoDbController.selectAll);
 router.post("/mongodb/find", mongoDbController.selectOne);
 router.post("/mongodb/create", mongoDbController.create);
 router.post("/mongodb/edit", mongoDbController.edit);
-// router.post("/mongodb/upsert", mongoDbController.upsert);
+router.post("/mongodb/upsert", mongoDbController.upsert);
 // router.post("/mongodb/safe-remove", mongoDbController.safeRemove);
 // router.post("/mongodb/remove", mongoDbController.remove);
 // router.post("/mongodb/recover", mongoDbController.recover);

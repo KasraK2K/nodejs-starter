@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { ObjectId } from "mongodb";
 
 class MongoRepository {
@@ -44,6 +45,7 @@ class MongoRepository {
   ): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       args = this.sanitizeArgs(args);
+      _.assign(args, { createdAt: new Date(), updatedAt: new Date() });
 
       await mongo
         .collection(tableName)
@@ -66,7 +68,26 @@ class MongoRepository {
 
       await mongo
         .collection(tableName)
-        .updateOne(findArgs, { $set: args })
+        .updateOne(findArgs, { $set: args, $currentDate: { updatedAt: true } })
+        .then(async () => await this.findOne(tableName, args, omits).then((response) => resolve(response)))
+        .catch((err) => reject(err));
+    });
+  }
+
+  // ─── UPSERT ONE ─────────────────────────────────────────────────────────────────
+
+  // ─── SAFE DELETE ────────────────────────────────────────────────────────────────
+  protected safeDelete(
+    tableName: string,
+    args: Record<string, any>,
+    omits: string[] = []
+  ): Promise<Record<string, any>> {
+    return new Promise(async (resolve, reject) => {
+      args = this.sanitizeArgs(args);
+
+      await mongo
+        .collection(tableName)
+        .updateOne(args, { $set: { deletedAt: new Date() } })
         .then(async () => await this.findOne(tableName, args, omits).then((response) => resolve(response)))
         .catch((err) => reject(err));
     });
@@ -88,6 +109,10 @@ class MongoRepository {
       args._id = new ObjectId(args._id);
       return args;
     } else return args;
+  }
+
+  private isObjectId(id: string): boolean {
+    return ObjectId.isValid(id);
   }
 }
 
