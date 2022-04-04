@@ -70,18 +70,19 @@ describe("BaseController", () => {
         env: process.env.NODE_ENV,
         mode: mode,
         result: true,
-        data: { key: "value" },
+        data: [{ key: "value" }],
       });
     });
 
     it("BaseController.resGen() should use errorGenerator", () => {
+      const mockError = { message: "error" };
       const result = controller.resGen({
         req,
         res,
         status: 500,
         result: false,
         error_code: 1,
-        error_user_messages: ["some error"],
+        error_user_messages: [mockError],
       }) as any;
 
       expect(result).toBe(res);
@@ -97,7 +98,7 @@ describe("BaseController", () => {
         result: false,
         error_code: 1,
         error_message: "Error code not found",
-        error_user_messages: ["some error"],
+        error_user_messages: [mockError],
       });
     });
   });
