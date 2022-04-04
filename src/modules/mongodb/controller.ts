@@ -143,51 +143,51 @@ class MongoDbController extends BaseController {
       });
   }
 
-  // public async remove(req: Request, res: Response): Promise<Response<IRes<IUserList>>> {
-  //   return await mongoDbLogic
-  //     .remove(req.body)
-  //     .then((response) => {
-  //       return super.resGen<IUserList>({
-  //         req,
-  //         res,
-  //         result: response.result,
-  //         data: response.data,
-  //       });
-  //     })
-  //     .catch((err) => {
-  //       return super.resGen({
-  //         req,
-  //         res,
-  //         status: err.code,
-  //         result: err.result,
-  //         error_code: err.error_code,
-  //         error_user_messages: err.errors,
-  //       });
-  //     });
-  // }
+  public async remove(req: Request, res: Response): Promise<Response<IRes<IUserList>>> {
+    return await mongoDbLogic
+      .remove(req.body)
+      .then((response) => {
+        return super.resGen<IUserList>({
+          req,
+          res,
+          result: response.result,
+          data: response.data,
+        });
+      })
+      .catch((err) => {
+        return super.resGen({
+          req,
+          res,
+          status: err.code,
+          result: err.result,
+          error_code: err.error_code,
+          error_user_messages: err.errors,
+        });
+      });
+  }
 
-  // public async recover(req: Request, res: Response): Promise<Response<IRes<IUserList>>> {
-  //   return await mongoDbLogic
-  //     .recover(req.body)
-  //     .then((response) => {
-  //       return super.resGen<IUserList>({
-  //         req,
-  //         res,
-  //         result: response.result,
-  //         data: response.data,
-  //       });
-  //     })
-  //     .catch((err) => {
-  //       return super.resGen({
-  //         req,
-  //         res,
-  //         status: err.code,
-  //         result: err.result,
-  //         error_code: err.error_code,
-  //         error_user_messages: err.errors,
-  //       });
-  //     });
-  // }
+  public async recover(req: Request, res: Response): Promise<Response<IRes<IUserList>>> {
+    return await mongoDbLogic
+      .recover(req.body)
+      .then((response) => {
+        return super.resGen<IUserList>({
+          req,
+          res,
+          result: response.result,
+          data: response.data,
+        });
+      })
+      .catch((err) => {
+        return super.resGen({
+          req,
+          res,
+          status: err.code,
+          result: err.result,
+          error_code: err.error_code,
+          error_user_messages: err.errors,
+        });
+      });
+  }
 
   // public async testBuilder(req: Request, res: Response) {
   //   return await mongoDbLogic

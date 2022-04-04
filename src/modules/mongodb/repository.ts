@@ -1,5 +1,5 @@
 import MongoRepository from "../../base/repository/MongoRepository";
-import { IUserCreate, IUserGetOne, IUserRemove, IUserUpdate } from "./common/interface";
+import { IUserCreate, IUserGetOne, IUserRemove, IUserRestore, IUserUpdate } from "./common/interface";
 
 class MongoDbRepository extends MongoRepository {
   private table = "users";
@@ -23,7 +23,7 @@ class MongoDbRepository extends MongoRepository {
 
   public async create(args: IUserCreate): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
-      await this.insertOne(this.table, args, ["password"])
+      await this.insertOne(this.table, args)
         .then((response) => resolve(response))
         .catch((err) => reject(err));
     });
@@ -31,7 +31,7 @@ class MongoDbRepository extends MongoRepository {
 
   public async edit(findArgs: Partial<IUserGetOne>, args: IUserUpdate): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
-      await this.updateOne(this.table, findArgs, args, ["password"])
+      await this.updateOne(this.table, findArgs, args)
         .then((response) => resolve(response))
         .catch((err) => reject(err));
     });
@@ -47,36 +47,27 @@ class MongoDbRepository extends MongoRepository {
 
   public async safeRemove(args: IUserRemove): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
-      await this.safeDeleteOne(this.table, args, ["password"])
+      await this.safeDeleteOne(this.table, args)
         .then((response) => resolve(response))
         .catch((err) => reject(err));
     });
   }
 
-  // public async remove(args: IUserRemove): Promise<Record<string, any>> {
-  //   return new Promise(async (resolve, reject) => {
-  //     await this.deleteOne(this.table, args.id, ["password"])
-  //       .then((response) => resolve(response))
-  //       .catch((err) => reject(err));
-  //   });
-  // }
+  public async remove(args: IUserRemove): Promise<Record<string, any>> {
+    return new Promise(async (resolve, reject) => {
+      await this.deleteOne(this.table, args)
+        .then((response) => resolve(response))
+        .catch((err) => reject(err));
+    });
+  }
 
-  // public async recover(args: IUserRestore): Promise<Record<string, any>> {
-  //   return new Promise(async (resolve, reject) => {
-  //     await this.restoreOne(this.table, args.id, ["password"])
-  //       .then((response) => resolve(response))
-  //       .catch((err) => reject(err));
-  //   });
-  // }
-
-  // public testBuilder(): Promise<Record<string, any>> {
-  //   return new Promise(async (resolve, reject) => {
-  //     await this.query("SELECT * FROM ??", ["users"])
-  //       .exec({ omits: ["password"] })
-  //       .then((response) => resolve(response))
-  //       .catch((err) => reject(err));
-  //   });
-  // }
+  public async recover(args: IUserRestore): Promise<Record<string, any>> {
+    return new Promise(async (resolve, reject) => {
+      await this.restoreOne(this.table, args)
+        .then((response) => resolve(response))
+        .catch((err) => reject(err));
+    });
+  }
 }
 
 export default new MongoDbRepository();

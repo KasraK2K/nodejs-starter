@@ -29,7 +29,7 @@ export interface ISuccessResponse<T> {
   env: string | undefined;
   mode: string;
   result: boolean;
-  data: T;
+  data: T[];
 }
 
 export interface IErrorResponse {

@@ -61,8 +61,8 @@ router.post("/mongodb/create", mongoDbController.create);
 router.post("/mongodb/edit", mongoDbController.edit);
 router.post("/mongodb/upsert", mongoDbController.upsert);
 router.post("/mongodb/safe-remove", mongoDbController.safeRemove);
-// router.post("/mongodb/remove", mongoDbController.remove);
-// router.post("/mongodb/recover", mongoDbController.recover);
+router.post("/mongodb/remove", mongoDbController.remove);
+router.post("/mongodb/recover", mongoDbController.recover);
 
 // swagger
 router.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerOptions));

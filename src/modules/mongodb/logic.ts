@@ -95,29 +95,29 @@ class MongoDbLogic extends BaseLogic {
     });
   }
 
-  // public async remove(args: IUserRemove): Promise<Record<string, any>> {
-  //   return new Promise(async (resolve, reject) => {
-  //     const { valid, errors } = validator(schema.mongo.id, args);
-  //     if (!valid) return reject({ result: false, error_code: 3002, errors });
+  public async remove(args: IUserRemove): Promise<Record<string, any>> {
+    return new Promise(async (resolve, reject) => {
+      const { valid, errors } = validator(schema.mongo.id, args);
+      if (!valid) return reject({ result: false, error_code: 3002, errors });
 
-  //     await mongoDbRepository
-  //       .remove(args)
-  //       .then((response) => resolve({ result: true, data: response }))
-  //       .catch((err) => reject({ result: false, ...err }));
-  //   });
-  // }
+      await mongoDbRepository
+        .remove(args)
+        .then((response) => resolve({ result: true, data: response }))
+        .catch((err) => reject({ result: false, ...err }));
+    });
+  }
 
-  // public async recover(args: IUserRemove): Promise<Record<string, any>> {
-  //   return new Promise(async (resolve, reject) => {
-  //     const { valid, errors } = validator(schema.mongo.id, args);
-  //     if (!valid) return reject({ result: false, error_code: 3002, errors });
+  public async recover(args: IUserRemove): Promise<Record<string, any>> {
+    return new Promise(async (resolve, reject) => {
+      const { valid, errors } = validator(schema.mongo.id, args);
+      if (!valid) return reject({ result: false, error_code: 3002, errors });
 
-  //     await mongoDbRepository
-  //       .recover(args)
-  //       .then((response) => resolve({ result: true, data: response }))
-  //       .catch((err) => reject({ result: false, ...err }));
-  //   });
-  // }
+      await mongoDbRepository
+        .recover(args)
+        .then((response) => resolve({ result: true, data: response }))
+        .catch((err) => reject({ result: false, ...err }));
+    });
+  }
 
   // public testBuilder(): Promise<Record<string, any>> {
   //   return new Promise(async (resolve, reject) => {

@@ -41,7 +41,7 @@ class BaseController {
       env: process.env.NODE_ENV,
       mode,
       result,
-      data,
+      data: Array.isArray(data) ? data : [data],
     };
     logger(_.omit(response, "data"), LoggerEnum.REQUEST);
     return response;

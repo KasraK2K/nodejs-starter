@@ -38,11 +38,7 @@ class MongoRepository {
   }
 
   // ─── INSERT ONE ─────────────────────────────────────────────────────────────────
-  protected insertOne(
-    tableName: string,
-    args: Record<string, any>,
-    omits: string[] = []
-  ): Promise<Record<string, any>> {
+  protected insertOne(tableName: string, args: Record<string, any>): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       args = this.sanitizeArgs(args);
       _.assign(args, { createdAt: new Date(), updatedAt: new Date() });
@@ -50,7 +46,7 @@ class MongoRepository {
       await mongo
         .collection(tableName)
         .insertOne(args)
-        .then(async () => await this.findOne(tableName, args, omits).then((response) => resolve(response)))
+        .then((response) => resolve(response))
         .catch((err) => reject(err));
     });
   }
@@ -59,8 +55,7 @@ class MongoRepository {
   protected updateOne(
     tableName: string,
     findArgs: Record<string, any>,
-    args: Record<string, any>,
-    omits: string[] = []
+    args: Record<string, any>
   ): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       findArgs = this.sanitizeArgs(findArgs);
@@ -69,7 +64,7 @@ class MongoRepository {
       await mongo
         .collection(tableName)
         .updateOne(findArgs, { $set: args, $currentDate: { updatedAt: true } })
-        .then(async () => await this.findOne(tableName, args, omits).then((response) => resolve(response)))
+        .then((response) => resolve(response))
         .catch((err) => reject(err));
     });
   }
@@ -79,10 +74,10 @@ class MongoRepository {
     tableName: string,
     findArgs: Record<string, any>,
     args: Record<string, any>,
-    options: Record<string, any> = { omits: [], upsert: true }
+    options: Record<string, any> = { upsert: true }
   ): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
-      const { upsert, omits } = options;
+      const { upsert } = options;
       findArgs = this.sanitizeArgs(findArgs);
       args = this.sanitizeArgs(args);
       const date = new Date();
@@ -90,28 +85,58 @@ class MongoRepository {
       await mongo
         .collection(tableName)
         .updateOne(findArgs, { $set: { ...args, updatedAt: date }, $setOnInsert: { createdAt: date } }, { upsert })
-        .then(async () => await this.findOne(tableName, args, omits).then((response) => resolve(response)))
+        .then((response) => resolve(response))
         .catch((err) => reject(err));
     });
   }
 
   // ─── SAFE DELETE ────────────────────────────────────────────────────────────────
-  protected safeDeleteOne(
-    tableName: string,
-    args: Record<string, any>,
-    omits: string[] = []
-  ): Promise<Record<string, any>> {
+  protected safeDeleteOne(tableName: string, args: Record<string, any>): Promise<Record<string, any>> {
+    return new Promise(async (resolve, reject) => {
+      args = this.sanitizeArgs(args);
+      const date = new Date();
+
+      await mongo
+        .collection(tableName)
+        .updateOne(
+          {
+            $and: [args, { deletedAt: { $exists: false } }],
+          },
+          { $set: { deletedAt: date, updatedAt: date } }
+        )
+        .then((response) => resolve(response))
+        .catch((err) => reject(err));
+    });
+  }
+
+  // ─── DELETE ONE ─────────────────────────────────────────────────────────────────
+  protected deleteOne(tableName: string, args: Record<string, any>): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       args = this.sanitizeArgs(args);
 
       await mongo
         .collection(tableName)
-        .updateOne(args, { $set: { deletedAt: new Date() } })
-        .then(async () => await this.findOne(tableName, args, omits).then((response) => resolve(response)))
-        .catch((err) => {
-          console.log(err);
-          reject(err);
-        });
+        .deleteOne(args)
+        .then((response) => resolve(response))
+        .catch((err) => reject(err));
+    });
+  }
+
+  // ─── RESTORE ONE ────────────────────────────────────────────────────────────────
+  protected restoreOne(tableName: string, args: Record<string, any>): Promise<Record<string, any>> {
+    return new Promise(async (resolve, reject) => {
+      args = this.sanitizeArgs(args);
+
+      await mongo
+        .collection(tableName)
+        .updateOne(
+          {
+            $and: [args, { deletedAt: { $exists: true } }],
+          },
+          { $unset: { deletedAt: "" }, $set: { updatedAt: new Date() } }
+        )
+        .then((response) => resolve(response))
+        .catch((err) => reject(err));
     });
   }
 
