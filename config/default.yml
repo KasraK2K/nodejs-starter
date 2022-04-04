@@ -7,5 +7,5 @@ application:
 
   monitoring:
     treblle:
-      apiKey: "6ADCT7FLUjKXIGTwn3lVo9Ql0ZMgrLZx"
-      projectId: "uzon7kTdIwFZJTjv"
+      apiKey: "_YOUR_API_KEY_"
+      projectId: "_YOUR_PROJECT_ID_"
