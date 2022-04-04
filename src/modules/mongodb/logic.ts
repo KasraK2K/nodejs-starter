@@ -118,15 +118,6 @@ class MongoDbLogic extends BaseLogic {
         .catch((err) => reject({ result: false, ...err }));
     });
   }
-
-  // public testBuilder(): Promise<Record<string, any>> {
-  //   return new Promise(async (resolve, reject) => {
-  //     await mongoDbRepository
-  //       .testBuilder()
-  //       .then((response) => resolve({ result: true, data: response }))
-  //       .catch((err) => reject({ result: false, ...err }));
-  //   });
-  // }
 }
 
 export default new MongoDbLogic();

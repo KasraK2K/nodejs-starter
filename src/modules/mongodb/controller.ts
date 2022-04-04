@@ -188,29 +188,6 @@ class MongoDbController extends BaseController {
         });
       });
   }
-
-  // public async testBuilder(req: Request, res: Response) {
-  //   return await mongoDbLogic
-  //     .testBuilder()
-  //     .then((response) => {
-  //       return super.resGen<IUserList>({
-  //         req,
-  //         res,
-  //         result: response.result,
-  //         data: response.data,
-  //       });
-  //     })
-  //     .catch((err) => {
-  //       return super.resGen({
-  //         req,
-  //         res,
-  //         status: err.code,
-  //         result: err.result,
-  //         error_code: err.error_code,
-  //         error_user_messages: err.errors,
-  //       });
-  //     });
-  // }
 }
 
 export default new MongoDbController();

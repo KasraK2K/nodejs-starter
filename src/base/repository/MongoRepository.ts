@@ -141,7 +141,7 @@ class MongoRepository {
   }
 
   // ────────────────────────────────────────────────────── GENERATE PROJECTION ─────
-  private generateProjection(omits: string[]) {
+  private generateProjection(omits: string[]): Record<string, any> {
     const projection: Record<string, any> = {};
     omits.forEach((omit) => (projection[omit] = 0));
     return projection;
