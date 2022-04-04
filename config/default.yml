@@ -4,3 +4,8 @@ application:
   api_version: "1.0.0"
   front_version: "1.0.0"
   portal_version: "1.0.0"
+
+  monitoring:
+    treblle:
+      apiKey: "6ADCT7FLUjKXIGTwn3lVo9Ql0ZMgrLZx"
+      projectId: "uzon7kTdIwFZJTjv"

@@ -18,6 +18,18 @@ export interface IApplicationConfig {
     logOnConsole: boolean;
     logOnDatabase: boolean;
   };
+  monitoring: IMonitoringConfig;
+}
+
+export interface IMonitoringConfig {
+  monitoring: {
+    treblle: ITreblleConfig;
+  };
+}
+
+export interface ITreblleConfig {
+  apiKey: string;
+  projectId: string;
 }
 
 // ──────────────────────────────────────────────────────────────── DATABASES ─────
