@@ -11,6 +11,7 @@ const map = new Map([
   [3009, "Database Connection Refused"],
   [3010, "Column not found"],
   [3011, "Invalid input value for enum"],
+  [3012, "Firebase error on sending message"],
 ]);
 
 export const getError = (code: number) => {

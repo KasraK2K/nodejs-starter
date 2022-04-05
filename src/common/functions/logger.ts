@@ -15,6 +15,7 @@ import { LoggerEnum } from "../enums/logger.enum";
 import config from "config";
 import { IApplicationConfig } from "../../../config/config.interface";
 
+const fake_process_id = "--fake--" + (+new Date() + Math.floor(Math.random() * (999 - 100) + 100)).toString(16);
 const applicationConfig: IApplicationConfig = config.get("application");
 
 export const logger = (text: any, type = LoggerEnum.INFO) => {
@@ -28,12 +29,12 @@ export const logger = (text: any, type = LoggerEnum.INFO) => {
 
   const time =
     ("0" + now.getHours()).slice(-2) +
-    ":" +
-    ("0" + now.getMinutes()).slice(-2) +
-    ":" +
-    ("0" + now.getSeconds()).slice(-2) +
-    " " +
-    process_id;
+      ":" +
+      ("0" + now.getMinutes()).slice(-2) +
+      ":" +
+      ("0" + now.getSeconds()).slice(-2) +
+      " " +
+      process_id ?? fake_process_id;
 
   if (typeof text === "object" || Array.isArray(text)) {
     text = JSON.stringify(text, null, 2);
