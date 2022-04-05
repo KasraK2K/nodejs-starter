@@ -15,7 +15,7 @@ import config from "config";
 const pgConfig: IPostgresConfig = config.get("database.postgres");
 
 // ─────────────────────────────────────────────────────── POSTGRES MAIN POOL ─────
-const pool = new pg.Pool({
+const pool: pg.Pool = new pg.Pool({
   user: pgConfig.user,
   host: pgConfig.host,
   database: pgConfig.database,

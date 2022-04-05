@@ -38,6 +38,7 @@
     "dotenv-expand": "^8.0.1",
     "express": "^4.17.3",
     "express-rate-limit": "^6.3.0",
+    "firebase-admin": "^10.0.2",
     "google-libphonenumber": "^3.2.27",
     "helmet": "^5.0.2",
     "jsonwebtoken": "^8.5.1",
