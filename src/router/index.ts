@@ -22,6 +22,7 @@ import BaseController from "../base/controller/BaseController";
 import generalController from "../modules/general/controller";
 import postgresController from "../modules/postgres/controller";
 import mongoDbController from "../modules/mongodb/controller";
+import firebaseController from "../modules/firebase/controller";
 // ────────────────────────────────────────────────────────────────────────
 
 // ────────────────────────────────────────────────────────────────────────
@@ -63,6 +64,9 @@ router.post("/mongodb/upsert", mongoDbController.upsert);
 router.post("/mongodb/safe-remove", mongoDbController.safeRemove);
 router.post("/mongodb/remove", mongoDbController.remove);
 router.post("/mongodb/recover", mongoDbController.recover);
+
+// firebase
+router.post("/firebase/send-message", firebaseController.sendMessage);
 
 // swagger
 router.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerOptions));

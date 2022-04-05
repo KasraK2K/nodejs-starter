@@ -191,6 +191,31 @@ export const mongoSchema = {
       },
     },
   },
+  // ──────────────────────────────────────────────────────────────────
+  //   :::::: F I R E B A S E : :  :   :    :     :        :          :
+  // ──────────────────────────────────────────────────────────────────
+  firebase: {
+    sendMessage: {
+      type: "object",
+      additionalProperties: false,
+      required: ["id"],
+      properties: {
+        id: { type: "string", format: "objectId" },
+        notification: {
+          type: "object",
+          additionalProperties: false,
+          required: ["title", "body"],
+          properties: {
+            title: { type: "string", minLength: 6, maxLength: 100 },
+            body: { type: "string", minLength: 10, maxLength: 255 },
+            icon: { type: "string", minLength: 6, maxLength: 255 },
+            image: { type: "string", minLength: 6, maxLength: 255 },
+          },
+        },
+        data: { type: "object" },
+      },
+    },
+  },
 };
 
 export default { postgresSchema, mongoSchema };
