@@ -1,7 +1,7 @@
 import { LoggerEnum } from "./../../common/enums/logger.enum";
 import { IFirebaseSendMessage } from "./common/interface";
 import BaseLogic from "../../base/logic/BaseLogic";
-import mongoDbRepository from "../mongodb/repository";
+import firebaseRepository from "./repository";
 import boot from "../../boot";
 import {
   DataMessagePayload,
@@ -17,8 +17,8 @@ class FirebaseLogic extends BaseLogic {
       if (!valid) return reject({ result: false, error_code: 3002, errors });
       else {
         let registrationTokenOrTokens = "";
-        await mongoDbRepository
-          .selectOne({ id: args.id })
+        await firebaseRepository
+          .selectOne({ _id: args.id })
           .then((response) => {
             if (!response.fcm_token) return reject({ result: false, error_code: 3013 });
             else registrationTokenOrTokens = response.fcm_token;
