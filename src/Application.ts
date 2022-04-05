@@ -40,6 +40,9 @@ class Application {
     const { port } = options;
     this.port = Number(process.env.PORT) || port;
 
+    const process_id = (+new Date() + Math.floor(Math.random() * (999 - 100) + 100)).toString(16);
+    _.assign(global, { process_id });
+
     this.config();
     this.middlewares();
     this.routes();

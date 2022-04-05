@@ -8,9 +8,7 @@ import { LoggerEnum } from "../common/enums/logger.enum";
 class RequestMiddleware extends Middleware {
   public isPost(req: Request, res: Response, next: NextFunction) {
     const controller = new BaseController();
-    const process_id = (+new Date() + Math.floor(Math.random() * (999 - 100) + 100)).toString(16);
     _.assign(res.locals, { params: { process_id } });
-    _.assign(global, { process_id });
 
     logger(`{blue}[${req.method}]: ${req.originalUrl}{reset}`, LoggerEnum.REQUEST);
 
