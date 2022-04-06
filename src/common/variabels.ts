@@ -12,12 +12,11 @@ import config from "config";
 import { IConfig } from "../../config/config.interface";
 import validator from "../validator/validator";
 import { postgresSchema, mongoSchema } from "../validator/schema";
-import boot from "../boot";
+import { mongoClient, pool } from "../boot";
 import { logger } from "./functions/logger";
 import { objectValidator } from "../validator/objectValidator";
 import objectSchema from "../validator/objectSchema";
 
-const { mongoClient, pool } = boot;
 const configs: IConfig = config.util.toObject();
 
 // ────────────────────────────────────────────────────────────────────────────────

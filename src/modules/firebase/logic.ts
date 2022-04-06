@@ -2,7 +2,7 @@ import { LoggerEnum } from "./../../common/enums/logger.enum";
 import { IFirebaseSendMessage } from "./common/interface";
 import BaseLogic from "../../base/logic/BaseLogic";
 import firebaseRepository from "./repository";
-import boot from "../../boot";
+import { firebase } from "../../boot";
 import {
   DataMessagePayload,
   MessagingPayload,
@@ -20,7 +20,8 @@ class FirebaseLogic extends BaseLogic {
         await firebaseRepository
           .selectOne({ _id: args.id })
           .then((response) => {
-            if (!response.fcm_token) return reject({ result: false, error_code: 3013 });
+            // FIXME
+            if (!("fcm_token" in response[0])) return reject({ result: false, error_code: 3013 });
             else registrationTokenOrTokens = response.fcm_token;
           })
           .catch((err) => reject({ result: false, ...err }));
@@ -37,7 +38,7 @@ class FirebaseLogic extends BaseLogic {
 
         // ─── SEND MESSAGE ────────────────────────────────────────────────
         if (registrationTokenOrTokens)
-          boot.firebase
+          firebase
             .messaging()
             .sendToDevice(registrationTokenOrTokens, payload, options)
             .then((response) => resolve({ result: true, data: response }))

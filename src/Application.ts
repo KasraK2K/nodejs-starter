@@ -1,5 +1,5 @@
 import "./boot";
-import boot from "./boot";
+import { app, express } from "./boot";
 import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
@@ -12,7 +12,6 @@ import rateLimiterMiddleware from "./middleware/RateLimiterMiddleware";
 import requestMiddleware from "./middleware/RequestMiddleware";
 import { getUserInformation } from "./common/functions/information";
 
-const { app, express } = boot;
 const corsConfig: ICorsConfig = config.get("cors");
 
 /**
