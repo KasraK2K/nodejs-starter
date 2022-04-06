@@ -12,7 +12,8 @@ const map = new Map([
   [3010, "Column not found"],
   [3011, "Invalid input value for enum"],
   [3012, "Firebase error on sending message"],
-  [3013, "Data Not Found"],
+  [3013, "Error on sending email"],
+  [3014, "Data Not Found"],
 ]);
 
 export const getError = (code: number) => {
