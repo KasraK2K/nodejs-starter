@@ -20,8 +20,7 @@ class FirebaseLogic extends BaseLogic {
         await firebaseRepository
           .selectOne({ _id: args.id })
           .then((response) => {
-            // FIXME
-            if (!("fcm_token" in response[0])) return reject({ result: false, error_code: 3013 });
+            if (!("fcm_token" in response)) return reject({ result: false, error_code: 3013 });
             else registrationTokenOrTokens = response.fcm_token;
           })
           .catch((err) => reject({ result: false, ...err }));

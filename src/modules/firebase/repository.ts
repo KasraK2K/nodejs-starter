@@ -6,7 +6,7 @@ class FirebaseRepository extends MongoRepository {
   public async selectOne(args: { _id: string }): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       await this.findOne(this.table, args, ["password"])
-        .then((response) => resolve(response))
+        .then((result) => resolve(result))
         .catch((err) => reject(err));
     });
   }

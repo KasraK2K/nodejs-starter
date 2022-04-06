@@ -448,11 +448,11 @@ class PgBuilderRepository extends BaseRepository {
     return new Promise(async (resolve, reject) => {
       await pg.pool
         .query(query, parameters)
-        .then((response) => {
-          if (doNotReturn) return resolve({ rowCount: response.rowCount, rows: [] });
+        .then((result) => {
+          if (doNotReturn) return resolve({ rowCount: result.rowCount, rows: [] });
           else {
-            const rows = response.rows.map((row) => _.omit(row, omits));
-            return resolve({ rowCount: response.rowCount, rows });
+            const rows = result.rows.map((row) => _.omit(row, omits));
+            return resolve({ rowCount: result.rowCount, rows });
           }
         })
         .catch((err) => reject(this.databaseError(err)));

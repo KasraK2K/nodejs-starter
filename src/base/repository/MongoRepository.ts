@@ -15,7 +15,7 @@ class MongoRepository {
         .collection(tableName)
         .find(args, { projection: this.generateProjection(omits) })
         .toArray()
-        .then((response) => resolve(response))
+        .then((result) => resolve(result))
         .catch((err) => reject(err));
     });
   }
@@ -32,7 +32,7 @@ class MongoRepository {
       await mongo
         .collection(tableName)
         .findOne(args, { projection: this.generateProjection(omits) })
-        .then((response) => resolve(response as Record<string, any>))
+        .then((result) => resolve(result as Record<string, any>))
         .catch((err) => reject(err));
     });
   }
@@ -46,7 +46,7 @@ class MongoRepository {
       await mongo
         .collection(tableName)
         .insertOne(args)
-        .then((response) => resolve(response))
+        .then((result) => resolve(result))
         .catch((err) => reject(err));
     });
   }
@@ -64,7 +64,7 @@ class MongoRepository {
       await mongo
         .collection(tableName)
         .updateOne(findArgs, { $set: args, $currentDate: { updatedAt: true } })
-        .then((response) => resolve(response))
+        .then((result) => resolve(result))
         .catch((err) => reject(err));
     });
   }
@@ -85,7 +85,7 @@ class MongoRepository {
       await mongo
         .collection(tableName)
         .updateOne(findArgs, { $set: { ...args, updatedAt: date }, $setOnInsert: { createdAt: date } }, { upsert })
-        .then((response) => resolve(response))
+        .then((result) => resolve(result))
         .catch((err) => reject(err));
     });
   }
@@ -104,7 +104,7 @@ class MongoRepository {
           },
           { $set: { deletedAt: date, updatedAt: date } }
         )
-        .then((response) => resolve(response))
+        .then((result) => resolve(result))
         .catch((err) => reject(err));
     });
   }
@@ -117,7 +117,7 @@ class MongoRepository {
       await mongo
         .collection(tableName)
         .deleteOne(args)
-        .then((response) => resolve(response))
+        .then((result) => resolve(result))
         .catch((err) => reject(err));
     });
   }
@@ -135,7 +135,7 @@ class MongoRepository {
           },
           { $unset: { deletedAt: "" }, $set: { updatedAt: new Date() } }
         )
-        .then((response) => resolve(response))
+        .then((result) => resolve(result))
         .catch((err) => reject(err));
     });
   }

@@ -7,7 +7,7 @@ class PostgresRepository extends PgRepository {
   public async selectAll(pagination: IPagination): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       await this.paginate(this.table, pagination, ["password"])
-        .then((response) => resolve(response))
+        .then((result) => resolve(result))
         .catch((err) => reject(err));
     });
   }
@@ -15,7 +15,7 @@ class PostgresRepository extends PgRepository {
   public async selectOne(args: Partial<IUserGetOne>): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       await this.findOne(this.table, args, ["password"])
-        .then((response) => resolve(response))
+        .then((result) => resolve(result))
         .catch((err) => reject(err));
     });
   }
@@ -23,7 +23,7 @@ class PostgresRepository extends PgRepository {
   public async create(args: IUserCreate): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       await this.insertOne(this.table, args, ["password"])
-        .then((response) => resolve(response))
+        .then((result) => resolve(result))
         .catch((err) => reject(err));
     });
   }
@@ -31,7 +31,7 @@ class PostgresRepository extends PgRepository {
   public async edit(args: Partial<IUserUpdate>): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       await this.updateOne(this.table, args, ["password"])
-        .then((response) => resolve(response))
+        .then((result) => resolve(result))
         .catch((err) => reject(err));
     });
   }
@@ -39,7 +39,7 @@ class PostgresRepository extends PgRepository {
   public async safeRemove(args: IUserRemove): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       await this.safeDeleteOne(this.table, args.id, ["password"])
-        .then((response) => resolve(response))
+        .then((result) => resolve(result))
         .catch((err) => reject(err));
     });
   }
@@ -47,7 +47,7 @@ class PostgresRepository extends PgRepository {
   public async remove(args: IUserRemove): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       await this.deleteOne(this.table, args.id, ["password"])
-        .then((response) => resolve(response))
+        .then((result) => resolve(result))
         .catch((err) => reject(err));
     });
   }
@@ -55,7 +55,7 @@ class PostgresRepository extends PgRepository {
   public async recover(args: IUserRestore): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       await this.restoreOne(this.table, args.id, ["password"])
-        .then((response) => resolve(response))
+        .then((result) => resolve(result))
         .catch((err) => reject(err));
     });
   }
@@ -64,7 +64,7 @@ class PostgresRepository extends PgRepository {
     return new Promise(async (resolve, reject) => {
       await this.query("SELECT * FROM ??", ["users"])
         .exec({ omits: ["password"] })
-        .then((response) => resolve(response))
+        .then((result) => resolve(result))
         .catch((err) => reject(err));
     });
   }

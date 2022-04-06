@@ -11,7 +11,7 @@ class PgRepository extends PgBuilderRepository {
 
     return new Promise(async (resolve, reject) => {
       await this.executeQuery({ query, omits })
-        .then((response) => resolve(response))
+        .then((result) => resolve(result))
         .catch((err) => {
           logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
           logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
@@ -26,7 +26,7 @@ class PgRepository extends PgBuilderRepository {
 
     return new Promise(async (resolve, reject) => {
       await this.executeQuery({ query, parameters, omits })
-        .then((response) => resolve(response))
+        .then((result) => resolve(result))
         .catch((err) => {
           logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
           logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
@@ -61,7 +61,7 @@ class PgRepository extends PgBuilderRepository {
     return new Promise(async (resolve, reject) => {
       // TODO: FIX parameters
       await this.executeQuery({ query, parameters, omits })
-        .then((response) => resolve(response))
+        .then((result) => resolve(result))
         .catch((err) => {
           logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
           logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
@@ -94,7 +94,7 @@ class PgRepository extends PgBuilderRepository {
 
     return new Promise(async (resolve, reject) => {
       await this.executeQuery({ query, parameters })
-        .then((response) => resolve(response))
+        .then((result) => resolve(result))
         .catch((err) => {
           logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
           logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
@@ -127,7 +127,7 @@ class PgRepository extends PgBuilderRepository {
 
     return new Promise(async (resolve, reject) => {
       await this.executeQuery({ query, parameters, omits })
-        .then((response) => resolve(response))
+        .then((result) => resolve(result))
         .catch((err) => {
           logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
           logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
@@ -153,7 +153,7 @@ class PgRepository extends PgBuilderRepository {
     const { query, parameters } = this.getRestoreOneQuery(tableName, id);
     return new Promise(async (resolve, reject) => {
       await this.executeQuery({ query, parameters, omits })
-        .then((response) => resolve(response))
+        .then((result) => resolve(result))
         .catch((err) => {
           logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
           logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
@@ -179,7 +179,7 @@ class PgRepository extends PgBuilderRepository {
     const { query, parameters } = this.getDeleteOneQuery(tableName, id);
     return new Promise(async (resolve, reject) => {
       await this.executeQuery({ query, parameters, omits })
-        .then((response) => resolve(response))
+        .then((result) => resolve(result))
         .catch((err) => {
           logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
           logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
@@ -212,18 +212,18 @@ class PgRepository extends PgBuilderRepository {
       let total_count: number;
       let total_page: number;
       await this.executeQuery({ query, parameters, omits })
-        .then((response) => {
-          if (response.rowCount) {
-            total_count = Number(response.rows[0].total_count);
+        .then((result) => {
+          if (result.rowCount) {
+            total_count = Number(result.rows[0].total_count);
             total_page = Math.ceil(total_count / limit);
-            response.total_count = total_count;
-            response.total_page = total_page;
-            response.page = page;
-            response.limit = limit;
-            page !== total_page && (response.nextPage = page + 1);
-            page - 1 && (response.prevPage = page - 1);
-            response.rows = response.rows.map((row: any) => _.omit(row, ["total_count"]));
-            return resolve(response);
+            result.total_count = total_count;
+            result.total_page = total_page;
+            result.page = page;
+            result.limit = limit;
+            page !== total_page && (result.nextPage = page + 1);
+            page - 1 && (result.prevPage = page - 1);
+            result.rows = result.rows.map((row: any) => _.omit(row, ["total_count"]));
+            return resolve(result);
           } else {
             return resolve([]);
           }
@@ -290,7 +290,7 @@ class PgRepository extends PgBuilderRepository {
     const query = `SELECT COUNT(*) FROM ${tableName}`;
     return new Promise(async (resolve, reject) => {
       await this.executeQuery({ query })
-        .then((response) => resolve(Number(response.rows[0].count)))
+        .then((result) => resolve(Number(result.rows[0].count)))
         .catch((err) => {
           logger(`{red}${err.message}{reset}`, LoggerEnum.ERROR);
           logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
