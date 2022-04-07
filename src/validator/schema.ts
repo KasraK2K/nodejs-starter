@@ -53,6 +53,18 @@ export const schema = {
       user_name: { type: "string" },
       email: { type: "string", format: "email" },
     },
+  },
+  // ──────────────────────────────────────────────────────────────────
+  //   :::::: F I N D   O N E : :  :   :    :     :        :          :
+  // ──────────────────────────────────────────────────────────────────
+  findOne: {
+    type: "object",
+    additionalProperties: false,
+    properties: {
+      id: { type: "string", format: "id" },
+      user_name: { type: "string" },
+      email: { type: "string", format: "email" },
+    },
     anyOf: [{ required: ["id"] }, { required: ["user_name"] }, { required: ["email"] }],
   },
   // ──────────────────────────────────────────────────────

@@ -3,11 +3,12 @@ import { IUserCreate, IUserGetOne, IUserRemove, IUserRestore, IUserUpdate } from
 
 class MongoDbRepository extends MongoRepository {
   private table = "users";
+  private omits = ["password"];
 
   public async selectAll(args: Partial<IUserGetOne> = {}): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       await super
-        .find(this.table, args, ["password"])
+        .find(this.table, args, this.omits)
         .then((result) => resolve(result))
         .catch((err) => reject(err));
     });
@@ -15,7 +16,7 @@ class MongoDbRepository extends MongoRepository {
 
   public async selectOne(args: Partial<IUserGetOne>): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
-      await this.findOne(this.table, args, ["password"])
+      await this.findOne(this.table, args, this.omits)
         .then((result) => resolve(result))
         .catch((err) => reject(err));
     });
@@ -23,7 +24,7 @@ class MongoDbRepository extends MongoRepository {
 
   public async create(args: IUserCreate): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
-      await this.insertOne(this.table, args)
+      await this.insertOne(this.table, args, this.omits)
         .then((result) => resolve(result))
         .catch((err) => reject(err));
     });
@@ -31,7 +32,7 @@ class MongoDbRepository extends MongoRepository {
 
   public async edit(findArgs: Partial<IUserGetOne>, args: Partial<IUserUpdate>): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
-      await this.updateOne(this.table, findArgs, args)
+      await this.updateOne(this.table, findArgs, args, this.omits)
         .then((result) => resolve(result))
         .catch((err) => reject(err));
     });
@@ -39,7 +40,7 @@ class MongoDbRepository extends MongoRepository {
 
   public async upsert(findArgs: Partial<IUserGetOne>, args: Partial<IUserUpdate>): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
-      await this.upsertOne(this.table, findArgs, args, { omits: ["password"], upsert: true })
+      await this.upsertOne(this.table, findArgs, args, { omits: this.omits, upsert: true })
         .then((result) => resolve(result))
         .catch((err) => reject(err));
     });
@@ -47,7 +48,7 @@ class MongoDbRepository extends MongoRepository {
 
   public async safeRemove(args: IUserRemove): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
-      await this.safeDeleteOne(this.table, args)
+      await this.safeDeleteOne(this.table, args, this.omits)
         .then((result) => resolve(result))
         .catch((err) => reject(err));
     });
@@ -55,7 +56,7 @@ class MongoDbRepository extends MongoRepository {
 
   public async remove(args: IUserRemove): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
-      await this.deleteOne(this.table, args)
+      await this.deleteOne(this.table, args, this.omits)
         .then((result) => resolve(result))
         .catch((err) => reject(err));
     });
@@ -63,7 +64,7 @@ class MongoDbRepository extends MongoRepository {
 
   public async recover(args: IUserRestore): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
-      await this.restoreOne(this.table, args)
+      await this.restoreOne(this.table, args, this.omits)
         .then((result) => resolve(result))
         .catch((err) => reject(err));
     });

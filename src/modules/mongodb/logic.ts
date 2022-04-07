@@ -19,7 +19,7 @@ class MongoDbLogic extends BaseLogic {
 
   public async selectOne(args: Partial<IUserGetOne>): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
-      const { valid, errors } = validator(schema.find, args);
+      const { valid, errors } = validator(schema.findOne, args);
       if (!valid) return reject({ result: false, error_code: 3002, errors });
       else
         await mongoDbRepository
