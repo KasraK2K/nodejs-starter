@@ -2,7 +2,6 @@ import { hashGen } from "./../../common/functions/bcrypt";
 import BaseLogic from "../../base/logic/BaseLogic";
 import { IUserCreate, IUserGetOne, IUserRemove, IUserUpdate } from "./common/interface";
 import mongoDbRepository from "./repository";
-import _ from "lodash";
 
 class MongoDbLogic extends BaseLogic {
   public async selectAll(args: Partial<IUserGetOne>): Promise<Record<string, any>> {
