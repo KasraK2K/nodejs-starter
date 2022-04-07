@@ -76,7 +76,7 @@ class MongoDbController extends BaseController {
 
   public async edit(req: Request, res: Response): Promise<Response<IRes<IUserList>>> {
     return await mongoDbLogic
-      .edit(req.body.find, req.body.update)
+      .edit(req.body)
       .then((response) => {
         return super.resGen<IUserList>({
           req,
@@ -99,7 +99,7 @@ class MongoDbController extends BaseController {
 
   public async upsert(req: Request, res: Response): Promise<Response<IRes<IUserList>>> {
     return await mongoDbLogic
-      .upsert(req.body.find, req.body.update)
+      .upsert(req.body)
       .then((response) => {
         return super.resGen<IUserList>({
           req,

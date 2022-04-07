@@ -3,7 +3,7 @@ import MongoRepository from "../../base/repository/MongoRepository";
 class FirebaseRepository extends MongoRepository {
   private table = "users";
 
-  public async selectOne(args: { _id: string }): Promise<Record<string, any>> {
+  public async selectOne(args: { id: string }): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       await this.findOne(this.table, args, ["password"])
         .then((result) => resolve(result))

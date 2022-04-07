@@ -29,7 +29,7 @@ class MongoDbRepository extends MongoRepository {
     });
   }
 
-  public async edit(findArgs: Partial<IUserGetOne>, args: IUserUpdate): Promise<Record<string, any>> {
+  public async edit(findArgs: Partial<IUserGetOne>, args: Partial<IUserUpdate>): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       await this.updateOne(this.table, findArgs, args)
         .then((result) => resolve(result))
@@ -37,7 +37,7 @@ class MongoDbRepository extends MongoRepository {
     });
   }
 
-  public async upsert(findArgs: Partial<IUserGetOne>, args: IUserUpdate): Promise<Record<string, any>> {
+  public async upsert(findArgs: Partial<IUserGetOne>, args: Partial<IUserUpdate>): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
       await this.upsertOne(this.table, findArgs, args, { omits: ["password"], upsert: true })
         .then((result) => resolve(result))

@@ -1,7 +1,7 @@
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
 import { phoneValidator } from "./phone.validator";
-import { isMongoObjectId } from "./mongodb-id.validator";
+import { isId, isMongoObjectId, isUUIDv4 } from "./id.validator";
 
 const ajv = new Ajv({
   allErrors: true,
@@ -33,6 +33,8 @@ addFormats(ajv);
 
 ajv.addFormat("phone", phoneValidator);
 ajv.addFormat("objectId", isMongoObjectId);
+ajv.addFormat("uuidv4", isUUIDv4);
+ajv.addFormat("id", isId);
 
 export const validator = (schema: Record<string, any>, data: any) => {
   const validate = ajv.compile(schema);

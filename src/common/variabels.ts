@@ -11,7 +11,7 @@
 import config from "config";
 import { IConfig } from "../../config/config.interface";
 import validator from "../validator/validator";
-import { postgresSchema, mongoSchema } from "../validator/schema";
+import schema from "../validator/schema";
 import { mongoClient, pool } from "../boot";
 import { logger } from "./functions/logger";
 import { objectValidator } from "../validator/objectValidator";
@@ -37,10 +37,7 @@ export const globals = {
     version: "0.0.1",
   },
   validator,
-  schema: {
-    pg: postgresSchema,
-    mongo: mongoSchema,
-  },
+  schema,
   objectValidator,
   objectSchema,
   mongo: {

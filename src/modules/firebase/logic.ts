@@ -13,12 +13,12 @@ import _ from "lodash";
 class FirebaseLogic extends BaseLogic {
   public async selectAll(args: IFirebaseSendMessage): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
-      const { valid, errors } = validator(schema.mongo.firebase.sendMessage, args);
+      const { valid, errors } = validator(schema.firebase.sendMessage, args);
       if (!valid) return reject({ result: false, error_code: 3002, errors });
       else {
         let registrationTokenOrTokens = "";
         await firebaseRepository
-          .selectOne({ _id: args.id })
+          .selectOne({ id: args.id })
           .then((response) => {
             if (!("fcm_token" in response)) return reject({ result: false, error_code: 3014 });
             else registrationTokenOrTokens = response.fcm_token;
