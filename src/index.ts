@@ -1,6 +1,12 @@
 import Application from "./Application";
 import { LoggerEnum } from "./common/enums/logger.enum";
 import process from "process";
+import secret from "./common/functions/secret";
+
+const str = secret.secure({ user_id: 123 });
+console.log(str);
+const obj = secret.deSecure(str);
+console.log(obj);
 
 // ─── UNHANDLED REJECTION ────────────────────────────────────────────────────────
 process.on("unhandledRejection", (reason, p) => {
