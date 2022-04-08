@@ -9,20 +9,13 @@ class K2Token {
       "tk6MZRVCI6IkpXVCObFk0SmxVuTFV5SjFjMlZ5WMDM5NjV9"
   ) {}
 
-  public generateToken(payload: any): string {
-    const buffSecretKey = Buffer.from(this.secretKey, "utf-8");
-    const strSecretKey = buffSecretKey.toString("base64");
+  public generateToken(payload: Record<string, any>): string {
+    payload.__random__fake__key__ = (+new Date() + Math.floor(Math.random() * (999 - 100) + 100)).toString(16);
 
-    const buffFirstKeySep = Buffer.from(this.secretFirstKeySeparator, "utf-8");
-    const strFirstKeySep = buffFirstKeySep.toString("base64");
-
-    const bufferArg = Buffer.from(JSON.stringify(payload), "utf-8");
-    const strArg = bufferArg.toString("base64");
-
-    const buffSecondKeySep = Buffer.from(this.secretSecondKeySeparator, "utf-8");
-    const strSecondKeySep = buffSecondKeySep.toString("base64");
-
-    return strSecretKey + strFirstKeySep + strArg + strSecondKeySep;
+    const str =
+      this.secretKey + this.secretFirstKeySeparator + `${JSON.stringify(payload)}` + this.secretSecondKeySeparator;
+    const buffer = Buffer.from(str, "utf-8");
+    return buffer.toString("base64");
   }
 
   public verifyToken(token: string): any {
@@ -34,7 +27,11 @@ class K2Token {
       str.indexOf(this.secretSecondKeySeparator)
     );
     if (key !== this.secretKey) throw new Error("Invalid key");
-    else return JSON.parse(stringData);
+    else {
+      const payload = JSON.parse(stringData);
+      delete payload.__random__fake__key__;
+      return payload;
+    }
   }
 
   public isValidToken(token: string): boolean {
