@@ -1,5 +1,5 @@
 import MongoRepository from "../../base/repository/MongoRepository";
-import { IUserCreate, IUserGetOne, IUserRemove, IUserRestore, IUserUpdate } from "./common/interface";
+import { IUserCreate, IUserGetOne, IUserRemove, IUserRestore, IUserUpdate } from "./utils/interface";
 
 class MongoDbRepository extends MongoRepository {
   private table = "users";

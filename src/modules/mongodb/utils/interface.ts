@@ -6,7 +6,7 @@ export interface IUserList {
 }
 
 export interface IUser {
-  id: number;
+  _id: number;
   user_name: string;
   password: string;
   first_name: string;
@@ -40,7 +40,7 @@ export interface IFilter {
 }
 
 export interface IUserGetOne {
-  id: string;
+  _id: string;
   user_name: string;
   email: string;
 }
@@ -56,7 +56,7 @@ export interface IUserCreate {
 }
 
 export interface IUserUpdate {
-  id: string;
+  _id: string;
   password: string;
   first_name: string;
   last_name: string;
@@ -66,9 +66,9 @@ export interface IUserUpdate {
 }
 
 export interface IUserRemove {
-  id: string;
+  _id: string;
 }
 
 export interface IUserRestore {
-  id: string;
+  _id: string;
 }

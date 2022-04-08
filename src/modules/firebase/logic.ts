@@ -1,5 +1,5 @@
 import { LoggerEnum } from "./../../common/enums/logger.enum";
-import { IFirebaseSendMessage } from "./common/interface";
+import { IFirebaseSendMessage } from "./utils/interface";
 import BaseLogic from "../../base/logic/BaseLogic";
 import firebaseRepository from "./repository";
 import { firebase } from "../../boot";
@@ -8,12 +8,13 @@ import {
   MessagingPayload,
   NotificationMessagePayload,
 } from "firebase-admin/lib/messaging/messaging-api";
+import { firebaseSchema } from "./utils/schema";
 import _ from "lodash";
 
 class FirebaseLogic extends BaseLogic {
   public async selectAll(args: IFirebaseSendMessage): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
-      const { valid, errors } = validator(schema.firebase.sendMessage, args);
+      const { valid, errors } = validator(firebaseSchema.sendMessage, args);
       if (!valid) return reject({ result: false, error_code: 3002, errors });
       else {
         let registrationTokenOrTokens = "";

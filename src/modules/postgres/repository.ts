@@ -1,5 +1,5 @@
 import PgRepository from "../../base/repository/PgRepository";
-import { IPagination, IUserCreate, IUserGetOne, IUserRemove, IUserRestore, IUserUpdate } from "./common/interface";
+import { IPagination, IUserCreate, IUserGetOne, IUserRemove, IUserRestore, IUserUpdate } from "./utils/interface";
 
 class PostgresRepository extends PgRepository {
   private table = "users";

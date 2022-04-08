@@ -1,4 +1,4 @@
-import { GenderEnum } from "./enum";
+import { GenderEnum } from "../../../common/enums/general.enum";
 
 export interface IUserList {
   rowCount: number;

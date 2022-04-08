@@ -1,6 +1,6 @@
-import { GenderEnum } from "../common/enums/general.enum";
+import { GenderEnum } from "../../../common/enums/general.enum";
 
-export const schema = {
+export const postgresqlSchema = {
   // ──────────────────────────────────────────────────────────────────────
   //   :::::: P A G I N A T I O N : :  :   :    :     :        :          :
   // ──────────────────────────────────────────────────────────────────────
@@ -49,7 +49,7 @@ export const schema = {
     type: "object",
     additionalProperties: false,
     properties: {
-      id: { type: "string", format: "id" },
+      id: { type: "string", format: "uuidv4" },
       user_name: { type: "string" },
       email: { type: "string", format: "email" },
     },
@@ -61,7 +61,7 @@ export const schema = {
     type: "object",
     additionalProperties: false,
     properties: {
-      id: { type: "string", format: "id" },
+      id: { type: "string", format: "uuidv4" },
       user_name: { type: "string" },
       email: { type: "string", format: "email" },
     },
@@ -74,7 +74,7 @@ export const schema = {
     type: "object",
     additionalProperties: false,
     properties: {
-      id: { type: "string", format: "id" },
+      id: { type: "string", format: "uuidv4" },
     },
     required: ["id"],
   },
@@ -109,7 +109,7 @@ export const schema = {
       additionalProperties: false,
       required: ["id"],
       properties: {
-        id: { type: "string", format: "id" },
+        id: { type: "string", format: "uuidv4" },
         password: { type: "string", minLength: 6, maxLength: 20 },
         first_name: { type: "string", minLength: 2, maxLength: 20 },
         last_name: { type: "string", minLength: 2, maxLength: 20 },
@@ -125,7 +125,7 @@ export const schema = {
       type: "object",
       additionalProperties: false,
       properties: {
-        id: { type: "string", format: "id" },
+        id: { type: "string", format: "uuidv4" },
         password: { type: "string", minLength: 6, maxLength: 20 },
         first_name: { type: "string", minLength: 2, maxLength: 20 },
         last_name: { type: "string", minLength: 2, maxLength: 20 },
@@ -138,31 +138,6 @@ export const schema = {
       },
     },
   },
-  // ──────────────────────────────────────────────────────────────────
-  //   :::::: F I R E B A S E : :  :   :    :     :        :          :
-  // ──────────────────────────────────────────────────────────────────
-  firebase: {
-    sendMessage: {
-      type: "object",
-      additionalProperties: false,
-      required: ["id"],
-      properties: {
-        id: { type: "string", format: "id" },
-        notification: {
-          type: "object",
-          additionalProperties: false,
-          required: ["title", "body"],
-          properties: {
-            title: { type: "string", minLength: 6, maxLength: 100 },
-            body: { type: "string", minLength: 10, maxLength: 255 },
-            icon: { type: "string", minLength: 6, maxLength: 255 },
-            image: { type: "string", minLength: 6, maxLength: 255 },
-          },
-        },
-        data: { type: "object" },
-      },
-    },
-  },
 };
 
-export default schema;
+export default postgresqlSchema;

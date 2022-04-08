@@ -1,6 +1,7 @@
 import { hashGen } from "./../../common/functions/bcrypt";
 import BaseLogic from "../../base/logic/BaseLogic";
-import { IPagination, IUserCreate, IUserGetOne, IUserRemove, IUserUpdate } from "./common/interface";
+import { IPagination, IUserCreate, IUserGetOne, IUserRemove, IUserUpdate } from "./utils/interface";
+import { postgresqlSchema } from "./utils/schema";
 import postgresRepository from "./repository";
 
 class PostgresLogic extends BaseLogic {
@@ -18,7 +19,7 @@ class PostgresLogic extends BaseLogic {
 
   public async selectOne(args: Partial<IUserGetOne>): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
-      const { valid, errors } = validator(schema.find, args);
+      const { valid, errors } = validator(postgresqlSchema.find, args);
       if (!valid) return reject({ result: false, error_code: 3002, errors });
 
       await postgresRepository
@@ -30,7 +31,7 @@ class PostgresLogic extends BaseLogic {
 
   public async create(args: IUserCreate): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
-      const { valid, errors } = validator(schema.user.create, args);
+      const { valid, errors } = validator(postgresqlSchema.user.create, args);
       if (!valid) return reject({ result: false, error_code: 3002, errors });
 
       args.password = hashGen(args.password);
@@ -44,7 +45,7 @@ class PostgresLogic extends BaseLogic {
 
   public async edit(args: Partial<IUserUpdate>): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
-      const { valid, errors } = validator(schema.user.edit, args);
+      const { valid, errors } = validator(postgresqlSchema.user.edit, args);
       if (!valid) return reject({ result: false, error_code: 3002, errors });
 
       args.password = args.password ? hashGen(args.password) : "";
@@ -71,7 +72,7 @@ class PostgresLogic extends BaseLogic {
 
   public async safeRemove(args: IUserRemove): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
-      const { valid, errors } = validator(schema.id, args);
+      const { valid, errors } = validator(postgresqlSchema.id, args);
       if (!valid) return reject({ result: false, error_code: 3002, errors });
 
       await postgresRepository
@@ -83,7 +84,7 @@ class PostgresLogic extends BaseLogic {
 
   public async remove(args: IUserRemove): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
-      const { valid, errors } = validator(schema.id, args);
+      const { valid, errors } = validator(postgresqlSchema.id, args);
       if (!valid) return reject({ result: false, error_code: 3002, errors });
 
       await postgresRepository
@@ -95,7 +96,7 @@ class PostgresLogic extends BaseLogic {
 
   public async recover(args: IUserRemove): Promise<Record<string, any>> {
     return new Promise(async (resolve, reject) => {
-      const { valid, errors } = validator(schema.id, args);
+      const { valid, errors } = validator(postgresqlSchema.id, args);
       if (!valid) return reject({ result: false, error_code: 3002, errors });
 
       await postgresRepository

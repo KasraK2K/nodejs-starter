@@ -1,7 +1,7 @@
 import BaseController from "../../base/controller/BaseController";
 import { Request, Response } from "express";
 import postgresLogic from "./logic";
-import { IUserList } from "./common/interface";
+import { IUserList } from "./utils/interface";
 import { IRes } from "../../common/interfaces/general.interface";
 
 class PostgresController extends BaseController {

@@ -1,4 +1,4 @@
-import { IFilter, IPagination } from "./../../modules/postgres/common/interface";
+import { IFilter, IPagination } from "../../modules/postgres/utils/interface";
 import { LoggerEnum } from "../../common/enums/logger.enum";
 import _ from "lodash";
 import { IQueryGenerator } from "../../common/interfaces/repository.interface";
