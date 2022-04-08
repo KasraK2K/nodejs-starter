@@ -1,8 +1,8 @@
-const secretKey = "NiMjVuTFhObFk0SmxkQzFyWlhrNmV5SjFjMlZ5WDJsa0lqb";
-const secretKeySeparator = "Jsa0lmxkVuTFhObFkrNmV4SjFjMl";
+const secretKey = process.env.SECURE_SECRET_KEY ?? "NiMjVuTFhObFk0SmxkQzFyWlhrNmV5SjFjMlZ5WDJsa0lqb";
+const secretKeySeparator = process.env.SECURE_SECRET_SEPARATOR ?? "Jsa0lmxkVuTFhObFkrNmV4SjFjMl";
 
 export const secure = (arg: any): string => {
-  const data = `${secretKey}${secretKeySeparator}${JSON.stringify(arg)}`;
+  const data = secretKey + secretKeySeparator + JSON.stringify(arg);
   const buff = Buffer.from(data, "utf-8");
   return buff.toString("base64");
 };
