@@ -11,6 +11,7 @@ import router from "./router";
 import rateLimiterMiddleware from "./middleware/RateLimiterMiddleware";
 import requestMiddleware from "./middleware/RequestMiddleware";
 import { getUserInformation } from "./common/functions/information";
+import { generateToken, verifyToken, isValidToken } from "./common/functions/k2Token";
 
 const corsConfig: ICorsConfig = config.get("cors");
 
@@ -45,6 +46,12 @@ class Application {
     this.config();
     this.middlewares();
     this.routes();
+
+    const config = { secret: "SECRET", phrase_one: "PHRASE_ONE", phrase_tow: "PHRASE_TWO" };
+    const tk = generateToken({ user_name: "kasra" }, config);
+    const ver = verifyToken(tk, config);
+    const is = isValidToken(tk, config);
+    console.log({ tk, ver, is });
   }
 
   private config() {
