@@ -9,11 +9,12 @@
 //=======================================================
 
 import express from "express";
-import fs from "fs";
-import path from "path";
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "../swagger";
 import { IErrGenOptions } from "../common/interfaces/general.interface";
+import starterConfig from "../../starter.config";
+
+const { swagger } = starterConfig;
 
 // ────────────────────────────────────────────────────────────────────────
 //   :::::: C O N T R O L L E R S : :  :   :    :     :        :          :
@@ -31,11 +32,6 @@ import firebaseController from "../modules/firebase/controller";
 // import you routes middleware here
 // ────────────────────────────────────────────────────────────────────────
 
-const swaggerOptions = {
-  explorer: true,
-  swaggerOptions: { validatorUrl: null },
-  customCss: fs.readFileSync(path.resolve(process.cwd(), "src/swagger/css/feeling-blue.css"), "utf8"),
-};
 const router = express.Router();
 
 // ──────────────────────────────────────────────────────────────
@@ -69,7 +65,7 @@ router.post("/mongodb/recover", mongoDbController.recover);
 router.post("/firebase/send-message", firebaseController.sendMessage);
 
 // swagger
-router.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerOptions));
+swagger.enabled && router.use(swagger.endpoint, swaggerUi.serve, swaggerUi.setup(swaggerDocument, swagger.options));
 
 // 404
 router.use("*", (req, res) => {

@@ -2,7 +2,7 @@
   "name": "nodejs_starter",
   "version": "1.0.0",
   "description": "This is a node.js starter pack to create service easy and fast",
-  "main": "src/index.ts",
+  "main": "src/index",
   "scripts": {
     "start": "cross-env NODE_ENV=production node build/index.js",
     "start:dev": "cross-env NODE_ENV=development ts-node run.ts",
@@ -49,6 +49,7 @@
     "mongoose": "^6.2.3",
     "os": "^0.1.2",
     "pg": "^8.7.3",
+    "redis-om": "^0.2.1",
     "reflect-metadata": "^0.1.13",
     "swagger-ui-express": "^4.3.0",
     "treblle": "^1.1.0",

@@ -13,7 +13,7 @@ export default {
   },
   servers: [
     {
-      url: process.env.IS_ON_SERVER ? "https://api.mng.dev.embargoapp.com" : "http://localhost:3000",
+      url: process.env.IS_ON_SERVER ? "https://api.mng.dev.embargoapp.com" : "http://localhost:8000",
       description: "Manager API",
     },
   ],
