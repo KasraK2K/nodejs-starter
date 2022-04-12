@@ -1,5 +1,5 @@
 import "./boot";
-import { app, express, createRedisClient } from "./boot";
+import { app, express } from "./boot";
 import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
@@ -45,13 +45,6 @@ class Application {
     this.config();
     this.middlewares();
     this.routes();
-
-    (async () => {
-      const client = await createRedisClient();
-      await client.set("foo", "bar", { EX: 7 });
-      const baz = await client.get("foo");
-      console.log(baz);
-    })();
   }
 
   private config() {
