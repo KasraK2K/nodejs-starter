@@ -18,6 +18,7 @@ import mongoClient from "./mongodb";
 import pool from "./postgresql";
 import firebase from "./firebase";
 import fs from "fs";
+import { createRedisClient } from "./redis";
 
 const app: Express = express();
 
@@ -34,4 +35,4 @@ starterConfig.boot.forEach(async (moduleName) => {
     });
 });
 
-export { app, express, mongoClient, pool, firebase };
+export { app, express, mongoClient, pool, firebase, createRedisClient };
