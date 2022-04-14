@@ -7,21 +7,24 @@ export const createRedisClient = async () => {
   const client = createClient(redis.options as any);
 
   client
-    .on("ready", () => {
-      console.log("Redis Client Ready");
-    })
+    .on("connect", () => console.log("Redis client connected"))
+    .on("ready", () => console.log("Redis Client Ready"))
     .on("error", (err) => {
       if (err.code === "ECONNREFUSED") {
         console.error("Redis server refused the connection");
         process.exit(1);
       }
       console.error("Redis Client Error:", err);
-    });
+    })
+    .on("end", () => console.log("Redis client disconnected"))
+    .on("reconnecting", () => console.log("Redis client reconnecting"));
 
   await client.connect();
 
   return client;
 };
+
+export default { createRedisClient };
 
 //============================================================================
 // Now you can easily connect to the database from any point in your Node.js
