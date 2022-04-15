@@ -12,6 +12,7 @@
 //   :::::: R E F L E C T   M E T A D A T A : :  :   :    :     :        :          :
 // ──────────────────────────────────────────────────────────────────────────────────
 import "reflect-metadata";
+import "./extend";
 import starterConfig from "../../starter.config";
 import express, { Express } from "express";
 import mongoClient from "./mongodb";
@@ -19,7 +20,6 @@ import pool from "./postgresql";
 import firebase from "./firebase";
 import fs from "fs";
 import { createRedisClient } from "./redis";
-import { createRedisStackClient } from "./redis-stack";
 
 const app: Express = express();
 
@@ -36,4 +36,4 @@ starterConfig.boot.forEach(async (moduleName) => {
     });
 });
 
-export { app, express, mongoClient, pool, firebase, createRedisClient, createRedisStackClient };
+export { app, express, mongoClient, pool, firebase, createRedisClient };

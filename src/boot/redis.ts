@@ -1,10 +1,11 @@
+import { IRedisConfig } from "./../../config/config.interface";
 import { createClient } from "redis";
-import starterConfig from "../../starter.config";
+import config from "config";
 
-const { redis } = starterConfig;
+const redisConfig: IRedisConfig = config.get("database.redis");
 
 export const createRedisClient = async () => {
-  const client = createClient(redis.options as any);
+  const client = createClient({ url: redisConfig.uri });
 
   client
     .on("connect", () => console.log("Redis client connected"))

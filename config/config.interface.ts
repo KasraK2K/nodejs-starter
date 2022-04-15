@@ -3,7 +3,6 @@ export interface IConfig {
   mode: string;
   application: IApplicationConfig;
   database: IDatabaseConfig;
-  cors: ICorsConfig;
 }
 
 // ────────────────────────────────────────────────────────────── APPLICATION ─────
@@ -36,6 +35,7 @@ export interface ITreblleConfig {
 export interface IDatabaseConfig {
   mongodb: IMongodbConfig;
   postgres: IPostgresConfig;
+  redis: IRedisConfig;
 }
 
 // ─── MONGODB ────────────────────────────────────────────────────────────────────
@@ -59,10 +59,9 @@ export interface IPostgresConfig {
   };
 }
 
-// ───────────────────────────────────────────────────────────────────── CORS ─────
-export interface ICorsConfig {
-  allow_origin: string;
-  allow_method: string;
+// ─── REDIS ──────────────────────────────────────────────────────────────────────
+export interface IRedisConfig {
+  uri: string;
 }
 
 // ───────────────────────────────────────────────────────────── RATE LIMITER ─────

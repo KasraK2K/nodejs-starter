@@ -23,6 +23,8 @@ database:
     connectionTimeoutMillis: 10000
     ssl:
       rejectUnauthorized: false
+  redis:
+    uri: "redis://localhost:6379"
 
 cors:
   allow_origin: "*"
