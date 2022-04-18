@@ -585,20 +585,25 @@ class PgBuilderRepository extends BaseRepository {
           errors: [err.detail],
         };
 
+      case "230503": // Connection between forign key and database key
+        logger(`{red}${err.detail}{reset}`, LoggerEnum.ERROR);
+        logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
+        return { result: false, error_code: 3015 };
+
       case "42P01":
         logger(`{red}Database Table Not Found{reset}`, LoggerEnum.ERROR);
         logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
         return { result: false, error_code: 3007 };
 
-      case "42703":
-        logger(`{red}Database Column Not Found{reset}`, LoggerEnum.ERROR);
-        logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
-        return { result: false, error_code: 3010 };
-
       case "22P02":
         logger(`{red}Invalid input value for enum{reset}`, LoggerEnum.ERROR);
         logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
         return { result: false, error_code: 3011 };
+
+      case "42703":
+        logger(`{red}Database Column Not Found{reset}`, LoggerEnum.ERROR);
+        logger(`{red}${err.stack}{reset}`, LoggerEnum.ERROR);
+        return { result: false, error_code: 3010 };
 
       case "ECONNREFUSED":
         logger(`{red}Database Connection Refused{reset}`, LoggerEnum.ERROR);

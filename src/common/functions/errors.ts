@@ -14,6 +14,7 @@ const map = new Map([
   [3012, "Firebase error on sending message"],
   [3013, "Error on sending email"],
   [3014, "Data Not Found"],
+  [3015, "Constraint erro"],
 ]);
 
 export const getError = (code: number) => {
