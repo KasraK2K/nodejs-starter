@@ -18,6 +18,9 @@ export interface IApplicationConfig {
     logOnConsole: boolean;
     logOnDatabase: boolean;
   };
+  upload: {
+    destination: string;
+  };
   monitoring: IMonitoringConfig;
 }
 
