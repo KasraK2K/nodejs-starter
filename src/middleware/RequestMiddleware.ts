@@ -6,6 +6,13 @@ import _ from "lodash";
 import { LoggerEnum } from "../common/enums/logger.enum";
 
 class RequestMiddleware extends Middleware {
+  processIdAdder(req: Request, res: Response, next: NextFunction) {
+    const process_id = (+new Date() + Math.floor(Math.random() * (999 - 100) + 100)).toString(16);
+    _.assign(global, { process_id });
+    _.assign(res.locals, { params: { process_id } });
+    next();
+  }
+
   public isPost(req: Request, res: Response, next: NextFunction) {
     const controller = new BaseController();
     _.assign(res.locals, { params: { process_id } });

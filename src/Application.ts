@@ -5,9 +5,10 @@ import helmet from "helmet";
 import compression from "compression";
 import _ from "lodash";
 import config from "config";
-import { ICorsConfig } from "./../config/config.interface";
+import { ICorsConfig } from "../config/config.interface";
 import { locals, globals } from "./common/variabels";
 import router from "./router";
+import multipartMiddleware from "./middleware/MultipartMiddleware";
 import rateLimiterMiddleware from "./middleware/RateLimiterMiddleware";
 import requestMiddleware from "./middleware/RequestMiddleware";
 import { getUserInformation } from "./common/functions/information";
@@ -39,9 +40,6 @@ class Application {
     const { port } = options;
     this.port = Number(process.env.PORT) || port;
 
-    const process_id = (+new Date() + Math.floor(Math.random() * (999 - 100) + 100)).toString(16);
-    _.assign(global, { process_id });
-
     this.config();
     this.middlewares();
     this.routes();
@@ -66,6 +64,8 @@ class Application {
       })
     );
     app.use(rateLimiterMiddleware.check());
+    app.use(multipartMiddleware.extendBody);
+    app.use(requestMiddleware.processIdAdder);
     app.use(requestMiddleware.isPost);
     app.use(requestMiddleware.auth);
   }

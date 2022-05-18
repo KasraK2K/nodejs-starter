@@ -21,6 +21,7 @@ export const logger = (text: any, type = LoggerEnum.INFO) => {
   const isServer: boolean = JSON.parse(process.env.IS_ON_SERVER || "false");
   const now = new Date();
   const date = now.getFullYear() + "-" + ("0" + (now.getMonth() + 1)).slice(-2) + "-" + ("0" + now.getDate()).slice(-2);
+  const processId = process_id ?? (+new Date() + Math.floor(Math.random() * (999 - 100) + 100)).toString(16);
 
   const path = `${applicationConfig.logger.logFilePath}${date}/`;
 
@@ -33,7 +34,7 @@ export const logger = (text: any, type = LoggerEnum.INFO) => {
     ":" +
     ("0" + now.getSeconds()).slice(-2) +
     " " +
-    process_id;
+    processId;
 
   if (typeof text === "object" || Array.isArray(text)) {
     text = JSON.stringify(text, null, 2);
@@ -92,9 +93,13 @@ export const logger = (text: any, type = LoggerEnum.INFO) => {
   // ───────────────────────────────────────────────── END: SAVE LOG ON MONGODB ─────
 
   if (applicationConfig.logger.logOnFile && isServer) {
-    fs.appendFile(path + type + ".log", `${date} ${time} ${text} \n`, (err) => console.log(err));
+    fs.appendFile(path + type + ".log", `${date} ${time} ${text} \n`, () => {
+      return;
+    });
 
     ![LoggerEnum.REQUEST].includes(type) &&
-      fs.appendFile(path + "all.log", `${date} ${time} ${text} \n`, (err) => console.log(err));
+      fs.appendFile(path + "all.log", `${date} ${time} ${text} \n`, () => {
+        return;
+      });
   }
 };
