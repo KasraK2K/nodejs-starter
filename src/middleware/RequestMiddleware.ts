@@ -1,6 +1,6 @@
 import Middleware from "./Middleware";
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
+import { verify, IConfigs } from "k2token";
 import BaseController from "../base/controller/BaseController";
 import _ from "lodash";
 import { LoggerEnum } from "../common/enums/logger.enum";
@@ -85,16 +85,18 @@ class RequestMiddleware extends Middleware {
   private static getJwtPayload(req: Request) {
     const token = req.headers.authorization ? req.headers.authorization.slice(7) : "";
     const returnValue: Record<string, any> = {};
+    const configs: IConfigs = {
+      secret: process.env.K2Token_SECRET,
+      phrase_one: process.env.K2Token_PHRASE_ONE,
+      phrase_two: process.env.K2Token_PHRASE_TWO,
+    };
 
-    jwt.verify(token, process.env.JWT_SECRET ?? "", (err, decoded) => {
-      if (err) returnValue.result = false;
-      else {
-        returnValue.result = true;
-        returnValue.data = {};
-
-        typeof decoded === "object" && _.keys(decoded).length && _.assign(returnValue.data, decoded);
-      }
-    });
+    const { valid, data } = verify(token, configs);
+    if (!valid) returnValue.result = false;
+    else {
+      returnValue.result = true;
+      returnValue.data = data;
+    }
 
     return returnValue;
   }

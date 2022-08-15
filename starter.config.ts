@@ -18,7 +18,6 @@ export default {
     // "mongodb",
     /*"mongoose",*/
     "postgresql",
-    "information",
     "treblle",
   ],
   swagger: {
