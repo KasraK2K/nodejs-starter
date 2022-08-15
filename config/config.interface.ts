@@ -17,11 +17,13 @@ export interface IApplicationConfig {
     logOnFile: boolean;
     logOnConsole: boolean;
     logOnDatabase: boolean;
+    morganLog: boolean;
   };
   upload: {
     destination: string;
   };
   monitoring: IMonitoringConfig;
+  errorHandller: boolean;
 }
 
 export interface IMonitoringConfig {

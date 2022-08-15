@@ -5,7 +5,9 @@ import helmet from "helmet";
 import compression from "compression";
 import _ from "lodash";
 import config from "config";
-import { ICorsConfig } from "../config/config.interface";
+import logger from "morgan";
+import errorhandler from "errorhandler";
+import { IApplicationConfig, ICorsConfig } from "../config/config.interface";
 import { locals, globals } from "./common/variabels";
 import router from "./router";
 import multipartMiddleware from "./middleware/MultipartMiddleware";
@@ -14,6 +16,7 @@ import requestMiddleware from "./middleware/RequestMiddleware";
 import { getUserInformation } from "./common/functions/information";
 
 const corsConfig: ICorsConfig = config.get("cors");
+const appConfig: IApplicationConfig = config.get("application");
 
 /**
  * # Application
@@ -55,6 +58,7 @@ class Application {
     app.use(express.urlencoded({ extended: false }));
     app.use(helmet());
     app.use(compression());
+    appConfig.logger.morganLog && app.use(logger("dev"));
     app.disable("x-powered-by");
     app.use(
       cors({
@@ -72,6 +76,7 @@ class Application {
 
   private routes() {
     app.use("/", router);
+    appConfig.errorHandller && app.use(errorhandler());
   }
 
   public start() {

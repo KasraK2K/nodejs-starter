@@ -5,10 +5,12 @@ application:
   logger:
     logFilePath: "/var/embargo-logs/mng-api/"
     logOnFile: false
-    logOnConsole: true
+    logOnConsole: false
     logOnDatabase: false
+    morganLog: true
     upload:
       destination: "/var/assets"
+  errorHandller: true
 
 database:
   mongodb:

@@ -1,8 +1,8 @@
+import firebase from "../../common/integrations/firebase";
 import { LoggerEnum } from "./../../common/enums/logger.enum";
 import { IFirebaseSendMessage } from "./utils/interface";
 import BaseLogic from "../../base/logic/BaseLogic";
 import firebaseRepository from "./repository";
-import { firebase } from "../../boot";
 import {
   DataMessagePayload,
   MessagingPayload,
@@ -38,8 +38,7 @@ class FirebaseLogic extends BaseLogic {
 
         // ─── SEND MESSAGE ────────────────────────────────────────────────
         if (registrationTokenOrTokens)
-          firebase
-            .messaging()
+          firebase.messaging
             .sendToDevice(registrationTokenOrTokens, payload, options)
             .then((response) => resolve({ result: true, data: response }))
             .catch((err) => {

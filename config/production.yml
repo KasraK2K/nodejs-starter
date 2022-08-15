@@ -7,8 +7,10 @@ application:
     logOnFile: false
     logOnConsole: true
     logOnDatabase: true
+    morganLog: false
     upload:
       destination: "/var/assets"
+  errorHandller: false # Keep it false in production
 
 database:
   mongodb:
