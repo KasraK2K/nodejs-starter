@@ -86,9 +86,9 @@ class RequestMiddleware extends Middleware {
     const token = req.headers.authorization ? req.headers.authorization.slice(7) : "";
     const returnValue: Record<string, any> = {};
     const configs: IConfigs = {
-      secret: process.env.K2Token_SECRET,
-      phrase_one: process.env.K2Token_PHRASE_ONE,
-      phrase_two: process.env.K2Token_PHRASE_TWO,
+      secret: process.env.K2Token_SECRET!,
+      phrase_one: process.env.K2Token_PHRASE_ONE!,
+      phrase_two: process.env.K2Token_PHRASE_TWO!,
     };
 
     const { valid, data } = verify(token, configs);

@@ -1,7 +1,7 @@
 mode: development
 
 application:
-  print_info: false
+  print_info: true
   logger:
     logFilePath: "/var/embargo-logs/mng-api/"
     logOnFile: false

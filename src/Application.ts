@@ -5,7 +5,7 @@ import helmet from "helmet";
 import compression from "compression";
 import _ from "lodash";
 import config from "config";
-import logger from "morgan";
+import morgan from "morgan";
 import errorhandler from "errorhandler";
 import { IApplicationConfig, ICorsConfig } from "../config/config.interface";
 import { locals, globals } from "./common/variabels";
@@ -46,6 +46,8 @@ class Application {
     this.config();
     this.middlewares();
     this.routes();
+
+    console.log(process.env.K2Token_SECRET);
   }
 
   private config() {
@@ -58,7 +60,7 @@ class Application {
     app.use(express.urlencoded({ extended: false }));
     app.use(helmet());
     app.use(compression());
-    appConfig.logger.morganLog && app.use(logger("dev"));
+    appConfig.logger.morganLog && app.use(morgan("dev"));
     app.disable("x-powered-by");
     app.use(
       cors({

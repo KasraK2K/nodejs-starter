@@ -13,6 +13,7 @@
 // ──────────────────────────────────────────────────────────────────────────────────
 import "reflect-metadata";
 import "./extend";
+import "./envirement";
 import starterConfig from "../../starter.config";
 import express, { Express } from "express";
 import mongoClient from "./mongodb";

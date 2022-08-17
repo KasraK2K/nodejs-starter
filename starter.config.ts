@@ -13,7 +13,6 @@ import path from "path";
 
 export default {
   boot: [
-    "envirement",
     "cron-jobs",
     // "mongodb",
     /*"mongoose",*/
